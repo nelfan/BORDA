@@ -1,11 +1,9 @@
 package com.softserve.borda.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -16,7 +14,13 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "board")
     private List<BoardList> boardLists;
-    private List<UserBoardRelation> roles;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "board")
+    private List<UserBoardRelation> userBoardRelations;
 
 }

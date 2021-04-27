@@ -1,11 +1,9 @@
 package com.softserve.borda.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -16,5 +14,9 @@ public class Ticket {
     private Long id;
     private String name;
     private String body;
+
+    @ToString.Exclude
+    @ManyToOne
+    private BoardList boardList;
 
 }

@@ -5,25 +5,24 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @Data
-@Entity(name = "tags")
-public class Tag {
+@Entity(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
+    @Column(name = "comment_id")
     private Long id;
 
     @NotBlank
     private String text;
 
-    @NotBlank
-    @Enumerated
-    private Color color;
+    @ToString.Exclude
+    @ManyToOne
+    private User user;
 
     @ToString.Exclude
-    @ManyToMany
-    private List<Ticket> tickets;
+    @ManyToOne
+    private Ticket ticket;
 }

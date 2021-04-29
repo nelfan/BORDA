@@ -1,28 +1,26 @@
 package com.softserve.borda.entities;
 
+
 import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
-@Entity
-public class UserBoardRelation {
+@Entity(name = "permissions")
+public class Permission {
+
     @Id
-    @Column(name = "ubr_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "permission_id")
     private Long id;
 
-    @ToString.Exclude
-    @ManyToOne
-    private User user;
-
-    @ToString.Exclude
-    @ManyToOne
-    private Board board;
+    @NotBlank
+    private String name;
 
     @ToString.Exclude
     @ManyToMany
     private List<Role> roles;
-
 }

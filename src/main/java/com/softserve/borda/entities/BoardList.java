@@ -8,11 +8,12 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "board_lists")
 public class BoardList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_list_id")
     private Long id;
 
     @NotBlank

@@ -14,6 +14,7 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
+
     private String name;
 
     @ToString.Exclude

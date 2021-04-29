@@ -11,6 +11,13 @@ import java.util.List;
 @Entity(name = "tags")
 public class Tag {
 
+    public enum Color {
+        BLUE,
+        RED,
+        YELLOW,
+        GREEN
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")

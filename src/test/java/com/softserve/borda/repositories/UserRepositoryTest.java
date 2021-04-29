@@ -20,15 +20,47 @@ class UserRepositoryTest {
     UserRepository userRepository;
 
     @Test
-    public void myTest() throws Exception {
+    public void shouldInsertAndReturnUser() throws Exception {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");
         user.setEmail("email1");
         user.setFirstName("John");
         user.setLastName("Doe");
-        user = userRepository.save(user);
-        Assertions.assertEquals(user, userRepository.getOne(user.getId()));
+        User expected = userRepository.save(user);
+        User actual = userRepository.getOne(user.getId());
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldInsertAndDeleteUser() throws Exception {
+        User user = new User();
+        user.setUsername("user1");
+        user.setPassword("pass1");
+        user.setEmail("email1");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        userRepository.save(user);
+        userRepository.deleteById(user.getId());
+        Assertions.assertThrows(org.springframework.orm.jpa.JpaObjectRetrievalFailureException.class,
+                () -> userRepository.getOne(user.getId()));
+    }
+
+    @Test
+    public void shouldInsertAndUpdateUser() throws Exception {
+        User user = new User();
+        user.setUsername("user1");
+        user.setPassword("pass1");
+        user.setEmail("email1");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        userRepository.save(user);
+        user.setUsername("user1updated");
+        user.setPassword("pass1updated");
+        user.setEmail("email1updated");
+        User expected = userRepository.save(user);
+        User actual = userRepository.getOne(user.getId());
+        Assertions.assertEquals(expected, actual);
     }
 
 }

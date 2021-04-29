@@ -2,9 +2,11 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.services.CommentService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CommentServiceImpl implements CommentService {
 
     @Override

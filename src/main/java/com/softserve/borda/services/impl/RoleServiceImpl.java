@@ -2,9 +2,11 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.services.RoleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RoleServiceImpl implements RoleService {
 
     @Override

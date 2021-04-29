@@ -2,9 +2,11 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Override

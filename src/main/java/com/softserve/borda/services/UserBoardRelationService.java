@@ -1,5 +1,7 @@
 package com.softserve.borda.services;
 
+import com.softserve.borda.entities.Permission;
+import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.UserBoardRelation;
 
@@ -11,5 +13,9 @@ public interface UserBoardRelationService {
     UserBoardRelation createOrUpdate(UserBoardRelation userBoardRelation);
     void deleteUserBoardRelationById(Long id);
 
-    List<Tag> getAllRolesByUserBoardRelationId(Long userBoardRelationId);
+    List<Role> getAllRolesByUserBoardRelationId(Long userBoardRelationId);
+
+    List<Permission> getAllPermissionsByRoleId(Long roleId);
+
+    List<Permission> getAllPermissionsByUserBoardRelationId(Long userBoardRelationId);
 }

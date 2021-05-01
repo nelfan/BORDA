@@ -1,12 +1,15 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.Tag;
+import com.softserve.borda.entities.Permission;
+import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.repositories.PermissionRepository;
 import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +18,12 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     
     private final UserBoardRelationRepository userBoardRelationRepository;
     private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
 
-    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, RoleRepository roleRepository) {
+    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.userBoardRelationRepository = userBoardRelationRepository;
         this.roleRepository = roleRepository;
+        this.permissionRepository = permissionRepository;
     }
 
     @Override
@@ -54,7 +59,21 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public List<Tag> getAllRolesByUserBoardRelationId(Long userBoardRelationId) {
+    public List<Role> getAllRolesByUserBoardRelationId(Long userBoardRelationId) {
         return roleRepository.getAllRolesByUserBoardRelationId(userBoardRelationId);
     }
+    
+    @Override
+    public List<Permission> getAllPermissionsByRoleId(Long roleId) {
+        return permissionRepository.getAllPermissionsByRoleId(roleId);
+    }
+
+    @Override
+    public List<Permission> getAllPermissionsByUserBoardRelationId(Long userBoardRelationId) {
+        List<Role> roles = getAllRolesByUserBoardRelationId(userBoardRelationId);
+        List<Permission> permissions = new ArrayList<>();
+        roles.forEach(role -> permissions.addAll(getAllPermissionsByRoleId(role.getId())));
+        return permissions;
+    }
+
 }

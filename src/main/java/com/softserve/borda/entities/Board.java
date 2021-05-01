@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,10 +20,10 @@ public class Board {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board")
-    private List<BoardList> boardLists;
+    private List<BoardList> boardLists = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board")
-    private List<UserBoardRelation> userBoardRelations;
+    private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
 }

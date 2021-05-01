@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,6 +24,6 @@ public class UserBoardRelation {
 
     @ToString.Exclude
     @ManyToMany
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
 }

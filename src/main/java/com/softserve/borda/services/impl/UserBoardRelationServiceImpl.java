@@ -59,20 +59,20 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public List<Role> getAllRolesByUserBoardRelationId(Long userBoardRelationId) {
-        return roleRepository.getAllRolesByUserBoardRelationId(userBoardRelationId);
+    public List<Role> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
+        return roleRepository.getAllRolesByUserBoardRelationsContaining(userBoardRelation);
     }
     
     @Override
-    public List<Permission> getAllPermissionsByRoleId(Long roleId) {
-        return permissionRepository.getAllPermissionsByRoleId(roleId);
+    public List<Permission> getAllPermissionsByRole(Role role) {
+        return permissionRepository.getAllPermissionsByRolesContaining(role);
     }
 
     @Override
-    public List<Permission> getAllPermissionsByUserBoardRelationId(Long userBoardRelationId) {
-        List<Role> roles = getAllRolesByUserBoardRelationId(userBoardRelationId);
+    public List<Permission> getAllPermissionsByUserBoardRelation(UserBoardRelation userBoardRelation) {
+        List<Role> roles = getAllRolesByUserBoardRelation(userBoardRelation);
         List<Permission> permissions = new ArrayList<>();
-        roles.forEach(role -> permissions.addAll(getAllPermissionsByRoleId(role.getId())));
+        roles.forEach(role -> permissions.addAll(getAllPermissionsByRole(role)));
         return permissions;
     }
 

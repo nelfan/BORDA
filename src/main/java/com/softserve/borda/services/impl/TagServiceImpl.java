@@ -28,8 +28,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> getAllTagsByTicketId(Long ticketId) {
-        return tagRepository.getAllTagsByTicketId(ticketId);
+    public List<Tag> getAllTagsByTicket(Ticket ticket) {
+        return tagRepository.getAllTagsByTicketsContaining(ticket);
     }
 
     @Override

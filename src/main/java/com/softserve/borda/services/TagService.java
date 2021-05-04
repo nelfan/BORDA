@@ -9,7 +9,7 @@ import java.util.List;
 public interface TagService {
     List<Tag> getAll();
 
-    List<Tag> getAllTagsByTicketId(Long ticketId);
+    List<Tag> getAllTagsByTicket(Ticket ticket);
 
     Tag getTagById(Long id);
     Tag createOrUpdate(Tag tag);

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,10 +24,10 @@ public class Ticket {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "ticket")
-    List<Comment> comments;
+    List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
     @ManyToMany
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
 }

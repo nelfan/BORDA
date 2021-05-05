@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -32,5 +33,5 @@ public class Tag {
 
     @ToString.Exclude
     @ManyToMany
-    private List<Ticket> tickets;
+    private List<Ticket> tickets = new ArrayList<>();
 }

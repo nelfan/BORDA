@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,11 +23,11 @@ public class Role implements GrantedAuthority {
 
     @ToString.Exclude
     @ManyToMany
-    private List<Permission> permissions;
+    private List<Permission> permissions = new ArrayList<>();
 
     @ToString.Exclude
     @ManyToMany
-    private List<UserBoardRelation> userBoardRelations;
+    private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     public Role() {
     }

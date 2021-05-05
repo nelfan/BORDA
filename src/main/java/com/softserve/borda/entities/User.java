@@ -43,5 +43,5 @@ public class User {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    List<Comment> comments = new ArrayList<>();;
+    List<Comment> comments = new ArrayList<>();
 }

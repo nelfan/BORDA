@@ -21,7 +21,8 @@ public class BoardList {
     private String name;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ToString.Exclude

@@ -20,6 +20,7 @@ public class Ticket {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "board_list_id", nullable = false)
     private BoardList boardList;
 
     @ToString.Exclude

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +18,18 @@ public class Board {
     @Column(name = "board_id")
     private Long id;
 
+    @NotBlank(message = "The board name cannot be empty")
     private String name;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board",
+            cascade = CascadeType.ALL)
     private List<BoardList> boardLists = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board",
+    cascade = CascadeType.ALL)
+    @NotEmpty
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
 }

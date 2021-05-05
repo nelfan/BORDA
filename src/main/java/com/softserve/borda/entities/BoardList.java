@@ -25,6 +25,7 @@ public class BoardList {
     private Board board;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "boardList")
+    @OneToMany(mappedBy = "boardList",
+            cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
 }

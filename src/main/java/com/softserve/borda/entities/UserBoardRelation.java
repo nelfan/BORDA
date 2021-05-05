@@ -20,7 +20,7 @@ public class UserBoardRelation {
     private User user;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Board board;
 
     @ToString.Exclude

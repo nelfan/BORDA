@@ -27,7 +27,7 @@ class BoardRepositoryTest {
     BoardListRepository boardListRepository;
 
     @Test
-    public void shouldInsertAndReturnBoard() throws Exception {
+    void shouldInsertAndReturnBoard() {
         Board board = new Board();
         board.setName("Board1");
         Board expected = boardRepository.save(board);
@@ -36,7 +36,7 @@ class BoardRepositoryTest {
     }
 
     @Test
-    public void shouldInsertAndDeleteBoard() throws Exception {
+    void shouldInsertAndDeleteBoard() {
         Board board = new Board();
         board.setName("Board1");
         boardRepository.save(board);
@@ -45,7 +45,7 @@ class BoardRepositoryTest {
     }
 
     @Test
-    public void shouldInsertAndUpdateBoard() throws Exception {
+    void shouldInsertAndUpdateBoard() {
         Board board = new Board();
         board.setName("Board1");
         boardRepository.save(board);

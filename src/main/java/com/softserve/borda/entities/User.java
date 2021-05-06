@@ -1,7 +1,10 @@
 package com.softserve.borda.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +13,8 @@ import java.util.List;
 
 @Data
 @Entity(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -33,9 +38,9 @@ public class User {
     @NotBlank
     private String lastName;
 
-//    @Lob
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    private byte[] user_photo;
+
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")

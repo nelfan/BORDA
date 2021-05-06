@@ -16,11 +16,11 @@ public class UserBoardRelation {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private User user;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Board board;
 
     @ToString.Exclude

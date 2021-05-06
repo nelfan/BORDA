@@ -3,7 +3,6 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Permission;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.repositories.PermissionRepository;
 import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
@@ -18,12 +17,10 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     
     private final UserBoardRelationRepository userBoardRelationRepository;
     private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;
 
-    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, RoleRepository roleRepository, PermissionRepository permissionRepository) {
+    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, RoleRepository roleRepository) {
         this.userBoardRelationRepository = userBoardRelationRepository;
         this.roleRepository = roleRepository;
-        this.permissionRepository = permissionRepository;
     }
 
     @Override
@@ -60,12 +57,22 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     @Override
     public List<Role> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
-        return roleRepository.getAllRolesByUserBoardRelationsContaining(userBoardRelation);
+        Optional<UserBoardRelation> userBoardRelationOptional =
+                userBoardRelationRepository.findById(userBoardRelation.getId());
+        if(userBoardRelationOptional.isPresent()) {
+            return userBoardRelationOptional.get().getRoles();
+        }
+        return List.of(); // TODO Throw a custom error?
     }
     
     @Override
     public List<Permission> getAllPermissionsByRole(Role role) {
-        return permissionRepository.getAllPermissionsByRolesContaining(role);
+        Optional<Role> roleOptional =
+                roleRepository.findById(role.getId());
+        if(roleOptional.isPresent()) {
+            return roleOptional.get().getPermissions();
+        }
+        return List.of(); // TODO Throw a custom error?
     }
 
     @Override

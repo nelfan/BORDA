@@ -4,6 +4,7 @@ import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,24 @@ class BoardListRepositoryTest {
 
     @Autowired
     BoardListRepository boardListRepository;
+
+    @Autowired
+    BoardRepository boardRepository;
     
     @Autowired
     TicketRepository ticketRepository;
 
+    Board board;
+
+    @BeforeEach
+    void boardSetUp() {
+        board = new Board();
+        board.setName("Board1");
+        boardRepository.save(board);
+    }
+
     @Test
     void shouldInsertAndReturnBoardList() {
-        Board board = new Board();
-        board.setName("Board1");
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boardList.setBoard(board);
@@ -41,8 +52,6 @@ class BoardListRepositoryTest {
 
     @Test
     void shouldInsertAndDeleteBoardList() {
-        Board board = new Board();
-        board.setName("Board1");
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boardList.setBoard(board);
@@ -53,8 +62,6 @@ class BoardListRepositoryTest {
 
     @Test
     void shouldInsertAndUpdateBoardList() {
-        Board board = new Board();
-        board.setName("Board1");
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boardList.setBoard(board);
@@ -67,8 +74,6 @@ class BoardListRepositoryTest {
 
     @Test
     void shouldSaveTicketsWithBoardList() {
-        Board board = new Board();
-        board.setName("Board1");
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boardList.setBoard(board);
@@ -94,8 +99,6 @@ class BoardListRepositoryTest {
 
     @Test
     void shouldDeleteTicketsWithBoardList() {
-        Board board = new Board();
-        board.setName("Board1");
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boardList.setBoard(board);

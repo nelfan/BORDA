@@ -11,15 +11,16 @@ import java.util.List;
 @Entity
 public class UserBoardRelation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ubr_id")
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private User user;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Board board;
 
     @ToString.Exclude

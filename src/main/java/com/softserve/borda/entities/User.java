@@ -38,10 +38,12 @@ public class User {
 //    private byte[] user_photo;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
     List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
     List<Comment> comments = new ArrayList<>();
 }

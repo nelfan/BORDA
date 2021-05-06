@@ -23,11 +23,12 @@ public class Ticket {
     private BoardList boardList;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket",
+            cascade = CascadeType.ALL)
     List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
 
 }

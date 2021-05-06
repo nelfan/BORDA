@@ -43,7 +43,6 @@ public class User {
     List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     List<Comment> comments = new ArrayList<>();
 }

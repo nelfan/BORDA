@@ -25,6 +25,7 @@ public class UserBoardRelation {
 
     @ToString.Exclude
     @ManyToMany
+    @JoinColumn(name = "role_id")
     private List<Role> roles = new ArrayList<>();
 
 }

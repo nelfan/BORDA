@@ -29,7 +29,7 @@ public class Ticket {
     List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Tag> tags = new ArrayList<>();
 
 }

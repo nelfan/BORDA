@@ -22,6 +22,7 @@ public class BoardList {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ToString.Exclude

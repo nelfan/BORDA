@@ -1,5 +1,6 @@
 package com.softserve.borda.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -16,11 +17,15 @@ public class UserBoardRelation {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    @JsonBackReference
     private User user;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false)
+    @JsonBackReference
     private Board board;
 
     @ToString.Exclude

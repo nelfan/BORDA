@@ -9,5 +9,4 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    List<Tag> getAllTagsByTicketsContaining(Ticket ticket);
 }

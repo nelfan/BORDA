@@ -1,9 +1,9 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Permission;
-import com.softserve.borda.entities.Role;
+import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.repositories.RoleRepository;
+import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,11 @@ import java.util.Optional;
 public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     
     private final UserBoardRelationRepository userBoardRelationRepository;
-    private final RoleRepository roleRepository;
+    private final BoardRoleRepository boardRoleRepository;
 
-    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, RoleRepository roleRepository) {
+    public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, BoardRoleRepository boardRoleRepository) {
         this.userBoardRelationRepository = userBoardRelationRepository;
-        this.roleRepository = roleRepository;
+        this.boardRoleRepository = boardRoleRepository;
     }
 
     @Override
@@ -56,19 +56,19 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public List<Role> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
+    public List<BoardRole> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
         Optional<UserBoardRelation> userBoardRelationOptional =
                 userBoardRelationRepository.findById(userBoardRelation.getId());
         if(userBoardRelationOptional.isPresent()) {
-            return userBoardRelationOptional.get().getRoles();
+            return userBoardRelationOptional.get().getBoardRoles();
         }
         return List.of(); // TODO Throw a custom error?
     }
     
     @Override
-    public List<Permission> getAllPermissionsByRole(Role role) {
-        Optional<Role> roleOptional =
-                roleRepository.findById(role.getId());
+    public List<Permission> getAllPermissionsByRole(BoardRole boardRole) {
+        Optional<BoardRole> roleOptional =
+                boardRoleRepository.findById(boardRole.getId());
         if(roleOptional.isPresent()) {
             return roleOptional.get().getPermissions();
         }
@@ -77,9 +77,9 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     @Override
     public List<Permission> getAllPermissionsByUserBoardRelation(UserBoardRelation userBoardRelation) {
-        List<Role> roles = getAllRolesByUserBoardRelation(userBoardRelation);
+        List<BoardRole> boardRoles = getAllRolesByUserBoardRelation(userBoardRelation);
         List<Permission> permissions = new ArrayList<>();
-        roles.forEach(role -> permissions.addAll(getAllPermissionsByRole(role)));
+        boardRoles.forEach(role -> permissions.addAll(getAllPermissionsByRole(role)));
         return permissions;
     }
 

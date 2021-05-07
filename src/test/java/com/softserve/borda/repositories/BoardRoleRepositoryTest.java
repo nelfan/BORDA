@@ -1,6 +1,6 @@
 package com.softserve.borda.repositories;
 
-import com.softserve.borda.entities.Role;
+import com.softserve.borda.entities.BoardRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,37 +14,37 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class RoleRepositoryTest {
+class BoardRoleRepositoryTest {
 
     @Autowired
-    RoleRepository roleRepository;
+    BoardRoleRepository boardRoleRepository;
 
     @Test
     void shouldInsertAndReturnRole() {
-        Role role = new Role();
-        role.setName("Role1");
-        Role expected = roleRepository.save(role);
-        Role actual = roleRepository.getOne(role.getId());
+        BoardRole boardRole = new BoardRole();
+        boardRole.setName("Role1");
+        BoardRole expected = boardRoleRepository.save(boardRole);
+        BoardRole actual = boardRoleRepository.getOne(boardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void shouldInsertAndDeleteRole() {
-        Role role = new Role();
-        role.setName("Role1");
-        roleRepository.save(role);
-        roleRepository.deleteById(role.getId());
-        Assertions.assertFalse(roleRepository.findById(role.getId()).isPresent());
+        BoardRole boardRole = new BoardRole();
+        boardRole.setName("Role1");
+        boardRoleRepository.save(boardRole);
+        boardRoleRepository.deleteById(boardRole.getId());
+        Assertions.assertFalse(boardRoleRepository.findById(boardRole.getId()).isPresent());
     }
 
     @Test
     void shouldInsertAndUpdateRole() {
-        Role role = new Role();
-        role.setName("Role1");
-        roleRepository.save(role);
-        role.setName("Role1updated");
-        Role expected = roleRepository.save(role);
-        Role actual = roleRepository.getOne(role.getId());
+        BoardRole boardRole = new BoardRole();
+        boardRole.setName("Role1");
+        boardRoleRepository.save(boardRole);
+        boardRole.setName("Role1updated");
+        BoardRole expected = boardRoleRepository.save(boardRole);
+        BoardRole actual = boardRoleRepository.getOne(boardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 }

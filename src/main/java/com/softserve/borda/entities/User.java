@@ -40,7 +40,6 @@ public class User {
     @NotBlank
     private String lastName;
 
-
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] avatar;
 

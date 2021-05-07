@@ -1,5 +1,6 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -41,4 +42,16 @@ public class UserController {
         BeanUtils.copyProperties(user, existingUser);
         return userService.createOrUpdate(existingUser);
     }
+
+    @GetMapping("{id}/boards")
+    public List<Board> getBoardsByUserId(@PathVariable Long id) {
+        return userService.getBoardsByUserId(id);
+    }
+
+    @GetMapping("{id}/boardsByRole/{boardRoleId}")
+    public List<Board> getBoardsByBoardRoleAndUserId(@PathVariable Long id,
+                                               @PathVariable Long boardRoleId) {
+        return userService.getBoardsByUserId(id);
+    }
+
 }

@@ -31,6 +31,6 @@ public class UserBoardRelation {
     @ToString.Exclude
     @ManyToMany
     @JoinColumn(name = "role_id")
-    private List<Role> roles = new ArrayList<>();
+    private List<BoardRole> boardRoles = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package com.softserve.borda.services.impl;
 
+import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserService;
@@ -25,10 +26,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()) {
-            return user.get();
-        }
-        return null; // TODO: Throw custom exception
+        // TODO: Throw custom exception
+        return user.orElse(null);
     }
 
     @Override
@@ -53,5 +52,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Board> getBoardsByUserId(Long id) {
+
+        return null; // TODO
     }
 }

@@ -17,14 +17,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class BoardRoleRepositoryTest {
 
     @Autowired
-    RoleRepository roleRepository;
+    BoardRoleRepository boardRoleRepository;
 
     @Test
     void shouldInsertAndReturnRole() {
         BoardRole boardRole = new BoardRole();
         boardRole.setName("Role1");
-        BoardRole expected = roleRepository.save(boardRole);
-        BoardRole actual = roleRepository.getOne(boardRole.getId());
+        BoardRole expected = boardRoleRepository.save(boardRole);
+        BoardRole actual = boardRoleRepository.getOne(boardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 
@@ -32,19 +32,19 @@ class BoardRoleRepositoryTest {
     void shouldInsertAndDeleteRole() {
         BoardRole boardRole = new BoardRole();
         boardRole.setName("Role1");
-        roleRepository.save(boardRole);
-        roleRepository.deleteById(boardRole.getId());
-        Assertions.assertFalse(roleRepository.findById(boardRole.getId()).isPresent());
+        boardRoleRepository.save(boardRole);
+        boardRoleRepository.deleteById(boardRole.getId());
+        Assertions.assertFalse(boardRoleRepository.findById(boardRole.getId()).isPresent());
     }
 
     @Test
     void shouldInsertAndUpdateRole() {
         BoardRole boardRole = new BoardRole();
         boardRole.setName("Role1");
-        roleRepository.save(boardRole);
+        boardRoleRepository.save(boardRole);
         boardRole.setName("Role1updated");
-        BoardRole expected = roleRepository.save(boardRole);
-        BoardRole actual = roleRepository.getOne(boardRole.getId());
+        BoardRole expected = boardRoleRepository.save(boardRole);
+        BoardRole actual = boardRoleRepository.getOne(boardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 }

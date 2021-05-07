@@ -23,7 +23,7 @@ public class BoardList {
     private String name;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+    @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     @JsonBackReference
     private Board board;

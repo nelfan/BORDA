@@ -17,8 +17,9 @@ public class UserBoardRelation {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 

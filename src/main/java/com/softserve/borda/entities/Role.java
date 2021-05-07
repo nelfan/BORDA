@@ -24,7 +24,8 @@ public class Role implements GrantedAuthority {
     @ToString.Exclude
     @ManyToMany
     @JoinColumn(name = "permission_id")
-    private transient List<Permission> permissions = new ArrayList<>();
+      
+    private List<Permission> permissions = new ArrayList<>();
 
     public Role() {
     }

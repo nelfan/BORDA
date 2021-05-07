@@ -29,13 +29,18 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> getAllTagsByTicket(Ticket ticket) {
-        return tagRepository.getAllTagsByTicketsContaining(ticket);
+        Optional<Ticket> ticketOptional =
+                ticketRepository.findById(ticket.getId());
+        if (ticketOptional.isPresent()) {
+            return ticketOptional.get().getTags();
+        }
+        return List.of(); // TODO Throw a custom error?
     }
 
     @Override
     public Tag getTagById(Long id) {
         Optional<Tag> tag = tagRepository.findById(id);
-        if(tag.isPresent()) {
+        if (tag.isPresent()) {
             return tag.get();
         }
         return null; // TODO: Throw custom exception

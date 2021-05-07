@@ -20,9 +20,11 @@ public class Comment {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 }

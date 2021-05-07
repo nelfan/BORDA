@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,10 +21,13 @@ public class BoardList {
     private String name;
 
     @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
     @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "boardList")
-    private List<Ticket> tickets;
+    @OneToMany(mappedBy = "boardList",
+            cascade = CascadeType.ALL)
+    private List<Ticket> tickets = new ArrayList<>();
 }

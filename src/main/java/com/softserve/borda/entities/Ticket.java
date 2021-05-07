@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,14 +20,16 @@ public class Ticket {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "board_list_id", nullable = false)
     private BoardList boardList;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "ticket")
-    List<Comment> comments;
+    @OneToMany(mappedBy = "ticket",
+            cascade = CascadeType.ALL)
+    List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
     @ManyToMany
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
 }

@@ -64,7 +64,7 @@ class UserServiceTest {
         expected.setFirstName("FirstName");
         expected.setLastName("LastName");
 
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(expected));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(expected));
         User actual = userService.getUserById(1L);
         assertEquals(actual, expected);
         verify(userRepository, times(1)).findById(1L);

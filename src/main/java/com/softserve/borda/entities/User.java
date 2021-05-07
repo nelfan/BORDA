@@ -3,6 +3,7 @@ package com.softserve.borda.entities;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -34,9 +35,10 @@ public class User {
     @NotBlank
     private String lastName;
 
-//    @Lob
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    private byte[] user_photo;
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    @Column(name = "user_photo")
+    private Byte[] userPhoto;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",

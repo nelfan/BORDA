@@ -1,7 +1,6 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Comment;
-import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.repositories.CommentRepository;
@@ -28,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Tag> getAllCommentsByTicketId(Long ticketId) {
+    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
         return commentRepository.getAllCommentsByTicketId(ticketId);
     }
 

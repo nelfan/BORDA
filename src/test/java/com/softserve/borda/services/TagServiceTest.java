@@ -40,6 +40,25 @@ class TagServiceTest {
     }
 
     @Test
+    void shouldGetAllTags() {
+        List<Tag> tags = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setId((long) i);
+            tag.setText("tagtext");
+            tag.setColor(Tag.Color.GREEN);
+            tags.add(tag);
+        }
+
+        when(tagRepository.findAll()).thenReturn(tags);
+
+        List<Tag> tagList = tagService.getAll();
+
+        assertEquals(3, tagList.size());
+        verify(tagRepository, times(1)).findAll();
+    }
+
+    @Test
     void shouldGetAllTagsByTicketId() {
         List<Tag> tags = new ArrayList<>();
         Ticket ticket = new Ticket();
@@ -59,6 +78,7 @@ class TagServiceTest {
         List<Tag> tagList = tagService.getAllTagsByTicket(ticket);
 
         assertEquals(3, tagList.size());
+        assertEquals(tags, tagList);
         verify(ticketRepository, times(1)).findById(1L);
     }
 

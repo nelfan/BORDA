@@ -26,6 +26,10 @@ public class BoardRole {
     @NotBlank
     private String name;
 
+    @Enumerated
+    @Column(unique = true)
+    private BoardRoles boardRole;
+
     @ToString.Exclude
     @ManyToMany
     @JoinColumn(name = "permission_id")
@@ -38,4 +42,5 @@ public class BoardRole {
     public BoardRole(@NotBlank String name) {
         this.name = name;
     }
+
 }

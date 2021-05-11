@@ -1,7 +1,10 @@
 package com.softserve.borda.entities;
 
+
+import lombok.AllArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 
@@ -12,6 +15,8 @@ import java.util.List;
 
 @Data
 @Entity(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -35,10 +40,8 @@ public class User {
     @NotBlank
     private String lastName;
 
-    @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "user_photo")
-    private Byte[] userPhoto;
+    private byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",

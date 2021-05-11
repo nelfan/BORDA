@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
                 newUser.setEmail(user.getEmail());
                 newUser.setFirstName(user.getFirstName());
                 newUser.setLastName(user.getLastName());
-                newUser.setUserPhoto(user.getUserPhoto());
+                newUser.setAvatar(user.getAvatar());
                 return userRepository.save(newUser);
             }
         }
@@ -56,7 +57,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Board> getBoardsByUserId(Long id) {
-
-        return null; // TODO
+       return userRepository.findById(id).get().getUserBoardRelations().stream().map(
+                i -> i.getBoard()
+        ).collect(Collectors.toList());
     }
 }

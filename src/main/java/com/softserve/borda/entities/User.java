@@ -8,7 +8,9 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "users")
@@ -35,6 +37,8 @@ public class User {
     @NotBlank
     private String lastName;
 
+    private boolean enabled;
+
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "user_photo")
@@ -45,6 +49,14 @@ public class User {
             cascade = CascadeType.ALL)
     @JsonManagedReference
     List<UserBoardRelation> userBoardRelations = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")

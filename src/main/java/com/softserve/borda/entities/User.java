@@ -41,8 +41,8 @@ public class User {
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "user_photo")
-    private Byte[] userPhoto;
+    @Column(name = "avatar")
+    private Byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",

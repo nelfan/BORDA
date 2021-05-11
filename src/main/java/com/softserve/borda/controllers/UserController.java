@@ -1,30 +1,47 @@
 package com.softserve.borda.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+//@SessionAttributes("user")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private User user = null;
+
+
+    @JsonIgnore
+    @ModelAttribute("user")
+    public User getUser(){
+        if(userService!=null) user = userService.getUserById(1L);
+        return user;
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAll();
     }
 
-    @GetMapping("{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+
+    @GetMapping("user")
+    public User getUser(@ModelAttribute("user") User user, HttpServletRequest request,
+                        SessionStatus sessionStatus) {
+        return user;
     }
+
 
     @PostMapping
     public User createUser(@RequestBody final User user) {
@@ -43,9 +60,10 @@ public class UserController {
         return userService.createOrUpdate(existingUser);
     }
 
-    @GetMapping("{id}/boards")
-    public List<Board> getBoardsByUserId(@PathVariable Long id) {
-        return userService.getBoardsByUserId(id);
+    @GetMapping("user/boards")
+    public List<Board> getBoardsByUserId(@ModelAttribute("user") User user, HttpServletRequest request,
+                                         SessionStatus sessionStatus) {
+        return userService.getBoardsByUserId(user.getId());
     }
 
     @GetMapping("{id}/boardsByRole/{boardRoleId}")

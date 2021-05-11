@@ -1,0 +1,71 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+html,
+body {
+	height: 100%;
+	scrollbar-width: thin;
+}
+main{
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    min-height: 90%;
+    padding: 1em;
+}
+.personal-info{
+    display: flex;
+    flex-direction: row;
+    min-height: 40vh;
+    max-height: 40vh;
+    padding: 1.5em;
+    margin: 1em;
+}
+.data-container{
+width:40em;
+}
+.data-container>div{
+margin-left:1em;
+}
+.boards-container{
+    display: flex;
+    flex-direction: row;
+    min-height: 30vh;
+    max-height: 30vh;
+    width: 95%;
+    overflow-x: scroll;
+    justify-content: flex-start;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    align-self: center;
+}
+.boards-info{
+    width: 15vw;
+    height: 80%;
+    margin: 1em;
+    border: 2px solid #554DD8;
+    border-radius: 5px;
+    padding: 15px;
+}
+footer {
+	flex: 0 0 auto;
+}
+.image-container{
+    width: 20%;
+    margin: 1em;
+    overflow:hidden;
+}
+
+.image-container>img{
+    width:100%;
+    position:relative;
+}
+
+#user{
+line-height: 2.5;
+padding:0.5%;
+display:flex;
+align-items:center;
+padding-left:2.5%;
+}

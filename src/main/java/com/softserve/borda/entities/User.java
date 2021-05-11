@@ -37,7 +37,7 @@ public class User {
     @NotBlank
     private String lastName;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")

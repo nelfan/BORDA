@@ -75,7 +75,7 @@ public class BordaApplication {
             boards.add(board);
         }
         userService.getUserById(1L);
-        userController.getUser();
+        userController.getUserById(1L);
     }
 
     public static void main(String[] args) {

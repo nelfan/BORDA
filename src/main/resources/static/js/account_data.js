@@ -1,35 +1,65 @@
-var ourRequest = new XMLHttpRequest();
+class User{
+username = "";
+email = "";
+lastName = "";
+firstName = "";
+avatar = "";
+userBoardRelations: [];
+comments: [];
+constructor(username, email, lastName, firstName, avatar) {
+    this.username = username;
+    this.email = email;
+    this.lastName = lastName;
+    this.firstName = firstName;
+    this.avatar = avatar;
+  }
+}
+var userRequest = new XMLHttpRequest();
+var boardRequest = new XMLHttpRequest();
 var container = document.getElementById("user");
-var idToChange = 2;
+var current_user;
 
 window.onload = function() {
-ourRequest.open('GET', '/users/'+idToChange);
-//TO DO: change url to url of session user
-ourRequest.send();
+userRequest.open('GET', '/users/user');
+userRequest.send();
+boardRequest.open('GET', '/users/user/boards');
+boardRequest.send();
 };
-ourRequest.onload = function() {
-    if (ourRequest.status >= 200 && ourRequest.status < 400) {
-      var user = JSON.parse(ourRequest.responseText);
-      render(user);
+userRequest.onload = function() {
+    if (userRequest.status >= 200 && userRequest.status < 400) {
+      var user = JSON.parse(userRequest.responseText);
+      renderUser(user);
     } else {
-      console.log("Bad connection");
+      console.log("Fail connection (/users/user)");
     }
   }
-function render(data){
-    document.getElementById("username").insertAdjacentHTML('afterbegin', "username: "+data.username);
-    document.getElementById("email").insertAdjacentHTML('afterbegin', "e-mail: "+data.email);
-    document.getElementById("lastName").insertAdjacentHTML('afterbegin', "first name: "+data.firstName);
-    document.getElementById("firstName").insertAdjacentHTML('afterbegin', "last name: "+data.lastName);
+function renderUser(data){
+    document.getElementById("username").insertAdjacentHTML('afterbegin', "username: <input id = 'usernameinp' type='text' value = '"+data.username+"' />");
+    document.getElementById("email").insertAdjacentHTML('afterbegin', "e-mail: <input id = 'emailinp' type='text' value = '"+data.email+"' />");
+    document.getElementById("lastName").insertAdjacentHTML('afterbegin', "first name: <input id = 'fnameinp' type='text' value = '"+data.firstName+"' />");
+    document.getElementById("firstName").insertAdjacentHTML('afterbegin', "last name: <input id = 'lnameinp' type='text' value = '"+data.lastName+"' />");
     var img = '';
     if(data.avatar!=null)
     img = '<img  src = "data:image/jpeg;base64, '+data.avatar+'"/>';
     else img = '<img src = "/img/blank_avatar.jpg"/>';
-
+    current_user = new User(data.username, data.email, data.lastName, data.firstName, data.avatar);
     document.getElementById("image-container").insertAdjacentHTML('afterbegin', img);
+}
 
+boardRequest.onload = function(){
+if (boardRequest.status >= 200 && boardRequest.status < 400) {
+      var boards = JSON.parse(boardRequest.responseText);
+      renderBoards(boards);
+    } else {
+      console.log("Fail connection (/users/user/boards)");
+    }
+}
 
+function renderBoards(data){
     var boardsContainer = document.getElementById("boards-container");
-    //TO DO: конкретные борды добавить в лист, обрачивая тегом <div class="boards-info">1</div>
+    for(var i = 0; i<data.length; i++){
+        boardsContainer.insertAdjacentHTML('beforeend', '<div class="boards-info">'+data[i].name+'</div>');
+    }
 
-
+    //TO DO: конкретные борды добавить в лист, обрачивая тегом
 }

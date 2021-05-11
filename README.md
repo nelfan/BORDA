@@ -5,3 +5,8 @@ Implementation of own bug tracking system
 
 [Kanban Development Board](https://trello.com/b/THEiKP1f/kanban-development-board)
 
+[Use case 1](https://imgur.com/sEg2ryq)
+
+[Use case 2](https://imgur.com/MNwYFjK)
+
+

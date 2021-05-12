@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 * {
 	margin: 0;
 	padding: 0;
@@ -24,6 +25,9 @@ main{
 }
 .data-container{
 width:40em;
+}
+.template-container{
+width:8em;
 }
 .data-container>div{
 margin-left:1em;
@@ -68,4 +72,13 @@ padding:0.5%;
 display:flex;
 align-items:center;
 padding-left:2.5%;
+font-family: 'Roboto', sans-serif;
+font-size: 14pt;
+}
+
+.field{
+    border: none;
+    border-bottom: 2px solid #554DD8;
+    padding-left: 5%;
+    font-size: 14pt;
 }

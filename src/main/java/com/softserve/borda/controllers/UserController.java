@@ -46,6 +46,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody final User user) {
+        System.out.println(user);
         return userService.createOrUpdate(user);
     }
 
@@ -61,6 +62,10 @@ public class UserController {
         return userService.createOrUpdate(existingUser);
     }
 
+    @GetMapping("{id}/boards")
+    public List<Board> getBoardsByUserId(@PathVariable Long id) {
+        return userService.getBoardsByUserId(id);
+    }
     @GetMapping("user/boards")
     public List<Board> getBoardsByUserId(@ModelAttribute("user") User user, HttpServletRequest request,
                                          SessionStatus sessionStatus) {

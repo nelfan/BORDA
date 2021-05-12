@@ -61,4 +61,10 @@ public class UserServiceImpl implements UserService {
                 i -> i.getBoard()
         ).collect(Collectors.toList());
     }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
+        // TODO Throw custom exception
+    }
 }

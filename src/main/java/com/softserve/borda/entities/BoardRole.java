@@ -38,4 +38,5 @@ public class BoardRole {
     public BoardRole(@NotBlank String name) {
         this.name = name;
     }
+
 }

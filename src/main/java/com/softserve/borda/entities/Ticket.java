@@ -33,9 +33,8 @@ public class Ticket {
     List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany
+    @ManyToMany
     @JoinColumn(name = "tag_id")
-    @JsonManagedReference
     private List<Tag> tags = new ArrayList<>();
 
 }

@@ -3,7 +3,7 @@ package com.softserve.borda.dto;
 import lombok.Data;
 
 @Data
-public class UserPostDTO {
+public class CreateUserDTO {
 
     private String username;
     private String password;

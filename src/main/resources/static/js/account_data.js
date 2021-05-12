@@ -89,11 +89,21 @@ postData();
 
 function postData(){
 alert("1");
-boardPost.open("POST", '/users', true);
+/*boardPost.open("POST", '/users', true);
 boardPost.setRequestHeader("Content-Type", "application/json");
-//var data =
-boardPost.send(JSON.stringify(current_user));
+var data = {
+    id = current_user.id;
+    username = current_user.username;
+    email = current_user.email;
+    lastName = current_user.lastName;
+    firstName = current_user.firstName;
+    avatar = current_user.avatar;
+    userBoardRelations = current_user.userBoardRelations;
+    comments = current_user.comments;
 }
+boardPost.send(JSON.stringify(data));*/
+}
+/*
 boardPost.onload = function(){
 alert(boardPost.status);
-}
+}*/

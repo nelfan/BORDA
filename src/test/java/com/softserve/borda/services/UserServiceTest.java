@@ -29,13 +29,10 @@ class UserServiceTest {
     @InjectMocks
     UserServiceImpl userService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository, passwordEncoder);
+        userService = new UserServiceImpl(userRepository);
     }
 
     @Test

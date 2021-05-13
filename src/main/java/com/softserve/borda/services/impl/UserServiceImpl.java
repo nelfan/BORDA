@@ -15,11 +15,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createOrUpdate(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getId() != null) {
             Optional<User> userOptional = userRepository.findById(user.getId());
 
@@ -70,15 +67,5 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
         // TODO Throw custom exception
-    }
-
-    @Override
-    public User findByLoginAndPassword(String login, String password) {
-        User user = getUserByUsername(login);
-        if (user != null &&
-                (passwordEncoder.matches(password, user.getPassword()))) {
-            return user;
-        }
-        return null;
     }
 }

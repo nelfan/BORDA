@@ -40,7 +40,7 @@ function renderBoard(data) {
             || data[i].userBoardRelations[0].boardRoles[0].name === "owner"){
             var boardsContainer = document.getElementById("own-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
-                '<div class="boards-info"><p>'+data[i].name+'</p></div>');
+                '<a class="boards-info" href="'+data[i].name+'"><p>'+data[i].name+'</p></a>');
         } else {
             var boardsContainer = document.getElementById("collab-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',

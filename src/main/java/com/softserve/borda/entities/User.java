@@ -42,7 +42,7 @@ public class User {
     private boolean enabled = true;
 
     @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] avatar;
+    private Byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",
@@ -50,7 +50,7 @@ public class User {
     @JsonManagedReference
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

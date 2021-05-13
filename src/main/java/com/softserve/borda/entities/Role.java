@@ -22,6 +22,9 @@ public class Role {
     @NotBlank
     private String name;
 
+    @NotBlank
+    private Roles role;
+
     public Role() {
     }
 

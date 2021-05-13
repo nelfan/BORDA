@@ -48,7 +48,7 @@ public class User {
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL)
     @JsonManagedReference
-    List<UserBoardRelation> userBoardRelations = new ArrayList<>();
+    private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -61,5 +61,5 @@ public class User {
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
     @JsonManagedReference
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 }

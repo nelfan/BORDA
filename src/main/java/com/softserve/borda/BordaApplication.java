@@ -54,11 +54,9 @@ public class BordaApplication {
             userRepository.save(user);
             users.add(user);
         }
-        BoardRole owner = new BoardRole();
-        owner.setName("owner");
+        BoardRole owner = new BoardRole(BoardRole.BoardRoles.OWNER.name());
         boardRoleRepository.save(owner);
-        BoardRole collaborator = new BoardRole();
-        collaborator.setName("collaborator");
+        BoardRole collaborator = new BoardRole(BoardRole.BoardRoles.COLLABORATOR.name());
         boardRoleRepository.save(collaborator);
         for(int i = 0; i < 3; i++) {
             Board board = new Board();

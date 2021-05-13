@@ -8,7 +8,6 @@ import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.UserBoardRelationService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -18,11 +17,14 @@ import java.util.List;
 @RequestMapping("/boards")
 public class BoardController {
 
-    @Autowired
-    private BoardService boardService;
+    private final BoardService boardService;
 
-    @Autowired
-    private UserBoardRelationService userBoardRelationService;
+    private final UserBoardRelationService userBoardRelationService;
+
+    public BoardController(BoardService boardService, UserBoardRelationService userBoardRelationService) {
+        this.boardService = boardService;
+        this.userBoardRelationService = userBoardRelationService;
+    }
 
     @GetMapping
     public List<Board> getAllBoards() {

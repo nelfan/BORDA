@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
 * {
 	margin: 0;
 	padding: 0;
@@ -5,7 +6,23 @@
 html,
 body {
 	height: 100%;
-	scrollbar-width: thin;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+a:hover {
+    text-decoration: none;
+   }
+::-webkit-scrollbar {
+    width: 24px;
+    height: 8px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #554DD8;
+    border-radius: 9em;
 }
 main{
     display: flex;
@@ -25,6 +42,12 @@ main{
 .data-container{
 width:40em;
 }
+.template-container{
+width:8em;
+}
+.settings-container{
+width:2em;
+}
 .data-container>div{
 margin-left:1em;
 }
@@ -35,18 +58,24 @@ margin-left:1em;
     max-height: 30vh;
     width: 95%;
     overflow-x: scroll;
+    overflow-y: hidden;
     justify-content: flex-start;
     padding-bottom: 1em;
     padding-top: 1em;
     align-self: center;
 }
 .boards-info{
-    width: 15vw;
-    height: 80%;
+    min-width: 12vw;
+    max-width: 12vw;
+    min-height: 18vh;
+    max-height: 18vh;
     margin: 1em;
     border: 2px solid #554DD8;
     border-radius: 5px;
     padding: 15px;
+    font-size: 1.75em;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
 }
 footer {
 	flex: 0 0 auto;
@@ -68,4 +97,29 @@ padding:0.5%;
 display:flex;
 align-items:center;
 padding-left:2.5%;
+font-family: 'Roboto', sans-serif;
+font-size: 14pt;
+}
+#avatar:hover{
+cursor:pointer;
+}
+.field{
+    border: 0px solid;
+    width:95%;
+    border-bottom: 2px solid #554DD8;
+    padding-left: 5%;
+    font-size: 14pt;
+    disabled:"disabled";
+    background:transparent;
+}
+.field:focus{
+    outline: none;
+}
+.field:hover{
+box-shadow: 0 16px 32px -8px #554DD8;
+}
+
+.boards-info:hover{
+cursor:pointer;
+border: 2px solid #c5dedd;
 }

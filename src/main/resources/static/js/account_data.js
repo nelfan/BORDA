@@ -1,12 +1,13 @@
 class User{
+id = 0;
 username = "";
 email = "";
 lastName = "";
 firstName = "";
 avatar = "";
-userBoardRelations: [];
-comments: [];
-constructor(username, email, lastName, firstName, avatar) {
+
+constructor(id, username, email, lastName, firstName, avatar) {
+    this.id = id;
     this.username = username;
     this.email = email;
     this.lastName = lastName;
@@ -16,6 +17,7 @@ constructor(username, email, lastName, firstName, avatar) {
 }
 var userRequest = new XMLHttpRequest();
 var boardRequest = new XMLHttpRequest();
+var boardPost = new XMLHttpRequest();
 var container = document.getElementById("user");
 var current_user;
 
@@ -25,7 +27,7 @@ userRequest.send();
 boardRequest.open('GET', '/users/user/boards');
 boardRequest.send();
 };
-userRequest.onload = function() {
+userRequest.onload = function()  {
     if (userRequest.status >= 200 && userRequest.status < 400) {
       var user = JSON.parse(userRequest.responseText);
       renderUser(user);
@@ -33,19 +35,16 @@ userRequest.onload = function() {
       console.log("Fail connection (/users/user)");
     }
   }
-function renderUser(data){
-    document.getElementById("username").insertAdjacentHTML('afterbegin', "username: <input id = 'usernameinp' type='text' value = '"+data.username+"' />");
-    document.getElementById("email").insertAdjacentHTML('afterbegin', "e-mail: <input id = 'emailinp' type='text' value = '"+data.email+"' />");
-    document.getElementById("lastName").insertAdjacentHTML('afterbegin', "first name: <input id = 'fnameinp' type='text' value = '"+data.firstName+"' />");
-    document.getElementById("firstName").insertAdjacentHTML('afterbegin', "last name: <input id = 'lnameinp' type='text' value = '"+data.lastName+"' />");
-    var img = '';
-    if(data.avatar!=null)
-    img = '<img  src = "data:image/jpeg;base64, '+data.avatar+'"/>';
-    else img = '<img src = "/img/blank_avatar.jpg"/>';
-    current_user = new User(data.username, data.email, data.lastName, data.firstName, data.avatar);
-    document.getElementById("image-container").insertAdjacentHTML('afterbegin', img);
-}
 
+function renderUser(data){
+    document.getElementById("username").value = data.username;
+    document.getElementById("email").value = data.email;
+    document.getElementById("firstName").value = data.firstName;
+    document.getElementById("lastName").value = data.lastName;
+    if(data.avatar!=null)
+    document.getElementById("avatar").src = "data:image/jpeg;base64, "+data.avatar;
+    current_user = new User(data.id, data.username, data.email, data.lastName, data.firstName, data.avatar);
+}
 boardRequest.onload = function(){
 if (boardRequest.status >= 200 && boardRequest.status < 400) {
       var boards = JSON.parse(boardRequest.responseText);
@@ -58,8 +57,71 @@ if (boardRequest.status >= 200 && boardRequest.status < 400) {
 function renderBoards(data){
     var boardsContainer = document.getElementById("boards-container");
     for(var i = 0; i<data.length; i++){
-        boardsContainer.insertAdjacentHTML('beforeend', '<div class="boards-info">'+data[i].name+'</div>');
+        boardsContainer.insertAdjacentHTML('beforeend', '<a href = "/boards/'+data[i].id+'"><div class="boards-info">'+data[i].name+'</div></a>');
     }
+}
 
-    //TO DO: конкретные борды добавить в лист, обрачивая тегом
+document.getElementById("username").labels[0].onclick = function(){
+document.getElementById("username").disabled = false;
+}
+document.getElementById("avatar").onclick = function(){
+document.getElementById('file-input').click();
+}
+document.getElementById("email").labels[0].onclick = function(){
+document.getElementById("email").disabled = false;
+}
+
+document.getElementById("firstName").labels[0].onclick = function(){
+document.getElementById("firstName").disabled = false;
+}
+
+document.getElementById("lastName").labels[0].onclick = function(){
+document.getElementById("lastName").disabled = false;
+}
+
+document.getElementById("firstName").onchange = function(){
+current_user.firstName = this.value;
+postData();
+document.getElementById("firstName").disabled = true;
+}
+document.getElementById("email").onchange = function(){
+current_user.email = this.value;
+postData();
+document.getElementById("email").disabled = true;
+}
+document.getElementById("lastName").onchange = function(){
+current_user.lastName = this.value;
+postData();
+document.getElementById("lastName").disabled = true;
+}
+
+document.getElementById("username").onchange = function(){
+current_user.username = this.value;
+postData();
+document.getElementById("username").disabled = true;
+}
+function postData(){
+boardPost.open("POST", '/users/update', true);
+boardPost.setRequestHeader("Content-Type", "application/json");
+var data = {
+        username: current_user.username,
+        email: current_user.email,
+        firstName: current_user.firstName,
+        lastName: current_user.lastName,
+        avatar: current_user.avatar,
+}
+boardPost.send(JSON.stringify(data));
+}
+
+document.getElementById("file-input").onchange  = e => {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.onloadend = function() {
+
+    var data=(reader.result).split(',')[1];
+    current_user.avatar = data;
+    document.getElementById("avatar").src = "data:image/jpeg;base64, "+data;
+    postData();
+  }
+  reader.readAsDataURL(file);
 }

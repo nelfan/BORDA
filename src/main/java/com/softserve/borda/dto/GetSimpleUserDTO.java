@@ -10,5 +10,6 @@ public class GetSimpleUserDTO {
     private String email;
     private String firstName;
     private String lastName;
+    private byte[] avatar;
 
 }

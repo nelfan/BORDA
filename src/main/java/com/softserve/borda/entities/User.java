@@ -41,10 +41,8 @@ public class User {
 
     private boolean enabled = true;
 
-    @Lob
     @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "avatar")
-    private Byte[] avatar;
+    private byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",

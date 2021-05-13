@@ -1,6 +1,6 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.GetSimpleUserDTO;
+import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.Role;
@@ -30,9 +30,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<GetSimpleUserDTO> getAllUsers() {
+    public List<UserSimpleDTO> getAllUsers() {
         return userService.getAll().stream()
-                .map((user) -> modelMapper.map(user, GetSimpleUserDTO.class))
+                .map((user) -> modelMapper.map(user, UserSimpleDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -45,19 +45,19 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public GetSimpleUserDTO getUserById(@PathVariable Long id) {
+    public UserSimpleDTO getUserById(@PathVariable Long id) {
         return modelMapper.map(
                 userService.getUserById(id),
-                GetSimpleUserDTO.class);
+                UserSimpleDTO.class);
     }
 
     @PostMapping
-    public GetSimpleUserDTO createUser(@RequestBody final CreateUserDTO userDTO) {
+    public UserSimpleDTO createUser(@RequestBody final CreateUserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         user.getRoles().add(new Role(Role.Roles.USER.name()));
         return modelMapper.map(
                 userService.createOrUpdate(user),
-                GetSimpleUserDTO.class);
+                UserSimpleDTO.class);
     }
 
     @DeleteMapping(value = "{id}")
@@ -66,12 +66,12 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public GetSimpleUserDTO update(@PathVariable Long id, @RequestBody User user) {
+    public UserSimpleDTO update(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userService.getUserById(id);
         BeanUtils.copyProperties(user, existingUser);
         return modelMapper.map(
                 userService.createOrUpdate(existingUser),
-                GetSimpleUserDTO.class);
+                UserSimpleDTO.class);
     }
 
     @GetMapping("user/boards")

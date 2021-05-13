@@ -1,11 +1,10 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.BoardDTO;
+import com.softserve.borda.dto.CreateBoardDTO;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.UserBoardRelationService;
 import org.springframework.beans.BeanUtils;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/boards")
@@ -37,7 +35,7 @@ public class BoardController {
     }
 
     @PostMapping
-    public Board createBoard(@RequestBody final BoardDTO boardDTO) {
+    public Board createBoard(@RequestBody final CreateBoardDTO boardDTO) {
         Board board = new Board();
         board.setName(boardDTO.getName());
 

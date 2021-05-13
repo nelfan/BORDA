@@ -10,12 +10,12 @@
     <script type="module" src="/js/account_data.js"></script>
     <link rel="icon" href="data:;base64,=">
 </head>
-<header></header>
+<include class ="header" src="/fragments/header.html"></include>
 <main>
     <div class="personal-info" id="user">
         <div class="image-container" id="image-container">
             <input id="file-input" type="file" style="display: none;" />
-            <img id = "avatar" src = "/img/blank_avatar.jpg" accept=".jpg, .jpeg, .png"/>
+            <img id = "avatar" src = "/images/blank_avatar.jpg" accept=".jpg, .jpeg, .png"/>
         </div>
         <div class="settings-container">
             <div><label for="username">&#9881;</label></div>
@@ -40,6 +40,6 @@
     <div class="boards-container" id = "boards-container">
     </div>
 </main>
-<footer></footer>
+<include class ="footer" src="/fragments/footer.html"></include>
 </body>
 </html>

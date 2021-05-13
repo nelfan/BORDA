@@ -43,7 +43,7 @@
                 <div class="tab-content">
                     <div id="signup" class="signUpContent">   
                         <h1>Sign Up for Free</h1>
-                        <form action="#" method="POST"">
+                        <form action="/register" method="POST">
                             <div class="input_fields">
                                 <label for="fname">First Name</label>
                                 <input type="text" id="fname" autocomplete="off" name="firstname" placeholder="Enter name..">
@@ -60,7 +60,7 @@
                                     <i class="far fa-eye" onclick="checkPass(this)" id="togglePassword"></i>
                                 </div>
                                 <div class="signUp_btn">
-                                    <input class="submit_signUp" type="submit" value="Submit">
+                                    <input class="submit_signUp" id = "signUp" type="submit" value="Submit">
                                 </div>
                             </div>  
                         </form>

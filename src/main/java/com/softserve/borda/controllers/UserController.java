@@ -2,12 +2,15 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.GetSimpleUserDTO;
 import com.softserve.borda.dto.CreateUserDTO;
+import com.softserve.borda.dto.UpdateUserDTO;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -20,13 +23,19 @@ import java.util.stream.Collectors;
 //@SessionAttributes("user")
 public class UserController {
 
-    private final ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-        modelMapper = new ModelMapper();
+    private User user = null;
+
+    @ModelAttribute("user")
+    public User getUser() {
+        if(userService!=null)
+        user = userService.getUserById(1L);
+        return user;
     }
 
     @GetMapping
@@ -38,10 +47,10 @@ public class UserController {
 
 
     @GetMapping("user")
-    public User getUser(@ModelAttribute("user") User user,
-                        HttpServletRequest request,
-                        SessionStatus sessionStatus) {
-        return user;
+    public GetSimpleUserDTO getUser(@ModelAttribute("user") User user) {
+        return modelMapper.map(
+                userService.getUserById(1L),
+                GetSimpleUserDTO.class);
     }
 
     @GetMapping("{id}")
@@ -73,7 +82,14 @@ public class UserController {
                 userService.createOrUpdate(existingUser),
                 GetSimpleUserDTO.class);
     }
-
+    @PostMapping("update")
+    public GetSimpleUserDTO updateUser(@RequestBody final UpdateUserDTO userDTO) {
+        modelMapper.map(userDTO, user);
+        userService.createOrUpdate(user);
+        return modelMapper.map(
+                userService.createOrUpdate(user),
+                GetSimpleUserDTO.class);
+    }
     @GetMapping("user/boards")
     public List<Board> getBoardsByUser(@ModelAttribute("user") User user, HttpServletRequest request,
                                        SessionStatus sessionStatus) {

@@ -35,7 +35,7 @@ public class AuthController {
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
         userService.createOrUpdate(user);
-        return "OK";
+        return "redirect:users/user";
     }
 
     @PostMapping("/auth")

@@ -5,18 +5,14 @@ email = "";
 lastName = "";
 firstName = "";
 avatar = "";
-userBoardRelations = [];
-comments = [];
 
-constructor(id, username, email, lastName, firstName, avatar, userBoardRelations, comments) {
+constructor(id, username, email, lastName, firstName, avatar) {
     this.id = id;
     this.username = username;
     this.email = email;
     this.lastName = lastName;
     this.firstName = firstName;
     this.avatar = avatar;
-    this.userBoardRelations = userBoardRelations;
-    this.comments = comments;
   }
 }
 var userRequest = new XMLHttpRequest();
@@ -45,14 +41,9 @@ function renderUser(data){
     document.getElementById("email").value = data.email;
     document.getElementById("firstName").value = data.firstName;
     document.getElementById("lastName").value = data.lastName;
-
-    var img = '';
     if(data.avatar!=null)
-    img = '<img  src = "data:image/jpeg;base64, '+data.avatar+'"/>';
-    else img = '<img src = "/img/blank_avatar.jpg"/>';
-
-    current_user = new User(data.username, data.email, data.lastName, data.firstName, data.avatar, data.userBoardRelations, data.comments);
-    document.getElementById("image-container").insertAdjacentHTML('afterbegin', img);
+    document.getElementById("avatar").src = "data:image/jpeg;base64, "+data.avatar;
+    current_user = new User(data.id, data.username, data.email, data.lastName, data.firstName, data.avatar);
 }
 boardRequest.onload = function(){
 if (boardRequest.status >= 200 && boardRequest.status < 400) {
@@ -66,44 +57,71 @@ if (boardRequest.status >= 200 && boardRequest.status < 400) {
 function renderBoards(data){
     var boardsContainer = document.getElementById("boards-container");
     for(var i = 0; i<data.length; i++){
-        boardsContainer.insertAdjacentHTML('beforeend', '<div class="boards-info">'+data[i].name+'</div>');
+        boardsContainer.insertAdjacentHTML('beforeend', '<a href = "/boards/'+data[i].id+'"><div class="boards-info">'+data[i].name+'</div></a>');
     }
+}
+
+document.getElementById("username").labels[0].onclick = function(){
+document.getElementById("username").disabled = false;
+}
+document.getElementById("avatar").onclick = function(){
+document.getElementById('file-input').click();
+}
+document.getElementById("email").labels[0].onclick = function(){
+document.getElementById("email").disabled = false;
+}
+
+document.getElementById("firstName").labels[0].onclick = function(){
+document.getElementById("firstName").disabled = false;
+}
+
+document.getElementById("lastName").labels[0].onclick = function(){
+document.getElementById("lastName").disabled = false;
+}
+
+document.getElementById("firstName").onchange = function(){
+current_user.firstName = this.value;
+postData();
+document.getElementById("firstName").disabled = true;
+}
+document.getElementById("email").onchange = function(){
+current_user.email = this.value;
+postData();
+document.getElementById("email").disabled = true;
+}
+document.getElementById("lastName").onchange = function(){
+current_user.lastName = this.value;
+postData();
+document.getElementById("lastName").disabled = true;
 }
 
 document.getElementById("username").onchange = function(){
 current_user.username = this.value;
 postData();
+document.getElementById("username").disabled = true;
 }
-document.getElementById("firstName").onchange = function(){
-current_user.firstName = this.value;
-postData();
-}
-document.getElementById("email").onchange = function(){
-current_user.email = this.value;
-postData();
-}
-document.getElementById("lastName").onchange = function(){
-current_user.lastName = this.value;
-postData();
-}
-
 function postData(){
-alert("1");
-/*boardPost.open("POST", '/users', true);
+boardPost.open("POST", '/users/update', true);
 boardPost.setRequestHeader("Content-Type", "application/json");
 var data = {
-    id = current_user.id;
-    username = current_user.username;
-    email = current_user.email;
-    lastName = current_user.lastName;
-    firstName = current_user.firstName;
-    avatar = current_user.avatar;
-    userBoardRelations = current_user.userBoardRelations;
-    comments = current_user.comments;
+        username: current_user.username,
+        email: current_user.email,
+        firstName: current_user.firstName,
+        lastName: current_user.lastName,
+        avatar: current_user.avatar,
 }
-boardPost.send(JSON.stringify(data));*/
+boardPost.send(JSON.stringify(data));
 }
-/*
-boardPost.onload = function(){
-alert(boardPost.status);
-}*/
+
+document.getElementById("file-input").onchange  = e => {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.onloadend = function() {
+
+    var data=(reader.result).split(',')[1];
+    current_user.avatar = data;
+    document.getElementById("avatar").src = "data:image/jpeg;base64, "+data;
+    postData();
+  }
+  reader.readAsDataURL(file);
+}

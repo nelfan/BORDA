@@ -1,8 +1,11 @@
 package com.softserve.borda.controllers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.GetSimpleUserDTO;
+import com.softserve.borda.dto.UpdateUserDTO;
 import com.softserve.borda.entities.Board;
+import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -16,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@SessionAttributes("user")
+//@SessionAttributes("user")
 public class UserController {
 
     @Autowired
@@ -41,17 +44,30 @@ public class UserController {
 
 
     @GetMapping("user")
-    public GetSimpleUserDTO getUser(@ModelAttribute("user") User user, HttpServletRequest request,
-                                    SessionStatus sessionStatus) {
+    public GetSimpleUserDTO getUser(@ModelAttribute("user") User user) {
         return modelMapper.map(
                 user,
                 GetSimpleUserDTO.class);
     }
 
+    @PostMapping("update")
+    public GetSimpleUserDTO updateUser(@RequestBody final UpdateUserDTO userDTO) {
+        modelMapper.map(userDTO, user);
+        userService.createOrUpdate(user);
+        return modelMapper.map(
+                userService.createOrUpdate(user),
+                GetSimpleUserDTO.class);
+    }
+
 
     @PostMapping
-    public User createUser(@RequestBody final User user) {
-        return userService.createOrUpdate(user);
+    public GetSimpleUserDTO createUser(@RequestBody final CreateUserDTO userDTO) {
+        user = modelMapper.map(userDTO, User.class);
+        user.getRoles().add(new Role(Role.Roles.USER.name()));
+        userService.createOrUpdate(user);
+        return modelMapper.map(
+                userService.createOrUpdate(user),
+                GetSimpleUserDTO.class);
     }
 
     @DeleteMapping(value = "{id}")
@@ -67,8 +83,7 @@ public class UserController {
     }
 
     @GetMapping("user/boards")
-    public List<Board> getBoardsByUserId(@ModelAttribute("user") User user, HttpServletRequest request,
-                                         SessionStatus sessionStatus) {
+    public List<Board> getBoardsByUserId(@ModelAttribute("user") User user) {
         return userService.getBoardsByUserId(user.getId());
     }
 

@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     
     private final UserBoardRelationRepository userBoardRelationRepository;
+
     private final BoardRoleRepository boardRoleRepository;
 
     public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, BoardRoleRepository boardRoleRepository) {
@@ -81,6 +82,12 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
         List<Permission> permissions = new ArrayList<>();
         boardRoles.forEach(role -> permissions.addAll(getAllPermissionsByRole(role)));
         return permissions;
+    }
+
+    @Override
+    public BoardRole getBoardRoleByName(String name) {
+        //TODO: throe custom exception
+        return boardRoleRepository.findByName(name).orElse(null);
     }
 
 }

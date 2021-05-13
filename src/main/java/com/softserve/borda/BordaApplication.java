@@ -55,25 +55,49 @@ public class BordaApplication {
             users.add(user);
         }
         BoardRole owner = new BoardRole();
-        owner.setName("owner");
+        owner.setName(BoardRole.BoardRoles.OWNER.name());
         boardRoleRepository.save(owner);
         BoardRole collaborator = new BoardRole();
-        collaborator.setName("collaborator");
+        collaborator.setName(BoardRole.BoardRoles.COLLABORATOR.name());
         boardRoleRepository.save(collaborator);
-        for(int i = 0; i < 3; i++) {
+        //for(int i = 0; i < 3; i++) {
+//        for(int i = 0; i < 10; i++) {
+//            Board board = new Board();
+//            board.setName("Board" + i);
+//            UserBoardRelation userBoardRelation = new UserBoardRelation();
+//            //userBoardRelation.setUser(users.get(i));
+//            userBoardRelation.setUser(users.get(0));
+//            userBoardRelation.setBoard(board);
+//            userBoardRelation.getBoardRoles().add(owner);
+//            board.getUserBoardRelations().add(userBoardRelation);
+//            //users.get(i).getUserBoardRelations().add(userBoardRelation);
+//            users.get(0).getUserBoardRelations().add(userBoardRelation);
+//            boardRepository.save(board);
+//            //userRepository.save(users.get(i));
+//            userRepository.save(users.get(0));
+//            userBoardRelationRepository.save(userBoardRelation);
+//            boards.add(board);
+//        }
+        /////////////////
+        for(int i = 10; i < 50; i++) {
             Board board = new Board();
             board.setName("Board" + i);
             UserBoardRelation userBoardRelation = new UserBoardRelation();
-            userBoardRelation.setUser(users.get(i));
+            //userBoardRelation.setUser(users.get(i));
+            userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.getBoardRoles().add(owner);
+            userBoardRelation.getBoardRoles().add(collaborator);
             board.getUserBoardRelations().add(userBoardRelation);
-            users.get(i).getUserBoardRelations().add(userBoardRelation);
+            //users.get(i).getUserBoardRelations().add(userBoardRelation);
+            users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
-            userRepository.save(users.get(i));
+            //userRepository.save(users.get(i));
+            userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
+        /////////////////////
+
         userService.getUserById(1L);
         userController.getUserById(1L);
     }

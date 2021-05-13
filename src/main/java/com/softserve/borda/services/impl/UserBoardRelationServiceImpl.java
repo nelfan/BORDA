@@ -83,4 +83,5 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
         return permissions;
     }
 
+
 }

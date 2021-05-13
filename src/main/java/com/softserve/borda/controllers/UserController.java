@@ -1,7 +1,7 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.UserGetDTO;
-import com.softserve.borda.dto.UserPostDTO;
+import com.softserve.borda.dto.GetSimpleUserDTO;
+import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
@@ -30,9 +30,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserGetDTO> getAllUsers() {
+    public List<GetSimpleUserDTO> getAllUsers() {
         return userService.getAll().stream()
-                .map((user) -> modelMapper.map(user, UserGetDTO.class))
+                .map((user) -> modelMapper.map(user, GetSimpleUserDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -45,19 +45,19 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public UserGetDTO getUserById(@PathVariable Long id) {
+    public GetSimpleUserDTO getUserById(@PathVariable Long id) {
         return modelMapper.map(
                 userService.getUserById(id),
-                UserGetDTO.class);
+                GetSimpleUserDTO.class);
     }
 
     @PostMapping
-    public UserGetDTO createUser(@RequestBody final UserPostDTO userDTO) {
+    public GetSimpleUserDTO createUser(@RequestBody final CreateUserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         user.getRoles().add(new Role(Role.Roles.USER.name()));
         return modelMapper.map(
                 userService.createOrUpdate(user),
-                UserGetDTO.class);
+                GetSimpleUserDTO.class);
     }
 
     @DeleteMapping(value = "{id}")
@@ -66,12 +66,12 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public UserGetDTO update(@PathVariable Long id, @RequestBody User user) {
+    public GetSimpleUserDTO update(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userService.getUserById(id);
         BeanUtils.copyProperties(user, existingUser);
         return modelMapper.map(
                 userService.createOrUpdate(existingUser),
-                UserGetDTO.class);
+                GetSimpleUserDTO.class);
     }
 
     @GetMapping("user/boards")

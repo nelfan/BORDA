@@ -29,7 +29,6 @@ public class BoardRole {
     @ToString.Exclude
     @ManyToMany
     @JoinColumn(name = "permission_id")
-      
     private List<Permission> permissions = new ArrayList<>();
 
     public BoardRole() {

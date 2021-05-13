@@ -3,6 +3,7 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Permission;
 import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
@@ -31,11 +32,8 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     @Override
     public UserBoardRelation getUserBoardRelationById(Long id) {
-        Optional<UserBoardRelation> userBoardRelation = userBoardRelationRepository.findById(id);
-        if(userBoardRelation.isPresent()) {
-            return userBoardRelation.get();
-        }
-        return null; // TODO: Throw custom exception
+        return userBoardRelationRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRelation.class));
     }
 
     @Override
@@ -58,22 +56,16 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     @Override
     public List<BoardRole> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
-        Optional<UserBoardRelation> userBoardRelationOptional =
-                userBoardRelationRepository.findById(userBoardRelation.getId());
-        if(userBoardRelationOptional.isPresent()) {
-            return userBoardRelationOptional.get().getBoardRoles();
-        }
-        return List.of(); // TODO Throw a custom error?
+        return userBoardRelationRepository.findById(userBoardRelation.getId())
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRelation.class))
+                .getBoardRoles();
     }
     
     @Override
     public List<Permission> getAllPermissionsByRole(BoardRole boardRole) {
-        Optional<BoardRole> roleOptional =
-                boardRoleRepository.findById(boardRole.getId());
-        if(roleOptional.isPresent()) {
-            return roleOptional.get().getPermissions();
-        }
-        return List.of(); // TODO Throw a custom error?
+        return boardRoleRepository.findById(boardRole.getId())
+                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class))
+                .getPermissions();
     }
 
     @Override
@@ -86,8 +78,8 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     @Override
     public BoardRole getBoardRoleByName(String name) {
-        //TODO: throe custom exception
-        return boardRoleRepository.findByName(name).orElse(null);
+        return boardRoleRepository.findByName(name)
+                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
     }
 
 }

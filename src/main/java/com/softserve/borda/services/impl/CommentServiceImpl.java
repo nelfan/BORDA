@@ -3,6 +3,7 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.repositories.UserRepository;
@@ -33,11 +34,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment getCommentById(Long id) {
-        Optional<Comment> comment = commentRepository.findById(id);
-        if(comment.isPresent()) {
-            return comment.get();
-        }
-        return null; // TODO: Throw custom exception
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(Comment.class));
     }
 
     @Override

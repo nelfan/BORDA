@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.TicketService;
@@ -30,11 +31,8 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket getTicketById(Long id) {
-        Optional<Ticket> ticket = ticketRepository.findById(id);
-        if(ticket.isPresent()) {
-            return ticket.get();
-        }
-        return null; // TODO: Throw custom exception
+        return ticketRepository.findById(id).orElseThrow(
+                () -> new CustomEntityNotFoundException(Ticket.class));
     }
 
     @Override

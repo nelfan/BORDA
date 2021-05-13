@@ -1,6 +1,7 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Board;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardService;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Board getBoardById(Long id) {
-        Optional<Board> board = boardRepository.findById(id);
-        if(board.isPresent()) {
-            return board.get();
-        }
-        return null; // TODO: Throw custom exception
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(Board.class));
     }
 
     @Override

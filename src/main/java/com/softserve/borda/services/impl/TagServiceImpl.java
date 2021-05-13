@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.TagService;
@@ -29,21 +30,14 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> getAllTagsByTicket(Ticket ticket) {
-        Optional<Ticket> ticketOptional =
-                ticketRepository.findById(ticket.getId());
-        if (ticketOptional.isPresent()) {
-            return ticketOptional.get().getTags();
-        }
-        return List.of(); // TODO Throw a custom error?
+        return ticketRepository.findById(ticket.getId()).orElseThrow(
+                () -> new CustomEntityNotFoundException(Ticket.class)).getTags();
     }
 
     @Override
     public Tag getTagById(Long id) {
-        Optional<Tag> tag = tagRepository.findById(id);
-        if (tag.isPresent()) {
-            return tag.get();
-        }
-        return null; // TODO: Throw custom exception
+        return tagRepository.findById(id).orElseThrow(
+                () -> new CustomEntityNotFoundException(Tag.class));
     }
 
     @Override

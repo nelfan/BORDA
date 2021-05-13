@@ -17,4 +17,6 @@ public interface UserBoardRelationService {
     List<Permission> getAllPermissionsByRole(BoardRole boardRole);
 
     List<Permission> getAllPermissionsByUserBoardRelation(UserBoardRelation userBoardRelation);
+
+    BoardRole getBoardRoleByName(String name);
 }

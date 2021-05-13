@@ -16,6 +16,7 @@ import java.util.Optional;
 public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     
     private final UserBoardRelationRepository userBoardRelationRepository;
+
     private final BoardRoleRepository boardRoleRepository;
 
     public UserBoardRelationServiceImpl(UserBoardRelationRepository userBoardRelationRepository, BoardRoleRepository boardRoleRepository) {
@@ -83,5 +84,10 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
         return permissions;
     }
 
+    @Override
+    public BoardRole getBoardRoleByName(String name) {
+        //TODO: throe custom exception
+        return boardRoleRepository.findByName(name).orElse(null);
+    }
 
 }

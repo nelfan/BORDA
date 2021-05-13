@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style/boards.css">
+    <title>Boards</title>
+    <script type="module" src="/js/user_boards.js"></script>
+    <script type="module" src="/js/create_board.js"></script>
+    <link rel="icon" href="data:;base64,=">
+</head>
+<body>
+<div class="header">
+    HEADER
+</div>
+<div class="creating-board">
+    <label>Board name:</label>
+    <input id="create_board" type="text" name="name"/>
+    <button id="create_board_btn" class="submit" type="submit">Create board</button>
+</div>
+<div class="own-boards-label" id="boards-label">
+    My own boards
+</div>
+<div class="own-boards" id="style-scroll">
+        <div class="own-boards-container" id="own-boards-container"></div>
+</div>
+<div class="all-boards-label" id="boards-label">
+    All boards
+</div>
+<div class="collaboration-boards" id="style-scroll">
+        <div class="collab-boards-container" id="collab-boards-container">
+        </div>
+</div>
+</body>
+</html>

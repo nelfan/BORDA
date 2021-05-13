@@ -14,4 +14,6 @@ public interface UserService {
     List<Board> getBoardsByUserId(Long id);
 
     User getUserByUsername(String username);
+
+    User findByLoginAndPassword(String login, String password);
 }

@@ -4,6 +4,7 @@ import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createOrUpdate(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getId() != null) {
             Optional<User> userOptional = userRepository.findById(user.getId());
 
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Board> getBoardsByUserId(Long id) {
-       return userRepository.findById(id).get().getUserBoardRelations().stream().map(
+        return userRepository.findById(id).get().getUserBoardRelations().stream().map(
                 i -> i.getBoard()
         ).collect(Collectors.toList());
     }
@@ -66,5 +70,15 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
         // TODO Throw custom exception
+    }
+
+    @Override
+    public User findByLoginAndPassword(String login, String password) {
+        User user = getUserByUsername(login);
+        if (user != null &&
+                (passwordEncoder.matches(password, user.getPassword()))) {
+            return user;
+        }
+        return null;
     }
 }

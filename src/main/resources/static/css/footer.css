@@ -1,0 +1,12 @@
+.footer{
+    height: 4vh;
+    background: #e3e3e3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer_description span{
+
+}
+

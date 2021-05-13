@@ -12,12 +12,12 @@ import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 public class BordaApplication {
 
     UserRepository userRepository;
@@ -32,9 +32,11 @@ public class BordaApplication {
 
     UserController userController;
 
+    private final PasswordEncoder passwordEncoder;
+
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController) {
+                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
@@ -47,7 +49,7 @@ public class BordaApplication {
         for(int i = 0; i < 3; i++) {
             User user = new User();
             user.setUsername("user" + i);
-            user.setPassword("pass" + i);
+            user.setPassword(passwordEncoder.encode("pass" + i));
             user.setEmail("email" + i);
             user.setFirstName("FirstName" + i);
             user.setLastName("LastName" + i);
@@ -74,6 +76,7 @@ public class BordaApplication {
         }
         userService.getUserById(1L);
         userController.getUserById(1L);
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static void main(String[] args) {

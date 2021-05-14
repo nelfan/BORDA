@@ -29,12 +29,6 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> getAllTagsByTicket(Ticket ticket) {
-        return ticketRepository.findById(ticket.getId()).orElseThrow(
-                () -> new CustomEntityNotFoundException(Ticket.class)).getTags();
-    }
-
-    @Override
     public Tag getTagById(Long id) {
         return tagRepository.findById(id).orElseThrow(
                 () -> new CustomEntityNotFoundException(Tag.class));

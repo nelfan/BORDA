@@ -1,6 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -148,7 +148,7 @@ class UserServiceTest {
 
         userService.deleteUserById(user.getId());
 
-        assertNull(userService.getUserById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> userService.getUserById(1L));
         verify(userRepository, times(1)).deleteById(user.getId());
     }
 }

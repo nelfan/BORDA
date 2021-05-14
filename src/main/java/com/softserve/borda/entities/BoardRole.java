@@ -1,12 +1,9 @@
 package com.softserve.borda.entities;
 
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity(name = "board_roles")
@@ -25,11 +22,6 @@ public class BoardRole {
 
     @NotBlank
     private String name;
-
-    @ToString.Exclude
-    @ManyToMany
-    @JoinColumn(name = "permission_id")
-    private List<Permission> permissions = new ArrayList<>();
 
     public BoardRole() {
     }

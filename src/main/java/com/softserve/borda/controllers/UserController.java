@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
-//@SessionAttributes("user")
 public class UserController {
 
     private final ModelMapper modelMapper;
@@ -73,8 +72,8 @@ public class UserController {
                 UserSimpleDTO.class);
     }
 
-    @GetMapping("user/boards")
-    public List<Board> getBoardsByUser(@ModelAttribute("user") User user, HttpServletRequest request,
+    @GetMapping("/user/boards")
+    public List<Board> getBoardsByUser(@ModelAttribute("user") UserSimpleDTO user, HttpServletRequest request,
                                        SessionStatus sessionStatus) {
         return userService.getBoardsByUserId(user.getId());
     }

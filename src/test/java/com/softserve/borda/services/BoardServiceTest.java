@@ -1,6 +1,8 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Board;
+import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.impl.BoardServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -31,6 +33,24 @@ class BoardServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         boardService = new BoardServiceImpl(boardRepository);
+    }
+
+    @Test
+    void shouldGetAllBoardListsByBoardId() {
+        Board board = new Board();
+        for (int i = 0; i < 3; i++) {
+            BoardList boardList = new BoardList();
+            boardList.setId((long) i);
+            boardList.setName("boardList" + i);
+            board.getBoardLists().add(boardList);
+        }
+
+        when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
+
+        List<BoardList> boardListList = boardService.getAllBoardListsByBoardId(1L);
+
+        assertEquals(3, boardListList.size());
+        verify(boardRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -116,7 +136,7 @@ class BoardServiceTest {
 
         boardService.deleteBoardById(board.getId());
 
-        assertNull(boardService.getBoardById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> boardService.getBoardById(1L));
         verify(boardRepository, times(1)).deleteById(board.getId());
     }
 }

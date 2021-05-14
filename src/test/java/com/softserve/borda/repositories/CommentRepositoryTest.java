@@ -42,13 +42,11 @@ class CommentRepositoryTest {
         board.setName("Board1");
         boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         boardRepository.save(board);
         boardListRepository.save(boardList);
         ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         ticketRepository.save(ticket);
         user = new User();
         user.setUsername("User1");
@@ -64,7 +62,6 @@ class CommentRepositoryTest {
         Comment comment = new Comment();
         comment.setText("Comment1");
         comment.setUser(user);
-        comment.setTicket(ticket);
         Comment expected = commentRepository.save(comment);
         Comment actual = commentRepository.getOne(comment.getId());
         Assertions.assertEquals(expected, actual);
@@ -75,7 +72,6 @@ class CommentRepositoryTest {
         Comment comment = new Comment();
         comment.setText("Comment1");
         comment.setUser(user);
-        comment.setTicket(ticket);
         commentRepository.save(comment);
         commentRepository.deleteById(comment.getId());
         Assertions.assertFalse(commentRepository.findById(comment.getId()).isPresent());
@@ -86,7 +82,6 @@ class CommentRepositoryTest {
         Comment comment = new Comment();
         comment.setText("Comment1");
         comment.setUser(user);
-        comment.setTicket(ticket);
         commentRepository.save(comment);
         comment.setText("Comment1Updated");
         Comment expected = commentRepository.save(comment);

@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface CommentService {
-    List<Comment> getAllCommentsByTicketId(Long ticketId);
-
     Comment getCommentById(Long id);
     Comment createOrUpdate(Comment comment);
     void deleteCommentById(Long id);

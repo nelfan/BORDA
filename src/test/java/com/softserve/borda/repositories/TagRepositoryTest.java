@@ -23,7 +23,7 @@ class TagRepositoryTest {
     void shouldInsertAndReturnTag() {
         Tag tag = new Tag();
         tag.setText("Tag1");
-        tag.setColor(Tag.Color.GREEN);
+        tag.setColor("GREEN");
         Tag expected = tagRepository.save(tag);
         Tag actual = tagRepository.getOne(tag.getId());
         Assertions.assertEquals(expected, actual);
@@ -33,7 +33,7 @@ class TagRepositoryTest {
     void shouldInsertAndDeleteTag() {
         Tag tag = new Tag();
         tag.setText("Tag1");
-        tag.setColor(Tag.Color.GREEN);
+        tag.setColor("GREEN");
         tagRepository.save(tag);
         tagRepository.deleteById(tag.getId());
         Assertions.assertFalse(tagRepository.findById(tag.getId()).isPresent());
@@ -43,10 +43,10 @@ class TagRepositoryTest {
     void shouldInsertAndUpdateTag() {
         Tag tag = new Tag();
         tag.setText("Tag1");
-        tag.setColor(Tag.Color.GREEN);
+        tag.setColor("GREEN");
         tagRepository.save(tag);
         tag.setText("Tag1updated");
-        tag.setColor(Tag.Color.BLUE);
+        tag.setColor("BLUE");
         Tag expected = tagRepository.save(tag);
         Tag actual = tagRepository.getOne(tag.getId());
         Assertions.assertEquals(expected, actual);

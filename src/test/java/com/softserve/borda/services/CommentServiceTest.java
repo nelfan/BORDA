@@ -1,6 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Comment;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.repositories.UserRepository;
@@ -12,12 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -41,24 +40,6 @@ class CommentServiceTest {
         commentService = new CommentServiceImpl(commentRepository, 
                 ticketRepository, 
                 userRepository);
-    }
-
-    @Test
-    void shouldGetAllCommentsByTicketId() {
-        List<Comment> comments = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Comment comment = new Comment();
-            comment.setId((long) i);
-            comment.setText("comment" + i);
-            comments.add(comment);
-        }
-
-        when(commentRepository.getAllCommentsByTicketId(1L)).thenReturn(comments);
-
-        List<Comment> commentList = commentService.getAllCommentsByTicketId(1L);
-
-        assertEquals(3, commentList.size());
-        verify(commentRepository, times(1)).getAllCommentsByTicketId(1L);
     }
 
     @Test
@@ -126,7 +107,7 @@ class CommentServiceTest {
 
         commentService.deleteCommentById(comment.getId());
 
-        assertNull(commentService.getCommentById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> commentService.getCommentById(1L));
         verify(commentRepository, times(1)).deleteById(comment.getId());
     }
 }

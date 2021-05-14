@@ -23,9 +23,7 @@ public class Board {
     private String name;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "board",
-            cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL)
     private List<BoardList> boardLists = new ArrayList<>();
 
     @ToString.Exclude

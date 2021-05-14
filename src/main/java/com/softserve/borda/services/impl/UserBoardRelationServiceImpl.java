@@ -1,6 +1,5 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.Permission;
 import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
@@ -9,7 +8,6 @@ import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,28 +50,6 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     @Override
     public void deleteUserBoardRelationById(Long id) {
         userBoardRelationRepository.deleteById(id);
-    }
-
-    @Override
-    public List<BoardRole> getAllRolesByUserBoardRelation(UserBoardRelation userBoardRelation) {
-        return userBoardRelationRepository.findById(userBoardRelation.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRelation.class))
-                .getBoardRoles();
-    }
-    
-    @Override
-    public List<Permission> getAllPermissionsByRole(BoardRole boardRole) {
-        return boardRoleRepository.findById(boardRole.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class))
-                .getPermissions();
-    }
-
-    @Override
-    public List<Permission> getAllPermissionsByUserBoardRelation(UserBoardRelation userBoardRelation) {
-        List<BoardRole> boardRoles = getAllRolesByUserBoardRelation(userBoardRelation);
-        List<Permission> permissions = new ArrayList<>();
-        boardRoles.forEach(role -> permissions.addAll(getAllPermissionsByRole(role)));
-        return permissions;
     }
 
     @Override

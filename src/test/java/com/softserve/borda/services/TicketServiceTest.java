@@ -1,6 +1,9 @@
 package com.softserve.borda.services;
 
+import com.softserve.borda.entities.Comment;
+import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TicketServiceImpl;
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -38,28 +41,10 @@ class TicketServiceTest {
     }
 
     @Test
-    void shouldGetAllTicketsByBoardListId() {
-        List<Ticket> tickets = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Ticket ticket = new Ticket();
-            ticket.setId((long) i);
-            ticket.setName("ticket" + i);
-            tickets.add(ticket);
-        }
-
-        when(ticketRepository.getAllTicketsByBoardListId(1L)).thenReturn(tickets);
-
-        List<Ticket> ticketList = ticketService.getAllTicketsByBoardListId(1L);
-
-        assertEquals(3, ticketList.size());
-        verify(ticketRepository, times(1)).getAllTicketsByBoardListId(1L);
-    }
-
-    @Test
     void shouldGetTicketById() {
         Ticket expected = new Ticket();
         expected.setId(1L);
-        expected.setName("ticket");
+        expected.setTitle("ticket");
 
         when(ticketRepository.findById(1L)).thenReturn(java.util.Optional.of(expected));
         Ticket actual = ticketService.getTicketById(1L);
@@ -70,11 +55,11 @@ class TicketServiceTest {
     @Test
     void shouldCreateTicket() {
         Ticket ticket = new Ticket();
-        ticket.setName("ticket");
+        ticket.setTitle("ticket");
 
         Ticket expected = new Ticket();
         expected.setId(1L);
-        expected.setName("ticket");
+        expected.setTitle("ticket");
 
         when(ticketRepository.save(ticket)).thenReturn(expected);
 
@@ -87,15 +72,15 @@ class TicketServiceTest {
     @Test
     void shouldUpdateTicket() {
         Ticket ticket = new Ticket();
-        ticket.setName("ticket");
+        ticket.setTitle("ticket");
 
         Ticket ticketSaved = new Ticket();
         ticketSaved.setId(1L);
-        ticketSaved.setName("ticket");
+        ticketSaved.setTitle("ticket");
 
         Ticket ticketUpdated = new Ticket();
         ticketUpdated.setId(1L);
-        ticketUpdated.setName("ticketUpdated");
+        ticketUpdated.setTitle("ticketUpdated");
 
         when(ticketRepository.save(ticket)).thenReturn(ticketSaved);
 
@@ -114,13 +99,61 @@ class TicketServiceTest {
     void shouldDeleteTicketById() {
         Ticket ticket = new Ticket();
         ticket.setId(1L);
-        ticket.setName("ticket");
+        ticket.setTitle("ticket");
 
         when(ticketRepository.findById(1L)).thenReturn(Optional.empty());
 
         ticketService.deleteTicketById(ticket.getId());
 
-        assertNull(ticketService.getTicketById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> ticketService.getTicketById(1L));
         verify(ticketRepository, times(1)).deleteById(ticket.getId());
+    }
+
+    @Test
+    void shouldGetAllCommentsByTicketId() {
+        List<Comment> comments = new ArrayList<>();
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setTitle("ticketName");
+        ticket.setDescription("ticketBody");
+        for (int i = 0; i < 3; i++) {
+            Comment comment = new Comment();
+            comment.setId((long) i);
+            comment.setText("comment" + i);
+            comments.add(comment);
+            ticket.getComments().add(comment);
+        }
+
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        List<Comment> commentList = ticketService.getAllCommentsByTicketId(ticket.getId());
+
+        assertEquals(3, commentList.size());
+        assertEquals(comments, commentList);
+        verify(ticketRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void shouldGetAllTagsByTicketId() {
+        List<Tag> tags = new ArrayList<>();
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setTitle("ticketName");
+        ticket.setDescription("ticketBody");
+        for (int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setId((long) i);
+            tag.setText("tag" + i);
+            tags.add(tag);
+            ticket.getTags().add(tag);
+        }
+
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
+
+        List<Tag> tagList = ticketService.getAllTagsByTicketId(ticket.getId());
+
+        assertEquals(3, tagList.size());
+        assertEquals(tags, tagList);
+        verify(ticketRepository, times(1)).findById(1L);
     }
 }

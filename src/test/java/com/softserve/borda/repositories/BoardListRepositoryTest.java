@@ -44,7 +44,6 @@ class BoardListRepositoryTest {
     void shouldInsertAndReturnBoardList() {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         BoardList expected = boardListRepository.save(boardList);
         BoardList actual = boardListRepository.getOne(boardList.getId());
         Assertions.assertEquals(expected, actual);
@@ -54,7 +53,6 @@ class BoardListRepositoryTest {
     void shouldInsertAndDeleteBoardList() {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         boardListRepository.save(boardList);
         boardListRepository.deleteById(boardList.getId());
         Assertions.assertFalse(boardListRepository.findById(boardList.getId()).isPresent());
@@ -64,7 +62,6 @@ class BoardListRepositoryTest {
     void shouldInsertAndUpdateBoardList() {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         boardListRepository.save(boardList);
         boardList.setName("BoardList1updated");
         BoardList expected = boardListRepository.save(boardList);
@@ -76,15 +73,12 @@ class BoardListRepositoryTest {
     void shouldSaveTicketsWithBoardList() {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         Ticket ticket1 = new Ticket();
-        ticket1.setBoardList(boardList);
-        ticket1.setName("Ticket1");
-        ticket1.setBody("Ticket1Body");
+        ticket1.setTitle("Ticket1");
+        ticket1.setDescription("Ticket1Body");
         Ticket ticket2 = new Ticket();
-        ticket2.setBoardList(boardList);
-        ticket2.setName("Ticket2");
-        ticket2.setBody("Ticket2Body");
+        ticket2.setTitle("Ticket2");
+        ticket2.setDescription("Ticket2Body");
         boardList.getTickets().add(ticket1);
         boardList.getTickets().add(ticket2);
         boardListRepository.save(boardList);
@@ -101,15 +95,12 @@ class BoardListRepositoryTest {
     void shouldDeleteTicketsWithBoardList() {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         Ticket ticket1 = new Ticket();
-        ticket1.setBoardList(boardList);
-        ticket1.setName("Ticket1");
-        ticket1.setBody("Ticket1Body");
+        ticket1.setTitle("Ticket1");
+        ticket1.setDescription("Ticket1Body");
         Ticket ticket2 = new Ticket();
-        ticket2.setBoardList(boardList);
-        ticket2.setName("Ticket2");
-        ticket2.setBody("Ticket2Body");
+        ticket2.setTitle("Ticket2");
+        ticket2.setDescription("Ticket2Body");
         boardList.getTickets().add(ticket1);
         boardList.getTickets().add(ticket2);
         boardListRepository.save(boardList);

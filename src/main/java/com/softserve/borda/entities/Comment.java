@@ -24,10 +24,4 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
-
-    @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "ticket_id", nullable = false)
-    @JsonBackReference
-    private Ticket ticket;
 }

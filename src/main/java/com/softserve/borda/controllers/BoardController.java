@@ -46,7 +46,7 @@ public class BoardController {
         //TODO: get user ID from session
         userBoardRelation.setUser(User.builder().id(1L).build());
 
-        userBoardRelation.getBoardRoles().add(userBoardRelationService
+        userBoardRelation.setBoardRole(userBoardRelationService
                 .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
 
         board.setUserBoardRelations(Collections.singletonList(userBoardRelation));

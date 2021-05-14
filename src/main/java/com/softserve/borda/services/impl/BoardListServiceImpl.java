@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.repositories.BoardRepository;
@@ -22,10 +23,9 @@ public class BoardListServiceImpl implements BoardListService {
         this.boardListRepository = boardListRepository;
         this.boardRepository = boardRepository;
     }
-
     @Override
-    public List<BoardList> getAllBoardListsByBoardId(Long boardId) {
-        return boardListRepository.getAllBoardListsByBoardId(boardId);
+    public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
+        return getBoardListById(boardListId).getTickets();
     }
 
     @Override
@@ -57,7 +57,6 @@ public class BoardListServiceImpl implements BoardListService {
     public boolean addBoardListToBoard(BoardList boardList, @NotNull Board board) {
         if (boardList.getId() == null) {
             Board boardEntity = boardRepository.getOne(board.getId());
-            boardList.setBoard(boardEntity);
             boardListRepository.save(boardList);
             boardEntity.getBoardLists().add(boardList);
             boardRepository.save(boardEntity);

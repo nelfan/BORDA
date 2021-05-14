@@ -9,13 +9,6 @@ import javax.validation.constraints.NotBlank;
 @Entity(name = "tags")
 public class Tag {
 
-    public enum Color {
-        BLUE,
-        RED,
-        YELLOW,
-        GREEN
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
@@ -25,6 +18,5 @@ public class Tag {
     private String text;
 
     @NotBlank
-    @Enumerated
-    private Color color;
+    private String color;
 }

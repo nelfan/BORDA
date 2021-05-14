@@ -3,7 +3,6 @@ package com.softserve.borda;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardRole;
-import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.repositories.BoardRoleRepository;
@@ -29,10 +28,6 @@ public class BordaApplication {
     BoardRoleRepository boardRoleRepository;
 
     UserService userService;
-
-    UserController userController;
-
-    private final PasswordEncoder passwordEncoder;
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
@@ -64,40 +59,33 @@ public class BordaApplication {
             Board board = new Board();
             board.setName("Board" + i);
             UserBoardRelation userBoardRelation = new UserBoardRelation();
-            //userBoardRelation.setUser(users.get(i));
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.getBoardRoles().add(owner);
+            userBoardRelation.setBoardRole(owner);
             board.getUserBoardRelations().add(userBoardRelation);
-            //users.get(i).getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
-            //userRepository.save(users.get(i));
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
-        ///////////////
+
         for(int i = 10; i < 50; i++) {
             Board board = new Board();
             board.setName("Board" + i);
             UserBoardRelation userBoardRelation = new UserBoardRelation();
-            //userBoardRelation.setUser(users.get(i));
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.getBoardRoles().add(collaborator);
+            userBoardRelation.setBoardRole(collaborator);
             board.getUserBoardRelations().add(userBoardRelation);
-            //users.get(i).getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
-            //userRepository.save(users.get(i));
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
         userService.getUserById(1L);
         userController.getUserById(1L);
-        this.passwordEncoder = passwordEncoder;
     }
 
     public static void main(String[] args) {

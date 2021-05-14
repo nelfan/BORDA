@@ -44,7 +44,6 @@ class TicketRepositoryTest {
         board.setName("Board1");
         boardList = new BoardList();
         boardList.setName("BoardList1");
-        boardList.setBoard(board);
         boardRepository.save(board);
         boardListRepository.save(boardList);
     }
@@ -52,9 +51,8 @@ class TicketRepositoryTest {
     @Test
     void shouldInsertAndReturnTicket() {
         Ticket ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         Ticket expected = ticketRepository.save(ticket);
         Ticket actual = ticketRepository.getOne(ticket.getId());
         Assertions.assertEquals(expected, actual);
@@ -63,9 +61,8 @@ class TicketRepositoryTest {
     @Test
     void shouldInsertAndDeleteTicket() {
         Ticket ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         ticketRepository.save(ticket);
         ticketRepository.deleteById(ticket.getId());
         Assertions.assertFalse(ticketRepository.findById(ticket.getId()).isPresent());
@@ -74,11 +71,10 @@ class TicketRepositoryTest {
     @Test
     void shouldInsertAndUpdateTicket() {
         Ticket ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         ticketRepository.save(ticket);
-        ticket.setName("Ticket1updated");
+        ticket.setTitle("Ticket1updated");
         Ticket expected = ticketRepository.save(ticket);
         Ticket actual = ticketRepository.getOne(ticket.getId());
         Assertions.assertEquals(expected, actual);
@@ -94,16 +90,13 @@ class TicketRepositoryTest {
         user.setLastName("lastName");
         userRepository.save(user);
         Ticket ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         Comment comment1 = new Comment();
         comment1.setText("Comment1Text");
-        comment1.setTicket(ticket);
         comment1.setUser(user);
         Comment comment2 = new Comment();
         comment2.setText("Comment2Text");
-        comment2.setTicket(ticket);
         comment2.setUser(user);
         ticket.getComments().add(comment1);
         ticket.getComments().add(comment2);
@@ -127,16 +120,13 @@ class TicketRepositoryTest {
         user.setLastName("lastName");
         userRepository.save(user);
         Ticket ticket = new Ticket();
-        ticket.setName("Ticket1");
-        ticket.setBody("Ticket1Body");
-        ticket.setBoardList(boardList);
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket1Body");
         Comment comment1 = new Comment();
         comment1.setText("Comment1Text");
-        comment1.setTicket(ticket);
         comment1.setUser(user);
         Comment comment2 = new Comment();
         comment2.setText("Comment2Text");
-        comment2.setTicket(ticket);
         comment2.setUser(user);
         ticket.getComments().add(comment1);
         ticket.getComments().add(comment2);

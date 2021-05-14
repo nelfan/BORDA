@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
 public class UserBoardRelation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ubr_id")
@@ -29,8 +28,8 @@ public class UserBoardRelation {
     private Board board;
 
     @ToString.Exclude
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name = "role_id")
-    private List<BoardRole> boardRoles = new ArrayList<>();
+    private BoardRole boardRole;
 
 }

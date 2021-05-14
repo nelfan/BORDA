@@ -3,6 +3,7 @@ package com.softserve.borda.services;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.impl.UserBoardRelationServiceImpl;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -117,7 +117,8 @@ class UserBoardRelationServiceTest {
 
         userBoardRelationService.deleteUserBoardRelationById(userBoardRelation.getId());
 
-        assertNull(userBoardRelationService.getUserBoardRelationById(1L));
+        assertThrows(CustomEntityNotFoundException.class,
+                () -> userBoardRelationService.getUserBoardRelationById(1L));
         verify(userBoardRelationRepository, times(1)).deleteById(userBoardRelation.getId());
     }
 }

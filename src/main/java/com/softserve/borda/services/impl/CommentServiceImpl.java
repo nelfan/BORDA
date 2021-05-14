@@ -28,11 +28,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
-        return commentRepository.getAllCommentsByTicketId(ticketId);
-    }
-
-    @Override
     public Comment getCommentById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new CustomEntityNotFoundException(Comment.class));
@@ -61,7 +56,6 @@ public class CommentServiceImpl implements CommentService {
     public boolean addCommentToTicket(Comment comment, @NotNull Ticket ticket) {
         if (comment.getId() == null) {
             Ticket ticketEntity = ticketRepository.getOne(ticket.getId());
-            comment.setTicket(ticketEntity);
             commentRepository.save(comment);
             ticketEntity.getComments().add(comment);
             ticketRepository.save(ticketEntity);

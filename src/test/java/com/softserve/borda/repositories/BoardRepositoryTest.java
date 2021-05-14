@@ -60,10 +60,8 @@ class BoardRepositoryTest {
         Board board = new Board();
         board.setName("Board1");
         BoardList boardList1 = new BoardList();
-        boardList1.setBoard(board);
         boardList1.setName("BoardList1");
         BoardList boardList2 = new BoardList();
-        boardList2.setBoard(board);
         boardList2.setName("BoardList2");
         board.getBoardLists().add(boardList1);
         board.getBoardLists().add(boardList2);
@@ -82,10 +80,8 @@ class BoardRepositoryTest {
         Board board = new Board();
         board.setName("Board1");
         BoardList boardList1 = new BoardList();
-        boardList1.setBoard(board);
         boardList1.setName("BoardList1");
         BoardList boardList2 = new BoardList();
-        boardList2.setBoard(board);
         boardList2.setName("BoardList2");
         board.getBoardLists().add(boardList1);
         board.getBoardLists().add(boardList2);

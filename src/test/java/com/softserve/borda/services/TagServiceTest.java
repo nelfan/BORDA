@@ -1,7 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Tag;
-import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TagServiceImpl;
@@ -11,14 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -47,7 +46,7 @@ class TagServiceTest {
             Tag tag = new Tag();
             tag.setId((long) i);
             tag.setText("tagtext");
-            tag.setColor(Tag.Color.GREEN);
+            tag.setColor("GREEN");
             tags.add(tag);
         }
 
@@ -57,30 +56,6 @@ class TagServiceTest {
 
         assertEquals(3, tagList.size());
         verify(tagRepository, times(1)).findAll();
-    }
-
-    @Test
-    void shouldGetAllTagsByTicketId() {
-        List<Tag> tags = new ArrayList<>();
-        Ticket ticket = new Ticket();
-        ticket.setId(1L);
-        ticket.setName("ticketName");
-        ticket.setBody("ticketBody");
-        for (int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setId((long) i);
-            tag.setText("tag" + i);
-            tags.add(tag);
-            ticket.getTags().add(tag);
-        }
-
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
-
-        List<Tag> tagList = tagService.getAllTagsByTicket(ticket);
-
-        assertEquals(3, tagList.size());
-        assertEquals(tags, tagList);
-        verify(ticketRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -148,7 +123,7 @@ class TagServiceTest {
 
         tagService.deleteTagById(tag.getId());
 
-        assertNull(tagService.getTagById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> tagService.getTagById(1L));
         verify(tagRepository, times(1)).deleteById(tag.getId());
     }
 }

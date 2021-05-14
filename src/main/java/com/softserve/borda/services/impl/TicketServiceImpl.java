@@ -1,7 +1,6 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.BoardList;
-import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.repositories.TicketRepository;
@@ -23,12 +22,6 @@ public class TicketServiceImpl implements TicketService {
         this.boardListRepository = boardListRepository;
     }
 
-
-    @Override
-    public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
-        return ticketRepository.getAllTicketsByBoardListId(boardListId);
-    }
-
     @Override
     public Ticket getTicketById(Long id) {
         return ticketRepository.findById(id).orElseThrow(
@@ -42,8 +35,8 @@ public class TicketServiceImpl implements TicketService {
 
             if (ticketOptional.isPresent()) {
                 Ticket newTicket = ticketOptional.get();
-                newTicket.setName(ticket.getName());
-                newTicket.setBody(ticket.getBody());
+                newTicket.setTitle(ticket.getTitle());
+                newTicket.setDescription(ticket.getDescription());
                 return ticketRepository.save(newTicket);
             }
         }
@@ -59,12 +52,26 @@ public class TicketServiceImpl implements TicketService {
     public boolean addTicketToBoardList(Ticket ticket, @NotNull BoardList boardList) {
         if (ticket.getId() == null) {
             BoardList boardListEntity = boardListRepository.getOne(boardList.getId());
-            ticket.setBoardList(boardListEntity);
             ticketRepository.save(ticket);
             boardListEntity.getTickets().add(ticket);
             boardListRepository.save(boardListEntity);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
+        return getTicketById(ticketId).getComments();
+    }
+
+    @Override
+    public List<User> getAllMembersByTicketId(Long ticketId) {
+        return getTicketById(ticketId).getMembers();
+    }
+
+    @Override
+    public List<Tag> getAllTagsByTicketId(Long id) {
+        return getTicketById(id).getTags();
     }
 }

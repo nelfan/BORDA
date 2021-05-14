@@ -1,6 +1,5 @@
 package com.softserve.borda.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.ToString;
@@ -18,21 +17,22 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id")
     private Long id;
+
     @NotBlank
-    private String name;
-    private String body;
+    private String title;
+
+    private String description;
+
+    private Byte[] img;
 
     @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "board_list_id", nullable = false)
-    @JsonBackReference
-    private BoardList boardList;
+    @ManyToMany
+    private List<User> members = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "ticket",
-            cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @ToString.Exclude
     @ManyToMany

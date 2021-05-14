@@ -9,8 +9,6 @@ import java.util.List;
 public interface TagService {
     List<Tag> getAll();
 
-    List<Tag> getAllTagsByTicket(Ticket ticket);
-
     Tag getTagById(Long id);
     Tag createOrUpdate(Tag tag);
     void deleteTagById(Long id);

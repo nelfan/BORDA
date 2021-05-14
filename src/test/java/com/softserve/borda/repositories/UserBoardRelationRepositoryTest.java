@@ -51,7 +51,7 @@ class UserBoardRelationRepositoryTest {
         UserBoardRelation expected = new UserBoardRelation();
         expected.setUser(user);
         expected.setBoard(board);
-        expected.getBoardRoles().add(owner);
+        expected.setBoardRole(owner);
         board.getUserBoardRelations().add(expected);
         user.getUserBoardRelations().add(expected);
         boardRepository.save(board);
@@ -77,7 +77,7 @@ class UserBoardRelationRepositoryTest {
         UserBoardRelation userBoardRelation = new UserBoardRelation();
         userBoardRelation.setUser(user);
         userBoardRelation.setBoard(board);
-        userBoardRelation.getBoardRoles().add(owner);
+        userBoardRelation.setBoardRole(owner);
         board.getUserBoardRelations().add(userBoardRelation);
         user.getUserBoardRelations().add(userBoardRelation);
         boardRepository.save(board);
@@ -103,7 +103,7 @@ class UserBoardRelationRepositoryTest {
         UserBoardRelation userBoardRelation = new UserBoardRelation();
         userBoardRelation.setUser(user);
         userBoardRelation.setBoard(board);
-        userBoardRelation.getBoardRoles().add(owner);
+        userBoardRelation.setBoardRole(owner);
         board.getUserBoardRelations().add(userBoardRelation);
         user.getUserBoardRelations().add(userBoardRelation);
         boardRepository.save(board);
@@ -112,7 +112,7 @@ class UserBoardRelationRepositoryTest {
         BoardRole collaborator = new BoardRole();
         collaborator.setName("collaborator");
         boardRoleRepository.save(collaborator);
-        userBoardRelation.getBoardRoles().add(collaborator);
+        userBoardRelation.setBoardRole(collaborator);
         UserBoardRelation expected = userBoardRelationRepository.save(userBoardRelation);
         UserBoardRelation actual = userBoardRelationRepository.getOne(userBoardRelation.getId());
         Assertions.assertEquals(expected, actual);
@@ -144,7 +144,7 @@ class UserBoardRelationRepositoryTest {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(i));
             userBoardRelation.setBoard(board);
-            userBoardRelation.getBoardRoles().add(owner);
+            userBoardRelation.setBoardRole(owner);
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(i).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
@@ -154,7 +154,7 @@ class UserBoardRelationRepositoryTest {
         UserBoardRelation expected = new UserBoardRelation();
         expected.setUser(users.get(2));
         expected.setBoard(boards.get(1));
-        expected.getBoardRoles().add(collaborator);
+        expected.setBoardRole(collaborator);
         UserBoardRelation actual = userBoardRelationRepository.save(expected);
         users.get(2).getUserBoardRelations().add(expected);
         boards.get(1).getUserBoardRelations().add(expected);

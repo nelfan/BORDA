@@ -1,6 +1,8 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.impl.BoardListServiceImpl;
@@ -11,12 +13,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -37,22 +38,23 @@ class BoardListServiceTest {
         boardListService = new BoardListServiceImpl(boardListRepository, boardRepository);
     }
 
+
     @Test
-    void shouldGetAllBoardListsByBoardId() {
-        List<BoardList> boardLists = new ArrayList<>();
+    void shouldGetAllTicketsByBoardListId() {
+        BoardList boardList = new BoardList();
         for (int i = 0; i < 3; i++) {
-            BoardList boardList = new BoardList();
-            boardList.setId((long) i);
-            boardList.setName("boardList" + i);
-            boardLists.add(boardList);
+            Ticket ticket = new Ticket();
+            ticket.setId((long) i);
+            ticket.setTitle("ticket" + i);
+            boardList.getTickets().add(ticket);
         }
 
-        when(boardListRepository.getAllBoardListsByBoardId(1L)).thenReturn(boardLists);
+        when(boardListRepository.findById(1L)).thenReturn(Optional.of(boardList));
 
-        List<BoardList> boardListList = boardListService.getAllBoardListsByBoardId(1L);
+        List<Ticket> ticketList = boardListService.getAllTicketsByBoardListId(1L);
 
-        assertEquals(3, boardListList.size());
-        verify(boardListRepository, times(1)).getAllBoardListsByBoardId(1L);
+        assertEquals(3, ticketList.size());
+        verify(boardListRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -120,7 +122,7 @@ class BoardListServiceTest {
 
         boardListService.deleteBoardListById(boardList.getId());
 
-        assertNull(boardListService.getBoardListById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> boardListService.getBoardListById(1L));
         verify(boardListRepository, times(1)).deleteById(boardList.getId());
     }
 }

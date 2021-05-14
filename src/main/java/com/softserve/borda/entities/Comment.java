@@ -1,5 +1,6 @@
 package com.softserve.borda.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -20,9 +21,7 @@ public class Comment {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
-
-    @ToString.Exclude
-    @ManyToOne
-    private Ticket ticket;
 }

@@ -1,12 +1,16 @@
 package com.softserve.borda.services.impl;
 
+import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,7 +28,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(User.class));
     }
 
     @Override
@@ -39,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 newUser.setEmail(user.getEmail());
                 newUser.setFirstName(user.getFirstName());
                 newUser.setLastName(user.getLastName());
-//                newUser.setUser_photo(user.getUser_photo());
+                newUser.setAvatar(user.getAvatar());
                 return userRepository.save(newUser);
             }
         }
@@ -49,5 +54,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Board> getBoardsByUserId(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomEntityNotFoundException(User.class));
+        return user.getUserBoardRelations().stream().map(
+                UserBoardRelation::getBoard
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new CustomEntityNotFoundException(User.class));
     }
 }

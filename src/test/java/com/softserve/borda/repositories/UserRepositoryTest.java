@@ -20,7 +20,7 @@ class UserRepositoryTest {
     UserRepository userRepository;
 
     @Test
-    public void shouldInsertAndReturnUser() throws Exception {
+    void shouldInsertAndReturnUser() {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");
@@ -33,7 +33,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void shouldInsertAndDeleteUser() throws Exception {
+    void shouldInsertAndDeleteUser() {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");
@@ -42,12 +42,11 @@ class UserRepositoryTest {
         user.setLastName("Doe");
         userRepository.save(user);
         userRepository.deleteById(user.getId());
-        Assertions.assertThrows(org.springframework.orm.jpa.JpaObjectRetrievalFailureException.class,
-                () -> userRepository.getOne(user.getId()));
+        Assertions.assertFalse(userRepository.findById(user.getId()).isPresent());
     }
 
     @Test
-    public void shouldInsertAndUpdateUser() throws Exception {
+    void shouldInsertAndUpdateUser() {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");

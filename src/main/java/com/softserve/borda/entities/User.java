@@ -1,15 +1,21 @@
 package com.softserve.borda.entities;
 
-import lombok.Data;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "users")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -33,15 +39,27 @@ public class User {
     @NotBlank
     private String lastName;
 
-//    @Lob
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    private byte[] user_photo;
+    private boolean enabled = true;
+
+    @Type(type = "org.hibernate.type.BinaryType")
+    private Byte[] avatar;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    List<UserBoardRelation> userBoardRelations = new ArrayList<>();
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user")
-    List<Comment> comments = new ArrayList<>();;
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
 }

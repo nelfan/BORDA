@@ -1,33 +1,61 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.dto.UserSimpleDTO;
+import com.softserve.borda.dto.CreateUserDTO;
+import com.softserve.borda.entities.Board;
+import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final ModelMapper modelMapper;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+        modelMapper = new ModelMapper();
+    }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAll();
+    public List<UserSimpleDTO> getAllUsers() {
+        return userService.getAll().stream()
+                .map((user) -> modelMapper.map(user, UserSimpleDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("user")
+    public User getUser(@ModelAttribute("user") User user,
+                        HttpServletRequest request,
+                        SessionStatus sessionStatus) {
+        return user;
     }
 
     @GetMapping("{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public UserSimpleDTO getUserById(@PathVariable Long id) {
+        return modelMapper.map(
+                userService.getUserById(id),
+                UserSimpleDTO.class);
     }
 
     @PostMapping
-    public User createUser(@RequestBody final User user) {
-        return userService.createOrUpdate(user);
+    public UserSimpleDTO createUser(@RequestBody final CreateUserDTO userDTO) {
+        User user = modelMapper.map(userDTO, User.class);
+        user.getRoles().add(new Role(Role.Roles.USER.name()));
+        return modelMapper.map(
+                userService.createOrUpdate(user),
+                UserSimpleDTO.class);
     }
 
     @DeleteMapping(value = "{id}")
@@ -36,9 +64,24 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public User update(@PathVariable Long id, @RequestBody User user) {
+    public UserSimpleDTO update(@PathVariable Long id, @RequestBody User user) {
         User existingUser = userService.getUserById(id);
         BeanUtils.copyProperties(user, existingUser);
-        return userService.createOrUpdate(existingUser);
+        return modelMapper.map(
+                userService.createOrUpdate(existingUser),
+                UserSimpleDTO.class);
     }
+
+    @GetMapping("/user/boards")
+    public List<Board> getBoardsByUser(@ModelAttribute("user") UserSimpleDTO user, HttpServletRequest request,
+                                       SessionStatus sessionStatus) {
+        return userService.getBoardsByUserId(user.getId());
+    }
+
+    @GetMapping("{id}/boardsByRole/{boardRoleId}")
+    public List<Board> getBoardsByBoardRoleAndUserId(@PathVariable Long id,
+                                               @PathVariable Long boardRoleId) {
+        return userService.getBoardsByUserId(id); //TODO
+    }
+
 }

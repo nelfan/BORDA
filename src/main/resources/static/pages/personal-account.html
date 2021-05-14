@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your account</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/style/personal-account.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script type="module" src="/js/account_data.js"></script>
+    <link rel="icon" href="data:;base64,=">
+</head>
+<header></header>
+<main>
+    <div class="personal-info" id="user">
+        <div class="image-container" id="image-container">
+            <input id="file-input" type="file" style="display: none;" />
+            <img id = "avatar" src = "/img/blank_avatar.jpg" accept=".jpg, .jpeg, .png"/>
+        </div>
+        <div class="settings-container">
+            <div><label for="username">&#9881;</label></div>
+            <div><label for="email">&#9881;</label></div>
+            <div><label for="firstName">&#9881;</label></div>
+            <div><label for="lastName">&#9881;</label></div>
+        </div>
+        <div class="template-container">
+            <div><p>username: </p></div>
+            <div><p>e-mail: </p></div>
+            <div><p>first name: </p></div>
+            <div><p>last name: </p></div>
+        </div>
+
+        <div class="data-container">
+            <div><input class='field' type='text' id="username" disabled/></div>
+            <div><input class='field' type='text' id="email" disabled/></div>
+            <div><input class='field' type='text' id="firstName" disabled/></div>
+            <div><input class='field' type='text' id="lastName"disabled/></div>
+        </div>
+    </div>
+    <div class="boards-container" id = "boards-container">
+    </div>
+</main>
+<footer></footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.softserve.borda.config;
+package com.softserve.borda.config.authorization;
 
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
@@ -10,7 +10,7 @@ import java.util.*;
 
 public class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private final User user;
 
     public CustomUserDetails(User user) {
         this.user = user;

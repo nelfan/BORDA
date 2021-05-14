@@ -36,7 +36,6 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-
     @GetMapping("user")
     public User getUser(@ModelAttribute("user") User user,
                         HttpServletRequest request,

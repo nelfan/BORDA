@@ -1,7 +1,7 @@
 package com.softserve.borda.config.jwt;
 
-import com.softserve.borda.config.CustomUserDetails;
-import com.softserve.borda.config.CustomUserDetailsService;
+import com.softserve.borda.config.authorization.CustomUserDetails;
+import com.softserve.borda.config.authorization.CustomUserDetailsService;
 import lombok.extern.java.Log;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,12 +1,12 @@
-package com.softserve.borda.config;
+package com.softserve.borda.config.authorization;
 
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserService userService;

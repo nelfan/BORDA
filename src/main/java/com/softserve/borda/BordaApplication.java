@@ -3,6 +3,7 @@ package com.softserve.borda;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardRole;
+import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.repositories.BoardRoleRepository;

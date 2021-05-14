@@ -1,4 +1,4 @@
-package com.softserve.borda.config;
+package com.softserve.borda.config.authorization;
 
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;

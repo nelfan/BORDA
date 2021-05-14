@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/login/user_login.css">
-    <link href="fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/login/user_login.css}" href="../static/css/login/user_login.css" >
+    <link rel="stylesheet" th:href="@{/css/header.css}" href="../static/css/header.css">
+    <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css">
+    <link th:href="@{/fontawesome-free-5.15.3-web/css/all.css}" href="../static/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
 </head>
 <body>
     <div class="alignment_of_header">
@@ -43,8 +43,11 @@
                 <div class="tab-content">
                     <div id="signup" class="signUpContent">   
                         <h1>Sign Up for Free</h1>
-                        <form action="#" method="POST"">
+                        <form th:action="@{/register}" method="POST">
                             <div class="input_fields">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter username..">
+
                                 <label for="fname">First Name</label>
                                 <input type="text" id="fname" autocomplete="off" name="firstname" placeholder="Enter name..">
                             
@@ -68,14 +71,14 @@
                 
                     <div id="login" class="signInContent">   
                         <h1>Welcome Back!</h1>
-                        <form action="/" method="post">
+                        <form th:action="@{/auth}" method="post">
                             <div class="enter_fields">
-                                <label for="email">Email</label>
-                                <input type="text" id="email" name="email" autocomplete="off" placeholder="Enter email.."> 
+                                <label for="usernameLogin">Username</label>
+                                <input type="text" id="usernameLogin" name="usernameLogin" autocomplete="off" placeholder="Enter username..">
 
-                                <label for="pass">Password</label>
+                                <label for="passLogin">Password</label>
                                 <div class="enter_eye_pswd">
-                                    <input type="password" id="pass" name="password" placeholder="Enter password.." autocomplete="off">
+                                    <input type="password" id="passLogin" name="passwordLogin" placeholder="Enter password.." autocomplete="off">
                                     <i class="far fa-eye" onclick="checkPass(this)" id="toggleLoginPassword"></i>
                                 </div>
                                 <div class="signIn_btn">
@@ -97,6 +100,6 @@
         </div>
     </div>
 
-    <script src="css/login/login.js"></script>
+    <script src="../static/css/login/login.js"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@ import com.softserve.borda.services.UserService;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.validation.Valid;
 
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
+    public RedirectView registerUser(RegistrationRequest registrationRequest) {
         User user = new User();
         user.setUsername(registrationRequest.getLogin());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -35,7 +36,7 @@ public class AuthController {
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
         userService.createOrUpdate(user);
-        return "redirect:users/user";
+        return new RedirectView("/pages/personal-account.html");
     }
 
     @PostMapping("/auth")

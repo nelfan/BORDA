@@ -52,7 +52,7 @@ public class UserController {
     @PostMapping
     public UserSimpleDTO createUser(@RequestBody final CreateUserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        user.getRoles().add(new Role(Role.Roles.USER.name()));
+        user.getRoles().add(new Role(Role.Roles.ROLE_USER.name()));
         return modelMapper.map(
                 userService.createOrUpdate(user),
                 UserSimpleDTO.class);

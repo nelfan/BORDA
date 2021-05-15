@@ -1,14 +1,8 @@
 package com.softserve.borda;
 
 import com.softserve.borda.controllers.UserController;
-import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardRole;
-import com.softserve.borda.entities.User;
-import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.repositories.BoardRepository;
-import com.softserve.borda.repositories.BoardRoleRepository;
-import com.softserve.borda.repositories.UserBoardRelationRepository;
-import com.softserve.borda.repositories.UserRepository;
+import com.softserve.borda.entities.*;
+import com.softserve.borda.repositories.*;
 import com.softserve.borda.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +18,8 @@ public class BordaApplication {
 
     BoardRepository boardRepository;
 
+    RoleRepository roleRepository;
+
     UserBoardRelationRepository userBoardRelationRepository;
 
     BoardRoleRepository boardRoleRepository;
@@ -32,13 +28,16 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder) {
+                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
         this.boardRoleRepository = boardRoleRepository;
         this.userService = userService;
+        this.roleRepository = roleRepository;
 
+        Role role = new Role(Role.Roles.ROLE_USER.name());
+        role = roleRepository.save(role);
 
         List<User> users = new ArrayList<>();
         List<Board> boards = new ArrayList<>();
@@ -49,6 +48,7 @@ public class BordaApplication {
             user.setEmail("email" + i);
             user.setFirstName("FirstName" + i);
             user.setLastName("LastName" + i);
+            user.getRoles().add(role);
             userRepository.save(user);
             users.add(user);
         }

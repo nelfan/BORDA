@@ -1,30 +1,29 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.dto.BoardListDTO;
 import com.softserve.borda.dto.CreateBoardDTO;
-import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardRole;
-import com.softserve.borda.entities.User;
-import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.*;
+import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.UserBoardRelationService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/boards")
+@AllArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    private final UserBoardRelationService userBoardRelationService;
+    private final BoardListService boardListService;
 
-    public BoardController(BoardService boardService, UserBoardRelationService userBoardRelationService) {
-        this.boardService = boardService;
-        this.userBoardRelationService = userBoardRelationService;
-    }
+    private final UserBoardRelationService userBoardRelationService;
 
     @GetMapping
     public List<Board> getAllBoards() {
@@ -64,5 +63,19 @@ public class BoardController {
         Board existingBoard = boardService.getBoardById(id);
         BeanUtils.copyProperties(board, existingBoard);
         return boardService.createOrUpdate(existingBoard);
+    }
+
+    @GetMapping("{id}/boardLists")
+    public List<BoardList> getBoardListsForBoard(@PathVariable Long id) {
+        return boardService.getAllBoardListsByBoardId(id);
+    }
+
+    @PostMapping("{id}/addBoardList")
+    public BoardList createBoardListsForBoard(@PathVariable Long id,
+                                                    @RequestBody BoardListDTO boardListDTO) {
+        BoardList boardList = new BoardList();
+        boardList.setName(boardListDTO.getName());
+        boardList = boardListService.createOrUpdate(boardList);
+        return boardService.addBoardListToBoard(boardService.getBoardById(id), boardList);
     }
 }

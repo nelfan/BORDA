@@ -1,13 +1,14 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.dto.CreateUserDTO;
+import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
 
@@ -52,7 +53,7 @@ public class UserController {
     @PostMapping
     public UserSimpleDTO createUser(@RequestBody final CreateUserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        user.getRoles().add(new Role(Role.Roles.USER.name()));
+        user.getRoles().add(new Role(Role.Roles.ROLE_USER.name()));
         return modelMapper.map(
                 userService.createOrUpdate(user),
                 UserSimpleDTO.class);

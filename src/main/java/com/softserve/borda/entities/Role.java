@@ -11,8 +11,8 @@ import javax.validation.constraints.NotBlank;
 public class Role implements GrantedAuthority {
 
     public enum Roles {
-        ADMIN,
-        USER
+        ROLE_ADMIN,
+        ROLE_USER
     }
 
     @Id

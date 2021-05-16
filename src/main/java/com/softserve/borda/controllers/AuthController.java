@@ -3,9 +3,12 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.config.authorization.AuthRequest;
 import com.softserve.borda.config.authorization.AuthResponse;
 import com.softserve.borda.config.authorization.RegistrationRequest;
+import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +22,11 @@ public class AuthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
+    ModelMapper modelMapper;
+    @Autowired
+    JwtConvertor jwtConvertor;
 
     public AuthController(UserService userService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -37,7 +45,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthResponse> registerUser(RegistrationRequest registrationRequest) {
         User user = new User();
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -45,7 +53,8 @@ public class AuthController {
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
         userService.createOrUpdate(user);
-        return "main_page";
+        jwtConvertor.saveUser(user);
+        return auth(modelMapper.map(user, AuthRequest.class));
     }
 
     @PostMapping("/auth")

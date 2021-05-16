@@ -25,8 +25,6 @@ public class AuthController {
 
     @Autowired
     ModelMapper modelMapper;
-    @Autowired
-    JwtConvertor jwtConvertor;
 
     public AuthController(UserService userService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -53,8 +51,10 @@ public class AuthController {
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
         userService.createOrUpdate(user);
-        jwtConvertor.saveUser(user);
-        return auth(modelMapper.map(user, AuthRequest.class));
+        //jwtConvertor.saveUser(user);
+        System.err.println(user);
+        //return auth(modelMapper.map(user, AuthRequest.class));
+        return null;
     }
 
     @PostMapping("/auth")

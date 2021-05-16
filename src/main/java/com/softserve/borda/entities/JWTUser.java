@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Data
 @Entity(name = "jwtuser")
 public class JWTUser {
+    @Id
     private String token;
     @OneToOne()
     @JoinColumn(name = "users_id")

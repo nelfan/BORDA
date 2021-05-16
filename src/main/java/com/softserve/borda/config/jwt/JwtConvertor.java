@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class JwtConvertor {
 
+    @Autowired
     private JwtProvider jwtProvider;
 
     @Autowired
-    JWTUserRepository jwtUserRepository;
+    private JWTUserRepository jwtUserRepository;
 
-    public JwtConvertor(JwtProvider jwtProvider){
-        this.jwtProvider = jwtProvider;
-    }
 
     public String saveUser(User user){
         jwtUserRepository.save(new JWTUser(jwtProvider.generateToken(user.getUsername()),user));

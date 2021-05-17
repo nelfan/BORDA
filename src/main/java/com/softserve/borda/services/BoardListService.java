@@ -13,4 +13,6 @@ public interface BoardListService {
     void deleteBoardListById(Long id);
 
     List<Ticket> getAllTicketsByBoardListId(Long boardListId);
+
+    BoardList addTicketToBoardList(@NotNull BoardList boardList, Ticket ticket);
 }

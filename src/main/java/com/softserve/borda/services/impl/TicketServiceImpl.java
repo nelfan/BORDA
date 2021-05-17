@@ -49,18 +49,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean addTicketToBoardList(Ticket ticket, @NotNull BoardList boardList) {
-        if (ticket.getId() == null) {
-            BoardList boardListEntity = boardListRepository.getOne(boardList.getId());
-            ticketRepository.save(ticket);
-            boardListEntity.getTickets().add(ticket);
-            boardListRepository.save(boardListEntity);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<Comment> getAllCommentsByTicketId(Long ticketId) {
         return getTicketById(ticketId).getComments();
     }
@@ -73,5 +61,23 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Tag> getAllTagsByTicketId(Long id) {
         return getTicketById(id).getTags();
+    }
+
+    @Override
+    public Ticket addCommentToTicket(Ticket ticket, Comment comment) {
+        ticket.getComments().add(comment);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket addTagToTicket(Ticket ticket, Tag tag) {
+        ticket.getTags().add(tag);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket addMemberToTicket(Ticket ticket, User member) {
+        ticket.getMembers().add(member);
+        return ticketRepository.save(ticket);
     }
 }

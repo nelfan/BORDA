@@ -9,11 +9,16 @@ public interface TicketService {
     Ticket getTicketById(Long id);
     Ticket createOrUpdate(Ticket ticket);
     void deleteTicketById(Long id);
-    boolean addTicketToBoardList(Ticket ticket, @NotNull BoardList boardList);
 
     List<Comment> getAllCommentsByTicketId(Long ticketId);
 
     List<User> getAllMembersByTicketId(Long ticketId);
 
     List<Tag> getAllTagsByTicketId(Long id);
+
+    Ticket addCommentToTicket(@NotNull Ticket ticket, Comment comment);
+
+    Ticket addTagToTicket(@NotNull Ticket ticket, Tag tag);
+
+    Ticket addMemberToTicket(@NotNull Ticket ticket, User member);
 }

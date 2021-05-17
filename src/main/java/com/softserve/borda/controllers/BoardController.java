@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.List;
 
@@ -103,4 +104,76 @@ public class BoardController {
         BeanUtils.copyProperties(boardList, existingBoardList);
         return boardListService.createOrUpdate(existingBoardList);
     }
+
+    @GetMapping("{boardId}/boardLists/{boardListId}/tickets")
+    public List<Ticket> getAllTicketsForBoardList(@PathVariable Long boardId, @PathVariable Long boardListId) {
+        boardService.getBoardById(boardId);
+        return boardListService.getAllTicketsByBoardListId(boardListId);
+    }
+
+    @GetMapping("{boardId}/boardLists/{boardListId}/tickets/{ticketId}")
+    public Ticket getTicketForBoardListById(@PathVariable Long boardId, @PathVariable Long boardListId
+            , @PathVariable Long ticketId) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        return ticketService.getTicketById(ticketId);
+    }
+
+    @PostMapping("{boardId}/boardLists/{boardListId}/addTicket")
+    public BoardList createTicketForBoardList(@PathVariable long boardId, @PathVariable long boardListId,
+                                              @RequestBody TicketDTO ticketDTO) {
+        boardService.getBoardById(boardId);
+        Ticket ticket = new Ticket();
+        ticket.setTitle(ticketDTO.getTitle());
+        ticket.setDescription(ticketDTO.getDescription());
+        ticket.setImg(ticketDTO.getImg());
+        ticket = ticketService.createOrUpdate(ticket);
+        return boardListService.addTicketToBoardList(boardListService.getBoardListById(boardListId), ticket);
+    }
+
+    @DeleteMapping(value = "{boardId}/boardLists/{boardListId}/tickets/{ticketId}")
+    public void deleteTicket(@PathVariable Long boardId, @PathVariable Long boardListId
+            , @PathVariable Long ticketId) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        ticketService.deleteTicketById(ticketId);
+    }
+
+    @PutMapping(value = "{boardId}/boardLists/{boardListId}/tickets/{ticketId}")
+    public Ticket updateTicket(@PathVariable Long boardId, @PathVariable Long boardListId
+            , @PathVariable Long ticketId, @RequestBody Ticket ticket) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        Ticket existingTicket = ticketService.getTicketById(ticketId);
+        BeanUtils.copyProperties(ticket, existingTicket);
+        return ticketService.createOrUpdate(existingTicket);
+    }
+
+    @GetMapping("{boardId}/boardLists/{boardListId}/tickets/{ticketId}/comments")
+    public List<Comment> getAllCommentsForTicket(@PathVariable Long boardId, @PathVariable Long boardListId,
+                                                 @PathVariable Long ticketId) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        ticketService.getTicketById(ticketId);
+        return ticketService.getAllCommentsByTicketId(ticketId);
+    }
+
+    @GetMapping("{boardId}/boardLists/{boardListId}/tickets/{ticketId}/tags")
+    public List<Tag> getAllTagsForTicket(@PathVariable Long boardId, @PathVariable Long boardListId,
+                                         @PathVariable Long ticketId) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        ticketService.getTicketById(ticketId);
+        return ticketService.getAllTagsByTicketId(ticketId);
+    }
+
+    @GetMapping("{boardId}/boardLists/{boardListId}/tickets/{ticketId}/members")
+    public List<User> getAllMembersForTicket(@PathVariable Long boardId, @PathVariable Long boardListId,
+                                             @PathVariable Long ticketId) {
+        boardService.getBoardById(boardId);
+        boardListService.getBoardListById(boardListId);
+        ticketService.getTicketById(ticketId);
+        return ticketService.getAllMembersByTicketId(ticketId);
+    }
+
 }

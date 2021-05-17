@@ -22,15 +22,14 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(RegistrationRequest registrationRequest) {
+    public User registerUser(RegistrationRequest registrationRequest) {
         User user = new User();
         user.setUsername(registrationRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setEmail(registrationRequest.getEmail());
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
-        userService.createOrUpdate(user);
-        return auth(new AuthRequest(user.getUsername(), user.getPassword()));
+        return userService.createOrUpdate(user);
     }
 
     @PostMapping("/auth")

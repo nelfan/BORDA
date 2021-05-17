@@ -1,19 +1,19 @@
 package com.softserve.borda.exceptions;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 
-@Slf4j
+@Log
 public class CustomEntityNotFoundException extends RuntimeException {
     public CustomEntityNotFoundException(){
         super("Entity not found");
-        log.warn("Entity not found");
+        log.warning("Entity not found");
     }
     public CustomEntityNotFoundException(String message){
         super("Entity not found: \n" + message);
-        log.warn("Entity not found: \n" + message);
+        log.warning("Entity not found: \n" + message);
     }
     public CustomEntityNotFoundException(Class<?> clazz){
-        super("Unable to delete " + clazz.getSimpleName().toLowerCase());
-        log.warn("Unable to delete {}", clazz.getSimpleName().toLowerCase());
+        super("Unable to find " + clazz.getSimpleName().toLowerCase());
+        log.warning("Unable to find " + clazz.getSimpleName().toLowerCase());
     }
 }

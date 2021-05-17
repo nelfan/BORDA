@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/admin", "/admin/*").hasRole("ADMIN")
             .antMatchers("/users", "/users/*", "/boards", "/boards/*").authenticated()
-            .antMatchers("/register", "/auth").not().fullyAuthenticated()
+            .antMatchers("/register", "/auth").permitAll()
             .and()
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);*/
     }

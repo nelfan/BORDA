@@ -3,21 +3,23 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardRepository;
+import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.BoardService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardServiceImpl(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
+    private final BoardListService boardListService;
 
     @Override
     public List<BoardList> getAllBoardListsByBoardId(Long boardId) {
@@ -52,5 +54,23 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void deleteBoardById(Long id) {
         boardRepository.deleteById(id);
+    }
+
+    @Override
+    public BoardList addBoardListToBoard(Board board, BoardList boardList) {
+        board.getBoardLists().add(boardList);
+        boardRepository.save(board);
+        return boardList;
+    }
+
+    @Override
+    public Board deleteBoardListFromBoard(Board board, BoardList boardList) {
+        try {
+            board.getBoardLists().remove(boardList);
+            boardListService.deleteBoardListById(boardList.getId());
+            return boardRepository.save(board);
+        } catch (Exception e) {
+            throw new CustomFailedToDeleteEntityException(e.getMessage());
+        }
     }
 }

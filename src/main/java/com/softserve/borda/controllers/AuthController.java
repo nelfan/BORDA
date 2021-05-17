@@ -9,14 +9,15 @@ import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@AllArgsConstructor
 public class AuthController {
 
     private final UserService userService;
@@ -32,16 +33,6 @@ public class AuthController {
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
         this.jwtConvertor = jwtConvertor;
-    }
-
-    @GetMapping("/")
-    public String getHomePage() {
-        return "index";
-    }
-
-    @GetMapping("/auth")
-    public String getAuthPage() {
-        return "login_page";
     }
 
     @PostMapping("/register")

@@ -34,8 +34,8 @@ boardRequest.onload = function () {
 
 function renderBoard(data) {
     for (let i = 0; i < data.length; i++) {
-        if (data[i].userBoardRelations[0].boardRoles[0].name === "OWNER"
-            || data[i].userBoardRelations[0].boardRoles[0].name === "owner"){
+        if (data[i].userBoardRelations[0].boardRole.name === "OWNER"
+            || data[i].userBoardRelations[0].boardRole.name === "owner"){
             var boardsContainer = document.getElementById("own-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
                 '<a class="boards-info" href="'+data[i].name+'"><p>'+data[i].name+'</p></a>');

@@ -26,13 +26,16 @@ class BoardServiceTest {
     @Mock
     BoardRepository boardRepository;
 
+    @Mock
+    BoardListService boardListService;
+
     @InjectMocks
     BoardServiceImpl boardService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardService = new BoardServiceImpl(boardRepository);
+        boardService = new BoardServiceImpl(boardRepository, boardListService);
     }
 
     @Test

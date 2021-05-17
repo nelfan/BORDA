@@ -1,26 +1,24 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.*;
+import com.softserve.borda.entities.Comment;
+import com.softserve.borda.entities.Tag;
+import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.BoardListRepository;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.TicketService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final BoardListRepository boardListRepository;
-
-    public TicketServiceImpl(TicketRepository ticketRepository, BoardListRepository boardListRepository) {
-        this.ticketRepository = ticketRepository;
-        this.boardListRepository = boardListRepository;
-    }
 
     @Override
     public Ticket getTicketById(Long id) {
@@ -45,19 +43,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void deleteTicketById(Long id) {
-        ticketRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean addTicketToBoardList(Ticket ticket, @NotNull BoardList boardList) {
-        if (ticket.getId() == null) {
-            BoardList boardListEntity = boardListRepository.getOne(boardList.getId());
-            ticketRepository.save(ticket);
-            boardListEntity.getTickets().add(ticket);
-            boardListRepository.save(boardListEntity);
-            return true;
+        try {
+            ticketRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomFailedToDeleteEntityException(e.getMessage());
         }
-        return false;
     }
 
     @Override
@@ -73,5 +63,46 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<Tag> getAllTagsByTicketId(Long id) {
         return getTicketById(id).getTags();
+    }
+
+    @Override
+    public Ticket addCommentToTicket(Long ticketId, Comment comment) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getComments().add(comment);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket deleteCommentFromTicket(Long ticketId, Comment comment) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getComments().remove(comment);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket addTagToTicket(Long ticketId, Tag tag) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getTags().add(tag);
+        return ticketRepository.save(ticket);
+    }
+
+    public Ticket deleteTagFromTicket(Long ticketId, Tag tag) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getTags().remove(tag);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket addMemberToTicket(Long ticketId, User user) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getMembers().add(user);
+        return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public Ticket deleteMemberFromTicket(Long ticketId, User user) {
+        Ticket ticket = getTicketById(ticketId);
+        ticket.getMembers().remove(user);
+        return ticketRepository.save(ticket);
     }
 }

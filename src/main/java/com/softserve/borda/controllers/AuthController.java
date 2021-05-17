@@ -7,9 +7,8 @@ import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,17 +22,8 @@ public class AuthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private JwtConvertor jwtConvertor;
-
-    @Autowired
-    ModelMapper modelMapper;
-
-    public AuthController(UserService userService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder, JwtConvertor jwtConvertor) {
-        this.userService = userService;
-        this.jwtProvider = jwtProvider;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtConvertor = jwtConvertor;
-    }
+    private final JwtConvertor jwtConvertor;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(RegistrationRequest registrationRequest) {

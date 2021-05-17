@@ -6,12 +6,16 @@ import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.services.CommentService;
 import com.softserve.borda.services.TagService;
 import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,13 +33,24 @@ public class TicketController {
     private final UserService userService;
 
     @GetMapping("/tickets/{ticketId}")
-    public Ticket getTicketById(@PathVariable Long ticketId) {
-        return ticketService.getTicketById(ticketId);
+    public ResponseEntity<Ticket> getTicketById(@PathVariable Long ticketId) {
+        try {
+            return new ResponseEntity<>(ticketService.getTicketById(ticketId), HttpStatus.OK);
+        } catch (CustomEntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(value = "/tickets/{ticketId}")
-    public void deleteTicket(@PathVariable Long ticketId) {
-        ticketService.deleteTicketById(ticketId);
+    public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId) {
+        try {
+            ticketService.deleteTicketById(ticketId);
+            return new ResponseEntity<>("Entity was removed successfully",
+                    HttpStatus.NOT_FOUND);
+        } catch (CustomFailedToDeleteEntityException e) {
+            return new ResponseEntity<>("Failed to delete ticket with Id: " + ticketId,
+                    HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping(value = "/tickets/{ticketId}")

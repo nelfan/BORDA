@@ -5,10 +5,8 @@ import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.CommentRepository;
-import com.softserve.borda.repositories.TagRepository;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TicketRepository;
-import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.TicketService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +19,6 @@ import java.util.Optional;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final CommentRepository commentRepository;
-    private final TagRepository tagRepository;
-    private final UserRepository userRepository;
 
     @Override
     public Ticket getTicketById(Long id) {
@@ -48,7 +43,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void deleteTicketById(Long id) {
-        ticketRepository.deleteById(id);
+        try {
+            ticketRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new CustomFailedToDeleteEntityException(e.getMessage());
+        }
     }
 
     @Override

@@ -25,16 +25,7 @@ import static org.mockito.Mockito.*;
 class TicketServiceTest {
 
     @Mock
-    UserRepository userRepository;
-
-    @Mock
     TicketRepository ticketRepository;
-
-    @Mock
-    CommentRepository commentRepository;
-
-    @Mock
-    TagRepository tagRepository;
 
     @InjectMocks
     TicketServiceImpl ticketService;
@@ -42,7 +33,7 @@ class TicketServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository, commentRepository, tagRepository, userRepository);
+        ticketService = new TicketServiceImpl(ticketRepository);
     }
 
     @Test

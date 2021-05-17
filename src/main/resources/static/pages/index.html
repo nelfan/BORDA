@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" th:href="@{/css/header.css}" href="../static/css/header.css">
-    <link rel="stylesheet" th:href="@{/css/welcome.css}" href="../static/css/welcome.css">
-    <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css">
-    <link th:href="@{/fontawesome-free-5.15.3-web/css/all.css}" href="../static/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet"  href="/css/header.css">
+    <link rel="stylesheet"  href="/css/welcome.css">
+    <link rel="stylesheet"  href="/css/footer.css">
+    <link href="/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
 </head>
 <body>
     <div class="alignment_of_header">
@@ -38,7 +38,7 @@
     <div class="main_content"> 
         <div class="welcome_container">
             <div class="man_with_tablet">
-                <img th:src="@{/images/man_with_tablet.png}" src="../static/images/man_with_tablet.png">
+                <img src="/images/man_with_tablet.png">
             </div>
             <div class="description_block">
                 <div class="title_block">
@@ -47,11 +47,11 @@
                 </div>
                 <span>Welcome dear Friend</span>
                 <div class="btn_start">
-                    <a href="/auth">Start</a>
+                    <a href="login_page.html">Start</a>
                 </div>
             </div>
             <div class="progress_toolbar">
-                <img th:src="@{/images/list-removebg-preview.png}" src="../static/images/list-removebg-preview.png">
+                <img src="/images/list-removebg-preview.png">
             </div>
            
         </div>
@@ -63,6 +63,6 @@
             <span>Copyright by FantasticFour &copy;</span>
         </div>
     </div>
-    <script th:src="@{/js/index.js}" src="../static/js/index.js"></script>
+    <script src="/js/index.js"></script>
 </body>
 </html>

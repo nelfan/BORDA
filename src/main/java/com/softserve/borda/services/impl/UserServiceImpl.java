@@ -3,6 +3,7 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.UserRepository;
+import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final UserBoardRelationService userBoardRelationService;
 
     @Override
     public List<User> getAll() {
@@ -59,6 +62,19 @@ public class UserServiceImpl implements UserService {
         return user.getUserBoardRelations().stream().map(
                 UserBoardRelation::getBoard
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomEntityNotFoundException(User.class));
+        return user.getUserBoardRelations().stream()
+                .filter(userBoardRelation ->
+                        userBoardRelation.getBoardRole().equals(
+                                userBoardRelationService.getBoardRoleById(roleId)))
+                .map(
+                        UserBoardRelation::getBoard
+                ).collect(Collectors.toList());
     }
 
     @Override

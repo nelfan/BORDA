@@ -14,6 +14,8 @@ public interface UserService {
 
     List<Board> getBoardsByUserId(Long id);
 
+    List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId);
+
     User getUserByUsername(String username);
 
     User addCommentToUser(Long userId, Comment comment);

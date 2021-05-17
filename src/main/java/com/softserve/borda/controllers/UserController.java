@@ -62,14 +62,14 @@ public class UserController {
 
 
     @GetMapping("/{userId}/boards")
-    public List<Board> getBoardsByUser(@PathVariable Long userId) {
+    public List<Board> getBoardsByUserId(@PathVariable Long userId) {
         return userService.getBoardsByUserId(userId);
     }
 
-    @GetMapping("{id}/boardsByRole/{boardRoleId}")
-    public List<Board> getBoardsByBoardRoleAndUserId(@PathVariable Long id,
+    @GetMapping("{userId}/boardsByRole/{boardRoleId}")
+    public List<Board> getBoardsByUserIdAndBoardRoleId(@PathVariable Long userId,
                                                @PathVariable Long boardRoleId) {
-        return userService.getBoardsByUserId(id); //TODO
+        return userService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId);
     }
 
 }

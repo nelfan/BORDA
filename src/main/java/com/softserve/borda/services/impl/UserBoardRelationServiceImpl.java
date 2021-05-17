@@ -55,4 +55,9 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
                 .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
     }
 
+    @Override
+    public BoardRole getBoardRoleById(Long id) {
+        return boardRoleRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+    }
 }

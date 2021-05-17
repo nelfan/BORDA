@@ -24,13 +24,16 @@ class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    UserBoardRelationService userBoardRelationService;
+
     @InjectMocks
     UserServiceImpl userService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository);
+        userService = new UserServiceImpl(userRepository, userBoardRelationService);
     }
 
     @Test

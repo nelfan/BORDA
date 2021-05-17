@@ -7,11 +7,7 @@ import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
-import com.softserve.borda.services.CommentService;
-import com.softserve.borda.services.TagService;
-import com.softserve.borda.services.TicketService;
-import com.softserve.borda.services.UserService;
+import com.softserve.borda.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
@@ -38,18 +34,6 @@ public class TicketController {
             return new ResponseEntity<>(ticketService.getTicketById(ticketId), HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping(value = "/tickets/{ticketId}")
-    public ResponseEntity<String> deleteTicket(@PathVariable Long ticketId) {
-        try {
-            ticketService.deleteTicketById(ticketId);
-            return new ResponseEntity<>("Entity was removed successfully",
-                    HttpStatus.NOT_FOUND);
-        } catch (CustomFailedToDeleteEntityException e) {
-            return new ResponseEntity<>("Failed to delete ticket with Id: " + ticketId,
-                    HttpStatus.NOT_FOUND);
         }
     }
 

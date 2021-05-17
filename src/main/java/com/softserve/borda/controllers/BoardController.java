@@ -6,9 +6,15 @@ import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.services.*;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
+import com.softserve.borda.services.BoardListService;
+import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.UserBoardRelationService;
+import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -80,4 +86,17 @@ public class BoardController {
         return boardService.addBoardListToBoard(boardService.getBoardById(boardId), boardList);
     }
 
+    @DeleteMapping(value = "{boardId}/boardLists/{boardListId}")
+    public ResponseEntity<String> deleteBoardListFromBoard(@PathVariable Long boardId,
+                                                           @PathVariable Long boardListId) {
+        try {
+            boardService.deleteBoardListFromBoard(boardService.getBoardById(boardId),
+                    boardListService.getBoardListById(boardListId));
+            return new ResponseEntity<>("Entity was removed successfully",
+                    HttpStatus.OK);
+        } catch (CustomFailedToDeleteEntityException e) {
+            return new ResponseEntity<>("Failed to delete boardList with Id: " + boardListId,
+                    HttpStatus.NOT_FOUND);
+        }
+    }
 }

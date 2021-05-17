@@ -14,4 +14,6 @@ public interface BoardService {
     List<BoardList> getAllBoardListsByBoardId(Long boardId);
 
     BoardList addBoardListToBoard(Board board, BoardList boardList);
+
+    Board deleteBoardListFromBoard(Board boardById, BoardList boardListById);
 }

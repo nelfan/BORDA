@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface BoardListService {
+    BoardList deleteTicketFromBoardList(BoardList boardList, Ticket ticket);
+
     BoardList getBoardListById(Long id);
     BoardList createOrUpdate(BoardList boardList);
     void deleteBoardListById(Long id);

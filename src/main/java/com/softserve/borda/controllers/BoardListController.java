@@ -3,10 +3,13 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.dto.TicketDTO;
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.TicketService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,11 +36,6 @@ public class BoardListController {
         return boardListService.createOrUpdate(existingBoardList);
     }
 
-    @DeleteMapping(value = "{boardListId}")
-    public void deleteBoardList(@PathVariable Long boardListId) {
-        boardListService.deleteBoardListById(boardListId);
-    }
-
     @GetMapping("{boardListId}/tickets")
     public List<Ticket> getAllTicketsForBoardList(@PathVariable Long boardListId) {
         return boardListService.getAllTicketsByBoardListId(boardListId);
@@ -52,5 +50,19 @@ public class BoardListController {
         ticket.setImg(ticketDTO.getImg());
         ticket = ticketService.createOrUpdate(ticket);
         return boardListService.addTicketToBoardList(boardListService.getBoardListById(boardListId), ticket);
+    }
+
+    @DeleteMapping(value = "{boardListId}/tickets/{ticketId}")
+    public ResponseEntity<String> deleteTicketFromBoardList(@PathVariable Long boardListId,
+                                               @PathVariable Long ticketId) {
+        try {
+            boardListService.deleteTicketFromBoardList(boardListService.getBoardListById(boardListId),
+                    ticketService.getTicketById(ticketId));
+            return new ResponseEntity<>("Entity was removed successfully",
+                    HttpStatus.OK);
+        } catch (CustomFailedToDeleteEntityException e) {
+            return new ResponseEntity<>("Failed to delete ticket with Id: " + ticketId,
+                    HttpStatus.NOT_FOUND);
+        }
     }
 }

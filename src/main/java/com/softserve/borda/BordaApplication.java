@@ -110,7 +110,7 @@ public class BordaApplication {
         ticket.setDescription("Ticket for testing");
         ticket = ticketService.createOrUpdate(ticket);
         boardList.getTickets().add(ticket);
-        boardList = boardListService.createOrUpdate(boardList);
+        boardListService.createOrUpdate(boardList);
         boardService.createOrUpdate(boards.get(0));
     }
 

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" th:href="@{/css/login/user_login.css}" href="../static/css/login/user_login.css" >
-    <link rel="stylesheet" th:href="@{/css/header.css}" href="../static/css/header.css">
+    <link rel="stylesheet" href="/css/login/user_login.css" >
+    <link rel="stylesheet" href="/css/header.css">
     <script src="/js/register.js"></script>
-    <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css">
-    <link th:href="@{/fontawesome-free-5.15.3-web/css/all.css}" href="../static/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <link rel="stylesheet" href="/css/footer.css">
+    <link  href="/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="alignment_of_header">
@@ -44,7 +44,7 @@
             <div class="tab-content">
                 <div id="signup" class="signUpContent">
                     <h1>Sign Up for Free</h1>
-                    <form th:action="@{/register}" method="POST" onsubmit="reg(this);return false;">
+                    <form action="/register" method="POST" onsubmit="reg(this);return false;">
                         <div class="input_fields">
                             <label for="username">Username</label>
                             <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter username..">
@@ -72,7 +72,7 @@
 
                 <div id="login" class="signInContent">
                     <h1>Welcome Back!</h1>
-                    <form th:action="@{/auth}" method="post" >
+                    <form action="/auth" method="post" >
                         <div class="enter_fields">
                             <label for="usernameLogin">Username</label>
                             <input type="text" id="usernameLogin" name="username" autocomplete="off" placeholder="Enter username..">

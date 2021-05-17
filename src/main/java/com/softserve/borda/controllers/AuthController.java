@@ -22,14 +22,16 @@ public class AuthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private JwtConvertor jwtConvertor;
 
     @Autowired
     ModelMapper modelMapper;
 
-    public AuthController(UserService userService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+    public AuthController(UserService userService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder, JwtConvertor jwtConvertor) {
         this.userService = userService;
         this.jwtProvider = jwtProvider;
         this.passwordEncoder = passwordEncoder;
+        this.jwtConvertor = jwtConvertor;
     }
 
     @GetMapping("/")
@@ -51,10 +53,8 @@ public class AuthController {
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
         userService.createOrUpdate(user);
-        //jwtConvertor.saveUser(user);
-        System.err.println(user);
-        //return auth(modelMapper.map(user, AuthRequest.class));
-        return null;
+        jwtConvertor.saveUser(user);
+        return auth(modelMapper.map(registrationRequest, AuthRequest.class));
     }
 
     @PostMapping("/auth")
@@ -62,7 +62,7 @@ public class AuthController {
         User user = userService.getUserByUsername(request.getUsername());
         if (user != null &&
                 (passwordEncoder.matches(request.getPassword(), user.getPassword()))) {
-            String token = jwtProvider.generateToken(user.getUsername());
+           String token = jwtProvider.generateToken(user.getUsername());
             return ResponseEntity.ok(new AuthResponse(token));
         }
         throw new AuthenticationCredentialsNotFoundException("Authentication failed");

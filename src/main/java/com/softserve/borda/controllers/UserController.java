@@ -34,13 +34,6 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("user")
-    public User getUser(@ModelAttribute("user") User user,
-                        HttpServletRequest request,
-                        SessionStatus sessionStatus) {
-        return user;
-    }
-
     @GetMapping("{id}")
     public UserSimpleDTO getUserById(@PathVariable Long id) {
         return modelMapper.map(
@@ -71,10 +64,9 @@ public class UserController {
                 UserSimpleDTO.class);
     }
 
-    @GetMapping("/user/boards")
-    public List<Board> getBoardsByUser(@ModelAttribute("user") UserSimpleDTO user, HttpServletRequest request,
-                                       SessionStatus sessionStatus) {
-        return userService.getBoardsByUserId(user.getId());
+    @GetMapping("/{id}/boards")
+    public List<Board> getBoardsByUser(@PathVariable Long id) {
+        return userService.getBoardsByUserId(id);
     }
 
     @GetMapping("{id}/boardsByRole/{boardRoleId}")

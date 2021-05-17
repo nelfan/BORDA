@@ -4,8 +4,6 @@ class User{
     lastName = "";
     firstName = "";
     avatar = "";
-    //userBoardRelations: [];
-    //comments: [];
     constructor(username, email, lastName, firstName, avatar) {
         this.username = username;
         this.email = email;

@@ -87,7 +87,6 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.save(ticket);
     }
 
-    @Override
     public Ticket deleteTagFromTicket(Long ticketId, Tag tag) {
         Ticket ticket = getTicketById(ticketId);
         ticket.getTags().remove(tag);

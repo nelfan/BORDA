@@ -17,7 +17,7 @@ public interface TicketService {
     List<User> getAllMembersByTicketId(Long ticketId);
 
     List<Tag> getAllTagsByTicketId(Long id);
-
+  
     Ticket addCommentToTicket(Long ticketId, Comment comment);
 
     Ticket deleteCommentFromTicket(Long ticketId, Comment comment);
@@ -29,4 +29,5 @@ public interface TicketService {
     Ticket addMemberToTicket(Long ticketId, User user);
 
     Ticket deleteMemberFromTicket(Long ticketId, User user);
+  
 }

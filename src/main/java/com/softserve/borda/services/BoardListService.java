@@ -8,9 +8,11 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface BoardListService {
-    List<Ticket> getAllTicketsByBoardListId(Long boardListId);
     BoardList getBoardListById(Long id);
     BoardList createOrUpdate(BoardList boardList);
     void deleteBoardListById(Long id);
-    boolean addBoardListToBoard(BoardList boardList, @NotNull Board board);
+
+    List<Ticket> getAllTicketsByBoardListId(Long boardListId);
+
+    BoardList addTicketToBoardList(@NotNull BoardList boardList, Ticket ticket);
 }

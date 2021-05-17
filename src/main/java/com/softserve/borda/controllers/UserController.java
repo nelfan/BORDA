@@ -10,9 +10,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,15 +26,8 @@ public class UserController {
     @GetMapping
     public List<UserSimpleDTO> getAllUsers() {
         return userService.getAll().stream()
-                .map((user) -> modelMapper.map(user, UserSimpleDTO.class))
+                .map(user -> modelMapper.map(user, UserSimpleDTO.class))
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("user")
-    public User getUser(@ModelAttribute("user") User user,
-                        HttpServletRequest request,
-                        SessionStatus sessionStatus) {
-        return user;
     }
 
     @GetMapping("{id}")
@@ -47,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserSimpleDTO createUser(@RequestBody final CreateUserDTO userDTO) {
+    public UserSimpleDTO createUser(CreateUserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         user.getRoles().add(new Role(Role.Roles.ROLE_USER.name()));
         return modelMapper.map(
@@ -61,7 +52,7 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public UserSimpleDTO update(@PathVariable Long id, @RequestBody User user) {
+    public UserSimpleDTO update(@PathVariable Long id, User user) {
         User existingUser = userService.getUserById(id);
         BeanUtils.copyProperties(user, existingUser);
         return modelMapper.map(
@@ -69,10 +60,9 @@ public class UserController {
                 UserSimpleDTO.class);
     }
 
-    @GetMapping("/user/boards")
-    public List<Board> getBoardsByUser(@ModelAttribute("user") UserSimpleDTO user, HttpServletRequest request,
-                                       SessionStatus sessionStatus) {
-        return userService.getBoardsByUserId(user.getId());
+    @GetMapping("/{userId}/boards")
+    public List<Board> getBoardsByUser(@PathVariable Long userId) {
+        return userService.getBoardsByUserId(userId);
     }
 
     @GetMapping("{id}/boardsByRole/{boardRoleId}")

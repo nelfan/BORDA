@@ -10,14 +10,13 @@ import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/boards")
 @AllArgsConstructor
 public class BoardController {
@@ -64,7 +63,7 @@ public class BoardController {
     }
 
     @PutMapping(value = "{id}")
-    public Board update(@PathVariable Long id, @RequestBody Board board) {
+    public Board update(@PathVariable Long id, Board board) {
         Board existingBoard = boardService.getBoardById(id);
         BeanUtils.copyProperties(board, existingBoard);
         return boardService.createOrUpdate(existingBoard);
@@ -75,6 +74,7 @@ public class BoardController {
         return boardService.getAllBoardListsByBoardId(id);
     }
 
+  
     @GetMapping("{boardId}/boardLists/{boardListId}")
     public BoardList getBoardListForBoardById(@PathVariable Long boardId, @PathVariable Long boardListId) {
         boardService.getBoardById(boardId);

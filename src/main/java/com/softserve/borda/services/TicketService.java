@@ -1,8 +1,10 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.*;
+import com.softserve.borda.entities.Comment;
+import com.softserve.borda.entities.Tag;
+import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.entities.User;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface TicketService {
@@ -15,10 +17,17 @@ public interface TicketService {
     List<User> getAllMembersByTicketId(Long ticketId);
 
     List<Tag> getAllTagsByTicketId(Long id);
+  
+    Ticket addCommentToTicket(Long ticketId, Comment comment);
 
-    Ticket addCommentToTicket(@NotNull Ticket ticket, Comment comment);
+    Ticket deleteCommentFromTicket(Long ticketId, Comment comment);
 
-    Ticket addTagToTicket(@NotNull Ticket ticket, Tag tag);
+    Ticket addTagToTicket(Long ticketId, Tag tag);
 
-    Ticket addMemberToTicket(@NotNull Ticket ticket, User member);
+    Ticket deleteTagFromTicket(Long ticketId, Tag tag);
+
+    Ticket addMemberToTicket(Long ticketId, User user);
+
+    Ticket deleteMemberFromTicket(Long ticketId, User user);
+  
 }

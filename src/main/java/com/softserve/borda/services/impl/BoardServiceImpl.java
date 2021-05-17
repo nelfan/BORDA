@@ -5,19 +5,17 @@ import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
-
-    public BoardServiceImpl(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
 
     @Override
     public List<BoardList> getAllBoardListsByBoardId(Long boardId) {

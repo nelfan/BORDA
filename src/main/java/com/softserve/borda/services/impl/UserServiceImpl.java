@@ -1,11 +1,10 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.User;
-import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public List<User> getAll() {
@@ -69,5 +65,19 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new CustomEntityNotFoundException(User.class));
+    }
+
+    @Override
+    public User addCommentToUser(Long userId, Comment comment) {
+        User user = getUserById(userId);
+        user.getComments().add(comment);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User deleteCommentFromUser(Long userId, Comment comment) {
+        User user = getUserById(userId);
+        user.getComments().remove(comment);
+        return userRepository.save(user);
     }
 }

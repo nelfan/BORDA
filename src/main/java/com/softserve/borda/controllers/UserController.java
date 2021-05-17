@@ -6,9 +6,9 @@ import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -16,18 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     private final ModelMapper modelMapper;
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-        modelMapper = new ModelMapper();
-    }
 
     @GetMapping
     public List<UserSimpleDTO> getAllUsers() {

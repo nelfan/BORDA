@@ -8,13 +8,12 @@ import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/boards")
 @AllArgsConstructor
 public class BoardController {
@@ -59,7 +58,7 @@ public class BoardController {
     }
 
     @PutMapping(value = "{id}")
-    public Board update(@PathVariable Long id, @RequestBody Board board) {
+    public Board update(@PathVariable Long id, Board board) {
         Board existingBoard = boardService.getBoardById(id);
         BeanUtils.copyProperties(board, existingBoard);
         return boardService.createOrUpdate(existingBoard);
@@ -72,7 +71,7 @@ public class BoardController {
 
     @PostMapping("{id}/addBoardList")
     public BoardList createBoardListsForBoard(@PathVariable Long id,
-                                                    @RequestBody BoardListDTO boardListDTO) {
+                                                    BoardListDTO boardListDTO) {
         BoardList boardList = new BoardList();
         boardList.setName(boardListDTO.getName());
         boardList = boardListService.createOrUpdate(boardList);

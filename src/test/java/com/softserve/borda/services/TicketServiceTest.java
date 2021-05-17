@@ -4,8 +4,7 @@ import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.BoardListRepository;
-import com.softserve.borda.repositories.TicketRepository;
+import com.softserve.borda.repositories.*;
 import com.softserve.borda.services.impl.TicketServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +25,16 @@ import static org.mockito.Mockito.*;
 class TicketServiceTest {
 
     @Mock
-    BoardListRepository boardListRepository;
+    UserRepository userRepository;
 
     @Mock
     TicketRepository ticketRepository;
+
+    @Mock
+    CommentRepository commentRepository;
+
+    @Mock
+    TagRepository tagRepository;
 
     @InjectMocks
     TicketServiceImpl ticketService;
@@ -37,7 +42,7 @@ class TicketServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository, boardListRepository);
+        ticketService = new TicketServiceImpl(ticketRepository, commentRepository, tagRepository, userRepository);
     }
 
     @Test

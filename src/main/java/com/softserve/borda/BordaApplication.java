@@ -3,6 +3,9 @@ package com.softserve.borda;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
+import com.softserve.borda.services.BoardListService;
+import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,15 +29,27 @@ public class BordaApplication {
 
     UserService userService;
 
+    final
+    BoardService boardService;
+
+    final
+    BoardListService boardListService;
+
+    final
+    TicketService ticketService;
+
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
         this.boardRoleRepository = boardRoleRepository;
         this.userService = userService;
         this.roleRepository = roleRepository;
+        this.boardService = boardService;
+        this.boardListService = boardListService;
+        this.ticketService = ticketService;
 
         Role role = new Role(Role.Roles.ROLE_USER.name());
         role = roleRepository.save(role);
@@ -85,8 +100,18 @@ public class BordaApplication {
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
-        userService.getUserById(1L);
-        userController.getUserById(1L);
+
+        BoardList boardList = new BoardList();
+        boardList.setName("BoardList1");
+        boards.get(0).getBoardLists().add(boardList);
+        boardList = boardListService.createOrUpdate(boardList);
+        Ticket ticket = new Ticket();
+        ticket.setTitle("Ticket1");
+        ticket.setDescription("Ticket for testing");
+        ticket = ticketService.createOrUpdate(ticket);
+        boardList.getTickets().add(ticket);
+        boardList = boardListService.createOrUpdate(boardList);
+        boardService.createOrUpdate(boards.get(0));
     }
 
     public static void main(String[] args) {

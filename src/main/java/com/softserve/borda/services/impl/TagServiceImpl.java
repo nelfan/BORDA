@@ -27,7 +27,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getTagById(Long id) {
-        return tagRepository.findById(id).orElseThrow(
+       return tagRepository.findById(id).orElseThrow(
                 () -> new CustomEntityNotFoundException(Tag.class));
     }
 

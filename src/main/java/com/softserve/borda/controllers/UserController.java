@@ -9,6 +9,7 @@ import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserController {
 
-    private final ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public List<UserSimpleDTO> getAllUsers() {
@@ -59,6 +62,7 @@ public class UserController {
                 userService.createOrUpdate(existingUser),
                 UserSimpleDTO.class);
     }
+
 
     @GetMapping("/{userId}/boards")
     public List<Board> getBoardsByUser(@PathVariable Long userId) {

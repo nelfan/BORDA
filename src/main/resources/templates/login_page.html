@@ -7,99 +7,100 @@
     <title>Document</title>
     <link rel="stylesheet" th:href="@{/css/login/user_login.css}" href="../static/css/login/user_login.css" >
     <link rel="stylesheet" th:href="@{/css/header.css}" href="../static/css/header.css">
+    <script src="/js/register.js"></script>
     <link rel="stylesheet" th:href="@{/css/footer.css}" href="../static/css/footer.css">
     <link th:href="@{/fontawesome-free-5.15.3-web/css/all.css}" href="../static/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
 </head>
 <body>
-    <div class="alignment_of_header">
-        <div class="header">
-            <div class="left-side">
-                <div class="logoImage">
-                    <a href="index.html">
-                        <i class="fa fa-globe"></i>
-                    </a>
-                </div>
-                <span>Workflow</span>
+<div class="alignment_of_header">
+    <div class="header">
+        <div class="left-side">
+            <div class="logoImage">
+                <a href="index.html">
+                    <i class="fa fa-globe"></i>
+                </a>
             </div>
-            <div class="right-side">
-                <div class="general-info">
-                    <a href="#" class="question_icon"><i class="far fa-question-circle"></i></a>
-                    <a href="main_page.html" class="doc_icon"><i class="fas fa-file-alt"></i></a>
+            <span>Workflow</span>
+        </div>
+        <div class="right-side">
+            <div class="general-info">
+                <a href="#" class="question_icon"><i class="far fa-question-circle"></i></a>
+                <a href="main_page.html" class="doc_icon"><i class="fas fa-file-alt"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="main_container">
+    <div class="align_form">
+        <div class="form">
+            <ul class="tab-group">
+                <li class="tab active"><a href="#signup">Sign Up</a></li>
+                <li class="tab"><a href="#login">Log In</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="signup" class="signUpContent">
+                    <h1>Sign Up for Free</h1>
+                    <form th:action="@{/register}" method="POST" onsubmit="reg(this);return false;">
+                        <div class="input_fields">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter username..">
+
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" autocomplete="off" name="firstName" placeholder="Enter name..">
+
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" autocomplete="off" placeholder="Enter last name..">
+
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" autocomplete="off" placeholder="Enter email..">
+
+                            <label for="pass">Password</label>
+                            <div class="eye_pswd">
+                                <input type="password" id="pass" name="password" placeholder="Enter password.." autocomplete="off">
+                                <i class="far fa-eye" onclick="checkPass(this)" id="togglePassword"></i>
+                            </div>
+                            <div class="signUp_btn">
+                                <input class="submit_signUp"  type="submit" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="login" class="signInContent">
+                    <h1>Welcome Back!</h1>
+                    <form th:action="@{/auth}" method="post" >
+                        <div class="enter_fields">
+                            <label for="usernameLogin">Username</label>
+                            <input type="text" id="usernameLogin" name="username" autocomplete="off" placeholder="Enter username..">
+
+                            <label for="passLogin">Password</label>
+                            <div class="enter_eye_pswd">
+                                <input type="password" id="passLogin" name="password" placeholder="Enter password.." autocomplete="off">
+                                <i class="far fa-eye" onclick="checkPass(this)" id="toggleLoginPassword"></i>
+                            </div>
+                            <div class="signIn_btn">
+                                <input class="submit_signIn" type="submit" value="Submit">
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
-    <div class="main_container">
-        <div class="align_form">
-            <div class="form">
-                <ul class="tab-group">
-                    <li class="tab active"><a href="#signup">Sign Up</a></li>
-                    <li class="tab"><a href="#login">Log In</a></li>
-                </ul>
-          
-                <div class="tab-content">
-                    <div id="signup" class="signUpContent">   
-                        <h1>Sign Up for Free</h1>
-                        <form th:action="@{/register}" method="POST">
-                            <div class="input_fields">
-                                <label for="username">Username</label>
-                                <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter username..">
 
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" autocomplete="off" name="firstName" placeholder="Enter name..">
-                            
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="lastName" autocomplete="off" placeholder="Enter last name..">
-                            
-                                <label for="email">Email</label>
-                                <input type="text" id="email" name="email" autocomplete="off" placeholder="Enter email.."> 
-                               
-                                <label for="pass">Password</label>
-                                <div class="eye_pswd">
-                                    <input type="password" id="pass" name="password" placeholder="Enter password.." autocomplete="off">
-                                    <i class="far fa-eye" onclick="checkPass(this)" id="togglePassword"></i>
-                                </div>
-                                <div class="signUp_btn">
-                                    <input class="submit_signUp" type="submit" value="Submit">
-                                </div>
-                            </div>  
-                        </form>
-                    </div>
-                
-                    <div id="login" class="signInContent">   
-                        <h1>Welcome Back!</h1>
-                        <form th:action="@{/auth}" method="post">
-                            <div class="enter_fields">
-                                <label for="usernameLogin">Username</label>
-                                <input type="text" id="usernameLogin" name="username" autocomplete="off" placeholder="Enter username..">
-
-                                <label for="passLogin">Password</label>
-                                <div class="enter_eye_pswd">
-                                    <input type="password" id="passLogin" name="password" placeholder="Enter password.." autocomplete="off">
-                                    <i class="far fa-eye" onclick="checkPass(this)" id="toggleLoginPassword"></i>
-                                </div>
-                                <div class="signIn_btn">
-                                    <input class="submit_signIn" type="submit" value="Submit">
-                                </div>
-                            </div>  
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="footer">
+    <div class="footer_description">
+        <span>Copyright by FantasticFour &copy;</span>
     </div>
+</div>
 
-
-
-    <div class="footer">
-        <div class="footer_description">
-            <span>Copyright by FantasticFour &copy;</span>
-        </div>
-    </div>
-
-    <script src="../static/css/login/login.js"></script>
+<script src="../static/css/login/login.js"></script>
 </body>
 </html>

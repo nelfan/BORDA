@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
         try {
             userService.deleteUserById(id);
             return new ResponseEntity<>("Entity was removed successfully",
@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> update(@PathVariable Long id, UserFullDTO user) {
+    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id, UserFullDTO user) {
         try {
             User existingUser = userService.getUserById(id);
             BeanUtils.copyProperties(user, existingUser);

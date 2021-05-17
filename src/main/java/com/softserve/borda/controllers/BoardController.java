@@ -2,9 +2,11 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.BoardListDTO;
 import com.softserve.borda.dto.CreateBoardDTO;
+import com.softserve.borda.dto.TicketDTO;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +26,8 @@ public class BoardController {
     private final BoardListService boardListService;
 
     private final UserBoardRelationService userBoardRelationService;
+
+    private final TicketService ticketService;
 
     @GetMapping
     public List<Board> getAllBoards() {
@@ -66,16 +70,37 @@ public class BoardController {
     }
 
     @GetMapping("{id}/boardLists")
-    public List<BoardList> getBoardListsForBoard(@PathVariable Long id) {
+    public List<BoardList> getAllBoardListsForBoard(@PathVariable Long id) {
         return boardService.getAllBoardListsByBoardId(id);
     }
 
-    @PostMapping("{id}/addBoardList")
-    public BoardList createBoardListsForBoard(@PathVariable Long id,
-                                                    @RequestBody BoardListDTO boardListDTO) {
+    @GetMapping("{boardId}/boardLists/{boardListId}")
+    public BoardList getBoardListForBoardById(@PathVariable Long boardId, @PathVariable Long boardListId) {
+        boardService.getBoardById(boardId);
+        return boardListService.getBoardListById(boardListId);
+    }
+
+    @PostMapping("{boardId}/addBoardList")
+    public BoardList createBoardListsForBoard(@PathVariable Long boardId,
+                                              @RequestBody BoardListDTO boardListDTO) {
         BoardList boardList = new BoardList();
         boardList.setName(boardListDTO.getName());
         boardList = boardListService.createOrUpdate(boardList);
-        return boardService.addBoardListToBoard(boardService.getBoardById(id), boardList);
+        return boardService.addBoardListToBoard(boardService.getBoardById(boardId), boardList);
+    }
+
+    @DeleteMapping(value = "{boardId}/boardLists/{boardListId}")
+    public void deleteBoardList(@PathVariable Long boardId, @PathVariable Long boardListId) {
+        boardService.getBoardById(boardId);
+        boardListService.deleteBoardListById(boardListId);
+    }
+
+    @PutMapping(value = "{boardId}/boardLists/{boardListId}")
+    public BoardList updateBoardList(@PathVariable Long boardId, @PathVariable Long boardListId,
+                                     @RequestBody BoardList boardList) {
+        boardService.getBoardById(boardId);
+        BoardList existingBoardList = boardListService.getBoardListById(boardListId);
+        BeanUtils.copyProperties(boardList, existingBoardList);
+        return boardListService.createOrUpdate(existingBoardList);
     }
 }

@@ -83,14 +83,32 @@ body {
     text-align: center;
 }
 
-.boards-info p {
-    display: flex;
+.boards-info a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* .boards-info p {
+    text-align: center;
+   display: flex;
     flex-direction: column;
     justify-content: center;
-    resize: vertical;
     overflow: auto;
     margin: 0;
     padding: 50px;
+
+}
+*/
+.board-name {
+    width: 90%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10%;
+
+    background-color: red;
 }
 
 #style-scroll::-webkit-scrollbar-track

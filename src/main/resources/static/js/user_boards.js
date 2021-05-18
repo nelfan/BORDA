@@ -17,9 +17,9 @@ var userRequest = new XMLHttpRequest();
 var boardRequest = new XMLHttpRequest();
 
 window.onload = function () {
-    userRequest.open('GET', '/users/user');
-    userRequest.send();
-    boardRequest.open('GET', '/users/user/boards');
+//    userRequest.open('GET', '/users/1');
+//    userRequest.send();
+    boardRequest.open('GET', '/users/1/boards');
     boardRequest.send();
 };
 
@@ -38,7 +38,10 @@ function renderBoard(data) {
             || data[i].userBoardRelations[0].boardRole.name === "owner"){
             var boardsContainer = document.getElementById("own-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
-                '<a class="boards-info" href="'+data[i].name+'"><p>'+data[i].name+'</p></a>');
+                '<div class="boards-info">' +
+                '<a href="'+data[i].name+'"><div class="board-name">'+data[i].name+'</div></a>' +
+                //'<div class="board-name">'+data[i].name+'</div>' +
+                '</div>');
         } else {
             var boardsContainer = document.getElementById("collab-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',

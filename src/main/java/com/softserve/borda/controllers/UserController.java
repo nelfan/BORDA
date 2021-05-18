@@ -1,9 +1,7 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.BoardFullDTO;
-import com.softserve.borda.dto.CreateUserDTO;
-import com.softserve.borda.dto.UserFullDTO;
-import com.softserve.borda.dto.UserSimpleDTO;
+import com.softserve.borda.config.jwt.JwtConvertor;
+import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
@@ -30,6 +28,8 @@ public class UserController {
 
     private final UserService userService;
 
+    private final JwtConvertor jwtConvertor;
+
     @GetMapping
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
         try {
@@ -43,10 +43,12 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
         try {
             return new ResponseEntity<>(modelMapper.map(
-                    userService.getUserById(id),
+                    jwtConvertor.getUserByJWT(id)
+                   // userService.getUserById(1L)
+                    ,
                     UserSimpleDTO.class), HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());
@@ -95,11 +97,19 @@ public class UserController {
         }
     }
 
+    @PostMapping("update/{id}")
+    public UserSimpleDTO updateUser(@RequestBody final UserUpdateDTO userDTO, @PathVariable String id) {
+        var user = jwtConvertor.getUserByJWT(id);
+        modelMapper.map(userDTO, user);
+        return modelMapper.map(
+                userService.createOrUpdate(user),
+                UserSimpleDTO.class);
+    }
 
     @GetMapping("/{userId}/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable String userId) {
         try {
-            return new ResponseEntity<>(userService.getBoardsByUserId(userId)
+            return new ResponseEntity<>(userService.getBoardsByUserId(jwtConvertor.getUserByJWT(userId).getId())
                     .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
                     HttpStatus.OK);

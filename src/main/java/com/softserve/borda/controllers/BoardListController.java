@@ -113,4 +113,27 @@ public class BoardListController {
                     HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/moveFrom/{oldBoardListId}/to/{newBoardListId}/ticket/{ticketId}/")
+    public ResponseEntity<BoardListDTO> moveTicketToAnotherBoardList(@PathVariable Long oldBoardListId,
+                                                                  @PathVariable Long newBoardListId,
+                                                                  @PathVariable Long ticketId) {
+        try {
+            BoardList oldBoardList = boardListService.getBoardListById(oldBoardListId);
+            BoardList newBoardList = boardListService.getBoardListById(newBoardListId);
+            Ticket ticket = ticketService.getTicketById(ticketId);
+            oldBoardList.getTickets().remove(ticket);
+            newBoardList.getTickets().add(ticket);
+            boardListService.createOrUpdate(oldBoardList);
+            boardListService.createOrUpdate(newBoardList);
+            return new ResponseEntity<>(
+                    modelMapper.map(
+                            newBoardList,
+                            BoardListDTO.class),
+                    HttpStatus.OK);
+        } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

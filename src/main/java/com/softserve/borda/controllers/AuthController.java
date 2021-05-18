@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,7 +28,7 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthResponse> registerUser(RegistrationRequest registrationRequest) {
         try {
             User user = new User();
             user.setUsername(registrationRequest.getUsername());
@@ -47,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> auth(AuthRequest request) {
         try {
             User user = userService.getUserByUsername(request.getUsername());
             if (user != null &&

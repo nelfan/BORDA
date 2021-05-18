@@ -22,9 +22,9 @@ var container = document.getElementById("user");
 var current_user;
 
 window.onload = function() {
-userRequest.open('GET', '/users/user');
+userRequest.open('GET', '/users/'+localStorage.getItem('token'));
 userRequest.send();
-boardRequest.open('GET', '/users/user/boards');
+boardRequest.open('GET', '/users/'+localStorage.getItem('token')+'/boards');
 boardRequest.send();
 };
 userRequest.onload = function()  {
@@ -101,7 +101,7 @@ postData();
 document.getElementById("username").disabled = true;
 }
 function postData(){
-boardPost.open("POST", '/users/update', true);
+boardPost.open("POST", '/users/update/'+localStorage.getItem('token')+'', true);
 boardPost.setRequestHeader("Content-Type", "application/json");
 var data = {
         username: current_user.username,

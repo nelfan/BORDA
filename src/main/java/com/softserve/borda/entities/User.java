@@ -42,7 +42,7 @@ public class User {
     private boolean enabled = true;
 
     @Type(type = "org.hibernate.type.BinaryType")
-    private Byte[] avatar;
+    private byte[] avatar;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user",

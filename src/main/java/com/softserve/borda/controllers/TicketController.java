@@ -55,7 +55,7 @@ public class TicketController {
 
     @PutMapping(value = "/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long ticketId,
-                                                  TicketDTO ticket) {
+                                                  @RequestBody TicketDTO ticket) {
         try {
             Ticket existingTicket = ticketService.getTicketById(ticketId);
             BeanUtils.copyProperties(ticket, existingTicket);
@@ -126,7 +126,7 @@ public class TicketController {
 
     @PostMapping("/tickets/{ticketId}/addComment")
     public ResponseEntity<TicketDTO> addCommentToTicketAndUser(@PathVariable Long ticketId,
-                                                               CommentDTO commentDTO) {
+                                                               @RequestBody CommentDTO commentDTO) {
         try {
             Comment comment = new Comment();
             comment.setText(commentDTO.getText());
@@ -146,7 +146,7 @@ public class TicketController {
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateCommentByCommentId(@PathVariable Long commentId,
-                                                               CommentDTO commentDTO) {
+                                                               @RequestBody CommentDTO commentDTO) {
         try {
             Comment existingComment = commentService.getCommentById(commentId);
             BeanUtils.copyProperties(commentDTO, existingComment);
@@ -166,6 +166,7 @@ public class TicketController {
                                                                     @PathVariable Long commentId) {
         try {
             Comment comment = commentService.getCommentById(commentId);
+            ticketService.deleteCommentFromTicket(ticketId, comment);
             userService.deleteCommentFromUser(comment.getUser().getId(), comment);
             commentService.deleteCommentById(commentId);
             return new ResponseEntity<>(modelMapper.map(
@@ -197,7 +198,7 @@ public class TicketController {
 
     @PostMapping("/tickets/{ticketId}/addTag")
     public ResponseEntity<TicketDTO> addTagToTicket(@PathVariable Long ticketId,
-                                                    TagDTO tagDTO) {
+                                                    @RequestBody TagDTO tagDTO) {
         try {
             Tag tag = new Tag();
             tag.setText(tagDTO.getText());
@@ -216,7 +217,7 @@ public class TicketController {
 
     @PutMapping("/tags/{tagId}")
     public ResponseEntity<TagDTO> updateTagByTagId(@PathVariable Long tagId,
-                                                   TagDTO tagDTO) {
+                                                   @RequestBody TagDTO tagDTO) {
         try {
             Tag existingTag = tagService.getTagById(tagId);
             BeanUtils.copyProperties(tagDTO, existingTag);

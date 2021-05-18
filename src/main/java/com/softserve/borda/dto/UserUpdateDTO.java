@@ -4,10 +4,9 @@ import lombok.Data;
 
 @Data
 public class UserUpdateDTO {
-    private Long id;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
-    private Byte[] avatar;
+    private byte[] avatar;
 }

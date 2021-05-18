@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .httpBasic().disable()
+        .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -39,14 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js").permitAll()
-//            .antMatchers("/users", "/users/*", "/boards", "/boards/*").hasRole("USER")
+
                 .antMatchers("/users", "/users/**",
                         "/boards", "/boards/**",
                         "/tickets", "/tickets/**",
                         "/boardLists", "/boardLists/**",
                         "/tags", "/tags/**",
-                        "/comments", "/comments/**").authenticated()
-                .antMatchers("/register", "/auth").permitAll()
+                        "/comments", "/comments/**").hasRole("USER")
+                .antMatchers("/register", "/auth").not().fullyAuthenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }

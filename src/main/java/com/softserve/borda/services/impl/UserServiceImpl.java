@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -44,6 +47,11 @@ public class UserServiceImpl implements UserService {
                 newUser.setFirstName(user.getFirstName());
                 newUser.setLastName(user.getLastName());
                 newUser.setAvatar(user.getAvatar());
+                if(user.getRoles().isEmpty()) {
+                    newUser.getRoles().add(roleRepository.findByName(Role.Roles.ROLE_USER.name()));
+                } else {
+                    newUser.setRoles(user.getRoles());
+                }
                 return userRepository.save(newUser);
             }
         }
@@ -95,5 +103,10 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         user.getComments().remove(comment);
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<Comment> getAllCommentsByUserId(Long userId) {
+        return getUserById(userId).getComments();
     }
 }

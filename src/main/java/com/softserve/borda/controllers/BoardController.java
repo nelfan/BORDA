@@ -53,7 +53,7 @@ public class BoardController {
 
     @PostMapping("createBoard/{userId}")
     public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
-                                                    CreateBoardDTO boardDTO) {
+                                                    @RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
             board.setName(boardDTO.getName());
@@ -90,7 +90,8 @@ public class BoardController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<BoardFullDTO> updateBoard(@PathVariable Long id, BoardFullDTO board) {
+    public ResponseEntity<BoardFullDTO> updateBoard(@PathVariable Long id,
+                                                    @RequestBody BoardFullDTO board) {
         try {
             Board existingBoard = boardService.getBoardById(id);
             BeanUtils.copyProperties(board, existingBoard);
@@ -119,7 +120,7 @@ public class BoardController {
 
     @PostMapping("{boardId}/addBoardList")
     public ResponseEntity<BoardListDTO> createBoardListsForBoard(@PathVariable Long boardId,
-                                                                 BoardListDTO boardListDTO) {
+                                                                 @RequestBody BoardListDTO boardListDTO) {
         try {
             BoardList boardList = new BoardList();
             boardList.setName(boardListDTO.getName());

@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 @Log
@@ -34,8 +36,9 @@ public class AuthController {
             user.setUsername(registrationRequest.getUsername());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             user.setEmail(registrationRequest.getEmail());
-            user.setFirstName(registrationRequest.getFirstName());
+            user.setFirstName(registrationRequest.getUsername());
             user.setLastName(registrationRequest.getLastName());
+            user.setAvatar(registrationRequest.getAvatar().getBytes());
             userService.createOrUpdate(user);
             jwtConvertor.saveUser(user);
             return auth(modelMapper.map(registrationRequest, AuthRequest.class));

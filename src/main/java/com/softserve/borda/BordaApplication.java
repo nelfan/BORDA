@@ -17,6 +17,7 @@ import java.util.List;
 @SpringBootApplication
 public class BordaApplication {
 
+
     UserRepository userRepository;
 
     BoardRepository boardRepository;
@@ -51,8 +52,10 @@ public class BordaApplication {
         this.boardListService = boardListService;
         this.ticketService = ticketService;
 
-        Role role = new Role(Role.Roles.ROLE_USER.name());
-        role = roleRepository.save(role);
+        Role userRole = new Role(Role.Roles.ROLE_USER.name());
+        roleRepository.save(userRole);
+        Role adminRole = new Role(Role.Roles.ROLE_ADMIN.name());
+        roleRepository.save(adminRole);
 
         List<User> users = new ArrayList<>();
         List<Board> boards = new ArrayList<>();
@@ -63,7 +66,7 @@ public class BordaApplication {
             user.setEmail("email" + i);
             user.setFirstName("FirstName" + i);
             user.setLastName("LastName" + i);
-            user.getRoles().add(role);
+            user.getRoles().add(userRole);
             userRepository.save(user);
             users.add(user);
         }

@@ -47,7 +47,7 @@ public class BoardListController {
 
     @PutMapping(value = "{boardListId}")
     public ResponseEntity<BoardListDTO> updateBoardList(@PathVariable Long boardListId,
-                                                        BoardListDTO boardList) {
+                                                        @RequestBody BoardListDTO boardList) {
         try {
             BoardList existingBoardList = boardListService.getBoardListById(boardListId);
             BeanUtils.copyProperties(boardList, existingBoardList);
@@ -78,7 +78,7 @@ public class BoardListController {
 
     @PostMapping("{boardListId}/addTicket")
     public ResponseEntity<BoardListDTO> createTicketForBoardList(@PathVariable long boardListId,
-                                                                 TicketDTO ticketDTO) {
+                                                                 @RequestBody TicketDTO ticketDTO) {
         try {
             Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
             ticket = ticketService.createOrUpdate(ticket);

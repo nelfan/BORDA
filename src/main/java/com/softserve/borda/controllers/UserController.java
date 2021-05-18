@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserSimpleDTO> createUser(CreateUserDTO userDTO) {
+    public ResponseEntity<UserSimpleDTO> createUser(@RequestBody CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
             return new ResponseEntity<>(modelMapper.map(
@@ -80,7 +80,8 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id, UserFullDTO user) {
+    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id,
+                                                    @RequestBody UserFullDTO user) {
         try {
             User existingUser = userService.getUserById(id);
             BeanUtils.copyProperties(user, existingUser);

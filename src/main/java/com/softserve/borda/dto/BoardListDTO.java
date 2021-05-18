@@ -10,6 +10,5 @@ public class BoardListDTO {
 
     private Long id;
     private String name;
-    private CreateBoardDTO board;
     private List<TicketDTO> tickets = new ArrayList<>();
 }

@@ -2,6 +2,7 @@ package com.softserve.borda.services;
 
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +25,19 @@ class UserServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    RoleRepository roleRepository;
+
+    @Mock
+    UserBoardRelationService userBoardRelationService;
+
     @InjectMocks
     UserServiceImpl userService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository);
+        userService = new UserServiceImpl(userRepository, roleRepository, userBoardRelationService);
     }
 
     @Test

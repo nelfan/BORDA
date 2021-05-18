@@ -1,45 +1,42 @@
 $(document).ready(() => {
 	DragAndDrop();
-});	
+});
 
 function DragAndDrop(e){
-	if(!document.querySelectorAll || !('draggable' in document.createElement('span')) || window.opera) { 
-        return;
-    }
-	
-	
-	for(var items = document.querySelectorAll('[data-draggable="item"]'), len = items.length, 
-		i = 0; i < len; i ++){	
-			console.log(i);
+	if(!document.querySelectorAll || !('draggable' in document.createElement('span')) || window.opera) {
+		return;
+	}
+
+
+	for(var items = document.querySelectorAll('[data-draggable="item"]'), len = items.length,
+			i = 0; i < len; i ++){
+		console.log(`David`);
+		console.log(items);
 		items[i].setAttribute('draggable', 'true');
 	}
 
 	$(document).on('dragstart', function(e){
 		item = e.target;
 		e.dataTransfer.setData('text', '');
-    });
+	});
 
-    $(document).on('dragover', (e) => {
+	$(document).on('dragover', (e) => {
 		if(item){
 			e.preventDefault();
 		}
 
 	});
 
-    $(document).on('drop', (e) => {
-        if(e.target.getAttribute('data-draggable') == 'target'){
-			e.target.appendChild(item);	
+	$(document).on('drop', (e) => {
+		if(e.target.getAttribute('data-draggable') == 'target'){
+			e.target.appendChild(item);
 			e.preventDefault();
 		}
-		console.log(item);
-		/*
-			Update each list of data 
-			here you'd add a ajax query
-		*/
-		console.log($(e.target).find('li').length);
+
+		// console.log($(e.target).find('li').length);
 	});
 
-    $(document).on('dragend', (e) => {
+	$(document).on('dragend', (e) => {
 		item = null;
 	});
 }

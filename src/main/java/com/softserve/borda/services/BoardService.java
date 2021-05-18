@@ -12,4 +12,8 @@ public interface BoardService {
     void deleteBoardById(Long id);
 
     List<BoardList> getAllBoardListsByBoardId(Long boardId);
+
+    BoardList addBoardListToBoard(Board board, BoardList boardList);
+
+    Board deleteBoardListFromBoard(Board boardById, BoardList boardListById);
 }

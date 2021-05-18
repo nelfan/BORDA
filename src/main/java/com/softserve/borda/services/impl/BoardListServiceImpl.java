@@ -1,31 +1,45 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardListRepository;
-import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardListService;
+import com.softserve.borda.services.TicketService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class BoardListServiceImpl implements BoardListService {
 
     private final BoardListRepository boardListRepository;
-    private final BoardRepository boardRepository;
+    private final TicketService ticketService;
 
-    public BoardListServiceImpl(BoardListRepository boardListRepository, BoardRepository boardRepository) {
-        this.boardListRepository = boardListRepository;
-        this.boardRepository = boardRepository;
-    }
     @Override
     public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
         return getBoardListById(boardListId).getTickets();
+    }
+
+    @Override
+    public BoardList addTicketToBoardList(BoardList boardList, Ticket ticket) {
+        boardList.getTickets().add(ticket);
+        return boardListRepository.save(boardList);
+    }
+
+    @Override
+    public BoardList deleteTicketFromBoardList(BoardList boardList, Ticket ticket) {
+        try {
+            boardList.getTickets().remove(ticket);
+            ticketService.deleteTicketById(ticket.getId());
+            return boardListRepository.save(boardList);
+        } catch (Exception e) {
+            throw new CustomFailedToDeleteEntityException(e.getMessage());
+        }
     }
 
     @Override
@@ -51,17 +65,5 @@ public class BoardListServiceImpl implements BoardListService {
     @Override
     public void deleteBoardListById(Long id) {
         boardListRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean addBoardListToBoard(BoardList boardList, @NotNull Board board) {
-        if (boardList.getId() == null) {
-            Board boardEntity = boardRepository.getOne(board.getId());
-            boardListRepository.save(boardList);
-            boardEntity.getBoardLists().add(boardList);
-            boardRepository.save(boardEntity);
-            return true;
-        }
-        return false;
     }
 }

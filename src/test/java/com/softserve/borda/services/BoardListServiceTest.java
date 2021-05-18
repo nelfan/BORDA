@@ -4,7 +4,6 @@ import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
-import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.impl.BoardListServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.*;
 class BoardListServiceTest {
 
     @Mock
-    BoardRepository boardRepository;
+    TicketService ticketService;
 
     @Mock
     BoardListRepository boardListRepository;
@@ -35,7 +34,7 @@ class BoardListServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardListService = new BoardListServiceImpl(boardListRepository, boardRepository);
+        boardListService = new BoardListServiceImpl(boardListRepository, ticketService);
     }
 
 

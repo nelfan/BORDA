@@ -8,6 +8,7 @@ import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.CommentService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -15,17 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
-
-    public CommentServiceImpl(CommentRepository commentRepository, TicketRepository ticketRepository, UserRepository userRepository) {
-        this.commentRepository = commentRepository;
-        this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Comment getCommentById(Long id) {

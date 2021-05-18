@@ -6,6 +6,7 @@ import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.TagService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -13,15 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final TicketRepository ticketRepository;
-
-    public TagServiceImpl(TagRepository tagRepository, TicketRepository ticketRepository) {
-        this.tagRepository = tagRepository;
-        this.ticketRepository = ticketRepository;
-    }
 
     @Override
     public List<Tag> getAll() {
@@ -30,7 +27,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getTagById(Long id) {
-        return tagRepository.findById(id).orElseThrow(
+       return tagRepository.findById(id).orElseThrow(
                 () -> new CustomEntityNotFoundException(Tag.class));
     }
 

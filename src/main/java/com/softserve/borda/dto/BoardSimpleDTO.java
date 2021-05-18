@@ -3,9 +3,9 @@ package com.softserve.borda.dto;
 import lombok.Data;
 
 @Data
-public class CommentDTO {
+public class BoardSimpleDTO {
 
     private Long id;
-    private String text;
-    private Long userId;
+    private String name;
+
 }

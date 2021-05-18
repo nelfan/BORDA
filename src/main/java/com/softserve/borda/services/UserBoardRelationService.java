@@ -12,4 +12,6 @@ public interface UserBoardRelationService {
     void deleteUserBoardRelationById(Long id);
 
     BoardRole getBoardRoleByName(String name);
+
+    BoardRole getBoardRoleById(Long id);
 }

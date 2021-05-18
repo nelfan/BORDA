@@ -1,25 +1,8 @@
-class User{
-    username = "";
-    email = "";
-    lastName = "";
-    firstName = "";
-    avatar = "";
-    constructor(username, email, lastName, firstName, avatar) {
-        this.username = username;
-        this.email = email;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.avatar = avatar;
-    }
-}
-
-var userRequest = new XMLHttpRequest();
 var boardRequest = new XMLHttpRequest();
 
 window.onload = function () {
-    userRequest.open('GET', '/users/user');
-    userRequest.send();
-    boardRequest.open('GET', '/users/user/boards');
+    boardRequest.open('GET', '/users/'+localStorage.getItem('token')+'/boards');
+    boardRequest.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
     boardRequest.send();
 };
 
@@ -28,21 +11,29 @@ boardRequest.onload = function () {
         var boards = JSON.parse(boardRequest.responseText);
         renderBoard(boards);
     } else {
-        console.log("Fail connection (/users/user/boards)");
+        console.log("Fail connection");
     }
 }
 
 function renderBoard(data) {
     for (let i = 0; i < data.length; i++) {
         if (data[i].userBoardRelations[0].boardRole.name === "OWNER"
-            || data[i].userBoardRelations[0].boardRole.name === "owner"){
+            || data[i].userBoardRelations[0].boardRole.name === "owner") {
             var boardsContainer = document.getElementById("own-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
-                '<a class="boards-info" href="'+data[i].name+'"><p>'+data[i].name+'</p></a>');
+            '<div class="boards-info">' +
+            '<a href="' + data[i].id + '">' +
+            '<div class="board-name">' + data[i].name + '</div>' +
+            '</a>' +
+            '</div>');
         } else {
             var boardsContainer = document.getElementById("collab-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
-                '<a class="boards-info" href="'+data[i].name+'"><p>'+data[i].name+'</p></a>');
+                '<div class="boards-info">' +
+                '<a href="' + data[i].id + '">' +
+                '<div class="board-name">' + data[i].name + '</div>' +
+                '</a>' +
+                '</div>');
         }
     }
 }

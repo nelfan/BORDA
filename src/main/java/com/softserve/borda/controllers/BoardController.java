@@ -1,5 +1,6 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.BoardFullDTO;
 import com.softserve.borda.dto.BoardListDTO;
 import com.softserve.borda.dto.CreateBoardDTO;
@@ -41,6 +42,8 @@ public class BoardController {
 
     private final UserBoardRelationService userBoardRelationService;
 
+    private JwtConvertor jwtConvertor;
+
     @GetMapping
     public List<Board> getAllBoards() {
         return boardService.getAll();
@@ -52,7 +55,7 @@ public class BoardController {
     }
 
     @PostMapping("createBoard/{userId}")
-    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
+    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable String userId,
                                                     @RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
@@ -60,7 +63,7 @@ public class BoardController {
 
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUser(userService.getUserById(userId));
+            userBoardRelation.setUser((jwtConvertor.getUserByJWT(userId)));
 
             userBoardRelation.setBoardRole(userBoardRelationService
                     .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));

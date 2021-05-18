@@ -7,8 +7,10 @@ function createBoard() {
         name: boardNameInput.value.trim(),
     }
     var json = JSON.stringify(data);
+    console.log(data)
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/boards", true);
+    xhr.open("POST", "/boards/createBoard/"+localStorage.getItem('token'), true);
+    xhr.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(json);
 

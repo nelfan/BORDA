@@ -90,23 +90,20 @@ body {
     border-radius: 10px;
 }
 
-/* .boards-info p {
-    text-align: center;
-   display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: auto;
-    margin: 0;
-    padding: 50px;
-
+.drop-menu {
+    height: 20%;
+    width: 15%;
+    float: right;
+    background-color: green;
+    position: relative;
+    display: inline-block;
 }
-*/
+
 .board-name {
-    width: 90%;
-    height: 50%;
+    width: 95%;
+    height: 60%;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 10%;
 
     background-color: red;
 }
@@ -130,5 +127,32 @@ body {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: #0848ff;
 }
+
+.mainmenubtn {
+    height: 100%;
+    width: 100%;
+    background-color: darkgoldenrod;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-child {
+    display: none;
+    background-color: black;
+    min-width: 100px;
+}
+
+.drop-menu:hover .dropdown-child {
+    display: block;
+}
+
+.dropdown-child button {
+    color: blue;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+}
+
 
 

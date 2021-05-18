@@ -2,7 +2,6 @@ package com.softserve.borda.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -40,10 +39,6 @@ public class User {
     private String lastName;
 
     private boolean enabled = true;
-
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    private Byte[] avatar;
-
 
     @Column(name = "avatar")
     private byte[] avatar;

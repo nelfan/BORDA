@@ -104,4 +104,9 @@ public class UserServiceImpl implements UserService {
         user.getComments().remove(comment);
         return userRepository.save(user);
     }
+
+    @Override
+    public List<Comment> getAllCommentsByUserId(Long userId) {
+        return getUserById(userId).getComments();
+    }
 }

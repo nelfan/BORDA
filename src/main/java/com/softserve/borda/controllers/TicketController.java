@@ -166,6 +166,7 @@ public class TicketController {
                                                                     @PathVariable Long commentId) {
         try {
             Comment comment = commentService.getCommentById(commentId);
+            ticketService.deleteCommentFromTicket(ticketId, comment);
             userService.deleteCommentFromUser(comment.getUser().getId(), comment);
             commentService.deleteCommentById(commentId);
             return new ResponseEntity<>(modelMapper.map(

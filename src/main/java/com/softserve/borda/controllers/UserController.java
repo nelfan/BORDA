@@ -1,9 +1,6 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.dto.BoardFullDTO;
-import com.softserve.borda.dto.CreateUserDTO;
-import com.softserve.borda.dto.UserFullDTO;
-import com.softserve.borda.dto.UserSimpleDTO;
+import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
@@ -118,6 +115,21 @@ public class UserController {
                     userService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId)
                             .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
+                    HttpStatus.OK);
+        } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsByTicketId(@PathVariable Long userId) {
+        try {
+            return new ResponseEntity<>(
+                    userService.getAllCommentsByUserId(userId)
+                            .stream().map(comment ->
+                            modelMapper.map(comment, CommentDTO.class))
+                            .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());

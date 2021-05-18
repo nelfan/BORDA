@@ -21,4 +21,6 @@ public interface UserService {
     User addCommentToUser(Long userId, Comment comment);
 
     User deleteCommentFromUser(Long userId, Comment comment);
+
+    List<Comment> getAllCommentsByUserId(Long userId);
 }

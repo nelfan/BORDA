@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../static/css/main_page/main_page_header.css" th:href="@{/css/main_page/main_page_header.css}">
-    <link rel="stylesheet" href="../static/css/main_page/main-content.css" th:href="@{/css/main_page/main-content.css}">
-    <link rel="stylesheet" href="../static/css/main_page/default_main_page.css" th:href="@{/css/main_page/default_main_page.css}">
-    <link rel="stylesheet" href="../static/css/main_page/color_picker.css" th:href="@{/css/main_page/color_picker.css}">
-    <link href="../static/fontawesome-free-5.15.3-web/css/all.css" th:href="@{/fontawesome-free-5.15.3-web/css/all.css}" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js}"></script>
+    <link rel="stylesheet" href="/css/main_page/main_page_header.css">
+    <link rel="stylesheet" href="/css/main_page/main-content.css">
+    <link rel="stylesheet" href="/css/main_page/default_main_page.css">
+    <link rel="stylesheet" href="/css/main_page/color_picker.css">
+    <link rel="stylesheet" href="/fontawesome-free-5.15.3-web/css/all.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="content">
@@ -35,7 +35,8 @@
                                         <li class="user_projects"><span>Projects</span><i class="far fa-folder-open"></i></li>
                                         <li class="user_settings"><span>Settings</span><i class="fas fa-sliders-h"></i></li>
                                         <li class="user_logout"><span>Log out</span><i class="far fa-times-circle"></i></li>
-                                    </ul></div>
+                                    </ul>
+                                </div>
                                 </i>
                             </a>
     
@@ -71,7 +72,7 @@
                         <div class="align_btn_add_board">
                             <div class="align_add_bord">
                                 <div class="add_board">
-                                    <span> Add new Board <i class="fas fa-plus"></i> </span>
+                                    <span> Add new List <i class="fas fa-plus"></i> </span>
                                 </div>
                                 <div class="add_board_ok_cancel" style='display: none'>
                                     <span class="ok_board"> Ok </span>
@@ -86,7 +87,7 @@
                                         
                                         <div class="picker">
                                             <input type="color" class="colorpicker" name="color" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="#bada55"> 
-                                            <input type="text" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="#bada55" class="hexcolor"></input>
+                                            <input type="text" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" value="#bada55" class="hexcolor"/>
                                         </div>
                                     </div>
                                     
@@ -110,7 +111,7 @@
             </div>
             <div class="align_bg_of_task">
                 <div class="bg_of_task">
-                    <img src="../static/images/default.jpg" default="images/default.jpg">
+                    <img src="/images/default.jpg" default="images/default.jpg">
                         <div class="change_bg_of_task">
                             <a href="#">Change</a>
                         </div>
@@ -155,7 +156,7 @@
                                                         <li>
                                                             <div class="user_info_task_members">
                                                                 <div class="member_avatar">
-                                                                    <img src="../static/images/nature.jpg" default="images/default.jpg">
+                                                                    <img src="/images/nature.jpg" default="images/default.jpg">
                                                                 </div>
                                                                 <div class="member_name">
                                                                     <span>David Chursa</span>
@@ -289,8 +290,8 @@
 
     
     
-    <script src="../static/js/main_page.js"></script>
-    <script src="../static/js/dragdrop.js"></script>
+    <script src="/js/main_page.js"></script>
+    <script src="/js/dragdrop.js"></script>
 </body>
 </html>
 

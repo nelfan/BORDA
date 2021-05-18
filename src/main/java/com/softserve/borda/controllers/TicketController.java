@@ -48,6 +48,7 @@ public class TicketController {
                             TicketDTO.class),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -62,6 +63,7 @@ public class TicketController {
                     ticketService.createOrUpdate(existingTicket),
                     TicketDTO.class), HttpStatus.OK);
         } catch (Exception e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -76,6 +78,7 @@ public class TicketController {
                             .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -89,6 +92,7 @@ public class TicketController {
                     .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -102,6 +106,7 @@ public class TicketController {
                     .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -114,6 +119,7 @@ public class TicketController {
                     CommentDTO.class),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -133,6 +139,7 @@ public class TicketController {
                             TicketDTO.class),
                     HttpStatus.OK);
         } catch (Exception e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -149,6 +156,7 @@ public class TicketController {
                             CommentDTO.class),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -201,6 +209,7 @@ public class TicketController {
                             TicketDTO.class),
                     HttpStatus.OK);
         } catch (Exception e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -217,6 +226,7 @@ public class TicketController {
                             TagDTO.class),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -251,6 +261,7 @@ public class TicketController {
                             TicketDTO.class),
                     HttpStatus.OK);
         } catch (Exception e) {
+            log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

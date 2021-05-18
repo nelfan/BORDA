@@ -1,8 +1,13 @@
 package com.softserve.borda.controllers;
 
+
 import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.Role;
+import com.softserve.borda.dto.BoardFullDTO;
+import com.softserve.borda.dto.CreateUserDTO;
+import com.softserve.borda.dto.UserFullDTO;
+import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
@@ -60,7 +65,6 @@ public class UserController {
     public ResponseEntity<UserSimpleDTO> createUser(CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
-            user.getRoles().add(new Role(Role.Roles.ROLE_USER.name()));
             return new ResponseEntity<>(modelMapper.map(
                     userService.createOrUpdate(user),
                     UserSimpleDTO.class), HttpStatus.CREATED);
@@ -71,7 +75,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
         try {
             userService.deleteUserById(id);
             return new ResponseEntity<>("Entity was removed successfully",
@@ -84,7 +88,7 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> update(@PathVariable Long id, UserFullDTO user) {
+    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id, UserFullDTO user) {
         try {
             User existingUser = userService.getUserById(id);
             BeanUtils.copyProperties(user, existingUser);
@@ -112,6 +116,7 @@ public class UserController {
             return new ResponseEntity<>(userService.getBoardsByUserId(jwtConvertor.getUserByJWT(userId).getId())
                     .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
+
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());

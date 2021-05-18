@@ -1,23 +1,8 @@
-class User {
-    username = "";
-    email = "";
-    lastName = "";
-    firstName = "";
-    avatar = "";
-
-    constructor(username, email, lastName, firstName, avatar) {
-        this.username = username;
-        this.email = email;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.avatar = avatar;
-    }
-}
-
 var boardRequest = new XMLHttpRequest();
 
 window.onload = function () {
-    boardRequest.open('GET', '/users/1/boards');
+    boardRequest.open('GET', '/users/'+localStorage.getItem('token')+'/boards');
+    boardRequest.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
     boardRequest.send();
 };
 
@@ -26,7 +11,7 @@ boardRequest.onload = function () {
         var boards = JSON.parse(boardRequest.responseText);
         renderBoard(boards);
     } else {
-        console.log("Fail connection (/users/user/boards)");
+        console.log("Fail connection");
     }
 }
 

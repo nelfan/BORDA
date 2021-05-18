@@ -9,7 +9,8 @@ function createBoard() {
     var json = JSON.stringify(data);
     console.log(data)
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/boards/createBoard/1", true);
+    xhr.open("POST", "/boards/createBoard/"+localStorage.getItem('token'), true);
+    xhr.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(json);
 

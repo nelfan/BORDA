@@ -34,9 +34,8 @@ public class AuthController {
             user.setUsername(registrationRequest.getUsername());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             user.setEmail(registrationRequest.getEmail());
-            user.setFirstName(registrationRequest.getUsername());
+            user.setFirstName(registrationRequest.getFirstName());
             user.setLastName(registrationRequest.getLastName());
-            user.setAvatar(registrationRequest.getAvatar().getBytes());
             userService.createOrUpdate(user);
             jwtConvertor.saveUser(user);
             return auth(modelMapper.map(registrationRequest, AuthRequest.class));

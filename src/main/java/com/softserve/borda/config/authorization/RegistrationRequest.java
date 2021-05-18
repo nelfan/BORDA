@@ -9,11 +9,11 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @AllArgsConstructor
 public class RegistrationRequest {
-    @NotEmpty
-    private String avatar;
 
     @NotEmpty
     private String username;
+
+    private String firstName;
 
     @NotBlank
     private String lastName;

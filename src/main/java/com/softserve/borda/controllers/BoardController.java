@@ -42,7 +42,7 @@ public class BoardController {
 
     private final UserBoardRelationService userBoardRelationService;
 
-    private JwtConvertor jwtConvertor;
+    private final JwtConvertor jwtConvertor;
 
     @GetMapping
     public List<Board> getAllBoards() {

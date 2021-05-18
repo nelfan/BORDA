@@ -72,7 +72,7 @@
 
                 <div id="login" class="signInContent">
                     <h1>Welcome Back!</h1>
-                    <form action="/auth" method="post" >
+                    <form action="/auth" method="post" onsubmit="reg(this);return false;">
                         <div class="enter_fields">
                             <label for="usernameLogin">Username</label>
                             <input type="text" id="usernameLogin" name="username" autocomplete="off" placeholder="Enter username..">

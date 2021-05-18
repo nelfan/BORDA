@@ -1,5 +1,6 @@
 package com.softserve.borda;
 
+import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
@@ -30,6 +31,8 @@ public class BordaApplication {
 
     UserService userService;
 
+    JwtConvertor jwtConvertor;
+
     final
     BoardService boardService;
 
@@ -41,7 +44,8 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService) {
+                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService,
+                            JwtConvertor jwtConvertor) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
@@ -51,6 +55,7 @@ public class BordaApplication {
         this.boardService = boardService;
         this.boardListService = boardListService;
         this.ticketService = ticketService;
+        this.jwtConvertor = jwtConvertor;
 
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
@@ -69,6 +74,7 @@ public class BordaApplication {
             user.getRoles().add(userRole);
             userRepository.save(user);
             users.add(user);
+            jwtConvertor.saveUser(user);
         }
         BoardRole owner = new BoardRole(BoardRole.BoardRoles.OWNER.name());
         boardRoleRepository.save(owner);

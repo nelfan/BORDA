@@ -29,6 +29,8 @@ boardRequest.open('GET', '/users/'+localStorage.getItem('token')+'/boards');
 boardRequest.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
 boardRequest.send();
 };
+
+
 userRequest.onload = function()  {
     if (userRequest.status >= 200 && userRequest.status < 400) {
       var user = JSON.parse(userRequest.responseText);
@@ -63,9 +65,9 @@ function renderBoards(data){
     }
 }
 
-document.getElementById("username").labels[0].onclick = function(){
+/*document.getElementById("username").labels[0].onclick = function(){
 document.getElementById("username").disabled = false;
-}
+}*/
 document.getElementById("avatar").onclick = function(){
 document.getElementById('file-input').click();
 }
@@ -97,11 +99,11 @@ postData();
 document.getElementById("lastName").disabled = true;
 }
 
-document.getElementById("username").onchange = function(){
+/*document.getElementById("username").onchange = function(){
 current_user.username = this.value;
 postData();
 document.getElementById("username").disabled = true;
-}
+}*/
 function postData(){
 boardPost.open("POST", '/users/update/'+localStorage.getItem('token')+'');
 boardPost.setRequestHeader("Content-Type", "application/json");

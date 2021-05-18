@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borda Log In</title>
-    <link rel="stylesheet" href="/css/login/user_login.css" >
-    <link rel="stylesheet" href="/css/header.css">
-    <script src="/js/register.js"></script>
-    <link rel="stylesheet" href="/css/footer.css">
-    <link  href="/fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/login/user_login.css">
+    <link href="../fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -44,13 +43,22 @@
             <div class="tab-content">
                 <div id="signup" class="signUpContent">
                     <h1>Sign Up for Free</h1>
-                    <form action="/register" method="POST" onsubmit="reg(this);return false;">
+                    <form action="#" method="POST" id="SignUpForm" enctype="multipart/form-data">
                         <div class="input_fields">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter username..">
+                            <div class="user_avatar">
+                                <div class="lft_side_user_avatar">
+                                    <input name="avatar" type="file" class="load_doc" style="display: none;" visibility="hidden" autocomplete="off"
+                                           required>
+                                    <img src="../images/default.jpg">
+                                </div>
+                                <div class="rght_side_user_avatar">
+                                    <p class="upload_fileName"></p>
+                                    <input type="button" value="Upload" class="load">
+                                </div>
+                            </div>
 
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" autocomplete="off" name="firstName" placeholder="Enter name..">
+                            <label for="username">First Name</label>
+                            <input type="text" id="username" autocomplete="off" name="username" placeholder="Enter name..">
 
                             <label for="lastName">Last Name</label>
                             <input type="text" id="lastName" name="lastName" autocomplete="off" placeholder="Enter last name..">
@@ -58,13 +66,13 @@
                             <label for="email">Email</label>
                             <input type="text" id="email" name="email" autocomplete="off" placeholder="Enter email..">
 
-                            <label for="pass">Password</label>
+                            <label for="password">Password</label>
                             <div class="eye_pswd">
-                                <input type="password" id="pass" name="password" placeholder="Enter password.." autocomplete="off">
+                                <input type="password" id="password" name="password" placeholder="Enter password.." autocomplete="off">
                                 <i class="far fa-eye" onclick="checkPass(this)" id="togglePassword"></i>
                             </div>
                             <div class="signUp_btn">
-                                <input class="submit_signUp"  type="submit" value="Submit">
+                                <input class="submit_signUp" type="submit" value="Submit">
                             </div>
                         </div>
                     </form>
@@ -72,14 +80,14 @@
 
                 <div id="login" class="signInContent">
                     <h1>Welcome Back!</h1>
-                    <form action="/auth" method="post" onsubmit="reg(this);return false;">
+                    <form action="/auth" method="post" id="SignInForm" onsubmit="reg(this);return false;">
                         <div class="enter_fields">
-                            <label for="usernameLogin">Username</label>
-                            <input type="text" id="usernameLogin" name="username" autocomplete="off" placeholder="Enter username..">
+                            <label for="username">Email</label>
+                            <input type="text" id="username" name="username" autocomplete="off" placeholder="Enter email..">
 
-                            <label for="passLogin">Password</label>
+                            <label for="pass">Password</label>
                             <div class="enter_eye_pswd">
-                                <input type="password" id="passLogin" name="password" placeholder="Enter password.." autocomplete="off">
+                                <input type="password" id="pass" name="password" placeholder="Enter password.." autocomplete="off">
                                 <i class="far fa-eye" onclick="checkPass(this)" id="toggleLoginPassword"></i>
                             </div>
                             <div class="signIn_btn">
@@ -101,6 +109,7 @@
     </div>
 </div>
 
-<script src="/css/login/login.js"></script>
+<script src="../js/login.js"></script>
+<script src="../js/registration.js"></script>
 </body>
 </html>

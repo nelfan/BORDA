@@ -1,5 +1,3 @@
-
-
 .main_container{
     width: 100%;
     height: 91vh;
@@ -10,22 +8,22 @@
 }
 
 *, *:before, *:after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html {
-	overflow-y: scroll; 
+    overflow-y: scroll;
 }
 
 body {
-  background: #c1bdba;
-  font-family: 'Titillium Web', sans-serif;
+    background: #c1bdba;
+    font-family: 'Titillium Web', sans-serif;
 }
 
 a {
-  text-decoration:none;
-  color: #e3e3e3;
-  transition:.3s ease;
+    text-decoration:none;
+    color: #e3e3e3;
+    transition:.3s ease;
 }
 
 a:hover{
@@ -33,28 +31,28 @@ a:hover{
 }
 
 .form {
-  padding: 30px;
-  min-width: 600px;
-  height: auto;
-  border-radius: 4px;
-  box-shadow:0 4px 10px 4px rgba( #13232f,.3);
-  border: 1px solid #6e6e6ec2;
-  background: #e3e3e31e;
+    padding: 30px;
+    min-width: 600px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow:0 4px 10px 4px rgba( #13232f,.3);
+    border: 1px solid #6e6e6ec2;
+    background: #e3e3e31e;
 }
 
 .form h1{
-  color: #656565e8;
+    color: #656565e8;
 }
 
 .tab a{
-  color: black;
-  text-transform: uppercase;
+    color: black;
+    text-transform: uppercase;
 }
 
 .tab-group {
-  list-style:none;
-  padding:0;
-  margin:0 0 40px 0;
+    list-style:none;
+    padding:0;
+    margin:0 0 40px 0;
 }
 
 li a {
@@ -88,152 +86,176 @@ li a:hover{
 }
 
 .tab-content > div:last-child {
-  display:none;
+    display:none;
 }
-
-/* h1 {
-  text-align:center;
-  color: #ffffff;
-  font-weight: 300;
-  margin:0 0 40px;
-} */
-
-
-
-
 .input_fields{
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
-
 .input_fields label{
     margin-top: 15px;
     padding-bottom: 5px;;
 }
-
 .input_fields input{
-  width: 100%;
-  height: 35px;
-  border: 0;
-  border-bottom: 1px solid #838383;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
+    width: 100%;
+    height: 35px;
+    border: 0;
+    border-bottom: 1px solid #838383;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
 }
-
-
 .eye_pswd{
-  position: relative;
-  display: flex;
-  flex-direction: row;
+    position: relative;
+    display: flex;
+    flex-direction: row;
 }
-
 .eye_pswd input{
-  width: 100%;
-  height: 35px;
-  border: 0;
-  border-bottom: 1px solid #838383;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
+    width: 100%;
+    height: 35px;
+    border: 0;
+    border-bottom: 1px solid #838383;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
 }
-
 .eye_pswd i{
-  cursor: pointer;
-  position:absolute;
-  top: 5px;
-  right: 2px;
-  border: 0;
-  width: 20px;
-  height: 20px;
+    cursor: pointer;
+    position:absolute;
+    top: 5px;
+    right: 2px;
+    border: 0;
+    width: 20px;
+    height: 20px;
 }
-
 .signUpContent h1{
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 .signInContent h1{
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .signUp_btn{
-  margin-top: 40px;
-  display: flex;
-  justify-content: center;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
 }
 .signUp_btn input{
-  width: 50%;
-  border: 0;
-  border-radius: 4px;
-  background: rgba(56, 109, 216, 0.993);
-  text-decoration: none;
-  text-transform: uppercase;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
+    width: 50%;
+    border: 0;
+    border-radius: 4px;
+    background: rgba(56, 109, 216, 0.993);
+    text-decoration: none;
+    text-transform: uppercase;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
 }
-
 .enter_fields{
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
-
 .enter_fields label{
     margin-top: 15px;
     padding-bottom: 5px;;
 }
-
 .enter_fields input{
-  width: 100%;
-  height: 35px;
-  border: 0;
-  border-bottom: 1px solid #838383;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
+    width: 100%;
+    height: 35px;
+    border: 0;
+    border-bottom: 1px solid #838383;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
 }
-
-
 .enter_eye_pswd{
-  position: relative;
-  display: flex;
-  flex-direction: row;
+    position: relative;
+    display: flex;
+    flex-direction: row;
 }
-
 .enter_eye_pswd input{
-  width: 100%;
-  height: 35px;
-  border: 0;
-  border-bottom: 1px solid #838383;
-  outline: none;
-  background: transparent;
-  font-size: 15px;
+    width: 100%;
+    height: 35px;
+    border: 0;
+    border-bottom: 1px solid #838383;
+    outline: none;
+    background: transparent;
+    font-size: 15px;
 }
-
 .enter_eye_pswd i{
-  cursor: pointer;
-  position:absolute;
-  top: 5px;
-  right: 2px;
-  border: 0;
-  width: 20px;
-  height: 20px;
+    cursor: pointer;
+    position:absolute;
+    top: 5px;
+    right: 2px;
+    border: 0;
+    width: 20px;
+    height: 20px;
 }
-
 .signIn_btn{
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
 }
 .signIn_btn input{
-  width: 50%;
-  border: 0;
-  border-radius: 4px;
-  background: rgba(56, 109, 216, 0.993);
-  text-decoration: none;
-  text-transform: uppercase;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
+    width: 50%;
+    border: 0;
+    border-radius: 4px;
+    background: rgba(56, 109, 216, 0.993);
+    text-decoration: none;
+    text-transform: uppercase;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+
+
+
+.user_avatar{
+    width: 100%;
+    height: auto;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.lft_side_user_avatar{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lft_side_user_avatar img{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 1px solid #e3e3e3;
+    object-fit: cover;
+}
+
+.rght_side_user_avatar{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.rght_side_user_avatar p{
+    font-size: 16px;
+    color: #707070;
+}
+
+.rght_side_user_avatar input{
+    cursor: pointer;
+    width: 80%;
+    padding: 5px 12px;
+    border: 1px solid #e3e3e3;
+    background: #e3e3e3;
+    color: grey;
+}
+.rght_side_user_avatar input:hover{
+    background: #afafaf;
 }

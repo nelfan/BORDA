@@ -1,13 +1,7 @@
 package com.softserve.borda.controllers;
 
-
 import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.*;
-import com.softserve.borda.entities.Role;
-import com.softserve.borda.dto.BoardFullDTO;
-import com.softserve.borda.dto.CreateUserDTO;
-import com.softserve.borda.dto.UserFullDTO;
-import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
@@ -47,12 +41,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
+    @GetMapping("getById/{id}")
+    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(modelMapper.map(
-                    jwtConvertor.getUserByJWT(id)
-                   // userService.getUserById(1L)
+                    userService.getUserById(id)
                     ,
                     UserSimpleDTO.class), HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
@@ -61,8 +54,20 @@ public class UserController {
         }
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
+        try {
+            return new ResponseEntity<>(modelMapper.map(
+                    jwtConvertor.getUserByJWT(id),
+                    UserSimpleDTO.class), HttpStatus.OK);
+        } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<UserSimpleDTO> createUser(CreateUserDTO userDTO) {
+    public ResponseEntity<UserSimpleDTO> createUser(@RequestBody CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
             return new ResponseEntity<>(modelMapper.map(
@@ -88,7 +93,8 @@ public class UserController {
     }
 
     @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id, UserFullDTO user) {
+    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id,
+                                                    @RequestBody UserFullDTO user) {
         try {
             User existingUser = userService.getUserById(id);
             BeanUtils.copyProperties(user, existingUser);
@@ -132,6 +138,21 @@ public class UserController {
                     userService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId)
                             .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
+                    HttpStatus.OK);
+        } catch (CustomEntityNotFoundException e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{userId}/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsByTicketId(@PathVariable Long userId) {
+        try {
+            return new ResponseEntity<>(
+                    userService.getAllCommentsByUserId(userId)
+                            .stream().map(comment ->
+                            modelMapper.map(comment, CommentDTO.class))
+                            .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());

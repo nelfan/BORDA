@@ -8,8 +8,8 @@ import java.util.List;
 public class UserBoardRelationDTO {
 
     private Long id;
-    private UserSimpleDTO user;
-    private BoardSimpleDTO board;
+    private Long userId;
+    private Long boardId;
     private List<BoardRoleDTO> boardRoles;
 
 }

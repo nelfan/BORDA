@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js").permitAll()
-//            .antMatchers("/users", "/users/*", "/boards", "/boards/*").hasRole("USER")
+                .antMatchers("/users", "/users/*", "/boards", "/boards/*").hasRole("USER")
                 .antMatchers("/users", "/users/**",
                         "/boards", "/boards/**",
                         "/tickets", "/tickets/**",

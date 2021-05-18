@@ -46,9 +46,9 @@
 .add_board_ok_cancel{
     display: flex;
     justify-content: space-between;
-    cursor: pointer; 
+    cursor: pointer;
 }
-.add_board_ok_cancel span{    
+.add_board_ok_cancel span{
     display: flex;
     justify-content: space-between;
 }

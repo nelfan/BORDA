@@ -17,6 +17,7 @@ import java.util.List;
 @SpringBootApplication
 public class BordaApplication {
 
+
     UserRepository userRepository;
 
     BoardRepository boardRepository;

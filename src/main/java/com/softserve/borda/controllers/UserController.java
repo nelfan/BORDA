@@ -100,8 +100,10 @@ public class UserController {
     public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
         try {
             return new ResponseEntity<>(userService.getBoardsByUserId(userId)
-                    .stream().map(board -> modelMapper.map(board,
-                            BoardFullDTO.class)).collect(Collectors.toList()),
+                    .stream().map(
+                            board -> modelMapper.map(board,
+                                    BoardFullDTO.class))
+                    .collect(Collectors.toList()),
                     HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());

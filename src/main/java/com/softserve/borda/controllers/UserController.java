@@ -4,7 +4,6 @@ import com.softserve.borda.dto.BoardFullDTO;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
-import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
@@ -58,7 +57,6 @@ public class UserController {
     public ResponseEntity<UserSimpleDTO> createUser(CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
-            user.getRoles().add(new Role(Role.Roles.ROLE_USER.name()));
             return new ResponseEntity<>(modelMapper.map(
                     userService.createOrUpdate(user),
                     UserSimpleDTO.class), HttpStatus.CREATED);

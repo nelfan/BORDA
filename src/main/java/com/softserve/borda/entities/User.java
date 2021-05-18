@@ -41,7 +41,11 @@ public class User {
 
     private boolean enabled = true;
 
-    @Type(type = "org.hibernate.type.BinaryType")
+//    @Type(type = "org.hibernate.type.BinaryType")
+//    private Byte[] avatar;
+
+
+    @Column(name = "avatar")
     private byte[] avatar;
 
     @ToString.Exclude

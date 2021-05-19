@@ -13,6 +13,6 @@ public class TicketDTO {
     private String description;
     private Byte[] img;
     private List<UserSimpleDTO> members = new ArrayList<>();
-    private List<CommentDTO> comments;
-    private List<TagDTO> tags;
+    private List<CommentDTO> comments = new ArrayList<>();
+    private List<TagDTO> tags = new ArrayList<>();
 }

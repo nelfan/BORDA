@@ -61,7 +61,7 @@ if (boardRequest.status >= 200 && boardRequest.status < 400) {
 function renderBoards(data){
     var boardsContainer = document.getElementById("boards-container");
     for(var i = 0; i<data.length; i++){
-        boardsContainer.insertAdjacentHTML('beforeend', '<a href = "/boards/'+data[i].id+'"><div class="boards-info">'+data[i].name+'</div></a>');
+        boardsContainer.insertAdjacentHTML('beforeend', '<a href="http://localhost:9090/pages/main_page.html" data-id="'+data[i].id+'"><div class="boards-info">'+data[i].name+'</div></a>');
     }
 }
 
@@ -130,3 +130,10 @@ document.getElementById("file-input").onchange  = e => {
   }
   reader.readAsDataURL(file);
 }
+
+
+$(document).on('click', '#boards-container a', (e) => {
+    let s = $(e.currentTarget).data('id');
+    localStorage.setItem("current_board", s);
+    console.log(s);
+});

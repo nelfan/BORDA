@@ -22,7 +22,7 @@ function renderBoard(data) {
             var boardsContainer = document.getElementById("own-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
             '<div class="boards-info">' +
-            '<a href="' + data[i].id + '">' +
+            '<a href="http://localhost:9090/pages/main_page.html" data-id="'+data[i].id+'"' +
             '<div class="board-name">' + data[i].name + '</div>' +
             '</a>' +
             '</div>');
@@ -30,7 +30,7 @@ function renderBoard(data) {
             var boardsContainer = document.getElementById("collab-boards-container");
             boardsContainer.insertAdjacentHTML('beforeend',
                 '<div class="boards-info">' +
-                '<a href="' + data[i].id + '">' +
+                '<a href="http://localhost:9090/pages/main_page.html" data-id="'+data[i].id+'">' +
                 '<div class="board-name">' + data[i].name + '</div>' +
                 '</a>' +
                 '</div>');
@@ -38,6 +38,12 @@ function renderBoard(data) {
     }
 }
 
+
+$(document).on('click', '.boards-info a', (e) => {
+    let s = $(e.currentTarget).data('id');
+    localStorage.setItem("current_board", s);
+    console.log(s);
+});
 
 
 

@@ -3,6 +3,7 @@ const content = $('.content');
 const $main = $('.main_content');
 
 $(document).ready(() => {
+
     DragAndDrop();
 });
 
@@ -13,6 +14,8 @@ $('.colorpicker').on('input', function() {
 $('.hexcolor').on('input', function() {
     $('.colorpicker').val(this.value);
 });
+
+
 
 
 class Task{

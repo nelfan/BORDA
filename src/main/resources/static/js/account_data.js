@@ -17,7 +17,7 @@ constructor(id, username, email, lastName, firstName, avatar) {
 }
 var userRequest = new XMLHttpRequest();
 var boardRequest = new XMLHttpRequest();
-var boardPost = new XMLHttpRequest();
+var userPost = new XMLHttpRequest();
 var container = document.getElementById("user");
 var current_user;
 
@@ -105,9 +105,9 @@ postData();
 document.getElementById("username").disabled = true;
 }*/
 function postData(){
-boardPost.open("POST", '/users/update/'+localStorage.getItem('token')+'');
-boardPost.setRequestHeader("Content-Type", "application/json");
-boardPost.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
+userPost.open("POST", '/users/update/'+localStorage.getItem('token')+'');
+userPost.setRequestHeader("Content-Type", "application/json");
+userPost.setRequestHeader('Authorization', 'Bearer '+localStorage.getItem('token'));
 var data = {
         username: current_user.username,
         email: current_user.email,
@@ -115,7 +115,7 @@ var data = {
         lastName: current_user.lastName,
         avatar: current_user.avatar,
 }
-boardPost.send(JSON.stringify(data));
+userPost.send(JSON.stringify(data));
 }
 
 document.getElementById("file-input").onchange  = e => {

@@ -6,10 +6,42 @@
     <title>Boards</title>
     <script type="module" src="../js/user_boards.js"></script>
     <script type="module" src="../js/create_board.js"></script>
+    <script type="module" src="../js/menu.js"></script>
+    <link rel="stylesheet" href="../css/main_page/main_page_header.css">
+    <link href="../fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-<div class="header">
-    HEADER
+<div class="alignment_of_header">
+    <div class="header">
+        <div class="left-side">
+            <div class="logoImage">
+                <a href="#">
+                    <i class="fa fa-globe"></i>
+                </a>
+            </div>
+            <span>Borda</span>
+        </div>
+        <div class="right-side">
+            <div class="alignment_of_items">
+                <div class="empty_block"></div>
+                <div class="general-info">
+                    <div class="user_icon" id = "user_icon" style="justify:right">
+                        <div class="user_alignment">
+                            <i class="far fa-user-circle"></i>
+                            <div class="user_submenu" id="user_submenu" style="display: none">
+                                <ul>
+                                    <li class="user_profile" id="profile"><a><span>Profile</span><i class="far fa-id-badge"></i></a></li>
+                                    <li class="user_projects" id="projects"><a><span>Projects</span><i class="far fa-folder-open"></i></a></li>
+                                    <li class="user_logout" id="logout"><a><span>Log out</span><i class="far fa-times-circle"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="creating-board">
     <label>Board name:</label>

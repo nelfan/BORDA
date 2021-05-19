@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your account</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/personal-account.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <script type="module" src="../js/account_data.js"></script>
+    <link rel="icon" href="data:;base64,=">
+    <script type="module" src="../js/menu.js"></script>
+    <link rel="stylesheet" href="../css/main_page/main_page_header.css">
+    <link href="../fontawesome-free-5.15.3-web/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<div class="alignment_of_header">
+    <div class="header">
+        <div class="left-side">
+            <div class="logoImage">
+                <a href="#">
+                    <i class="fa fa-globe"></i>
+                </a>
+            </div>
+            <span>Borda</span>
+        </div>
+        <div class="right-side">
+            <div class="alignment_of_items">
+                <div class="empty_block"></div>
+                <div class="general-info">
+                    <div class="user_icon" id = "user_icon" style="justify:right">
+                        <div class="user_alignment">
+                            <i class="far fa-user-circle"></i>
+                            <div class="user_submenu" id="user_submenu" style="display: none">
+                                <ul>
+                                    <li class="user_profile" id="profile"><a><span>Profile</span><i class="far fa-id-badge"></i></a></li>
+                                    <li class="user_projects" id="projects"><a><span>Projects</span><i class="far fa-folder-open"></i></a></li>
+                                    <li class="user_logout" id="logout"><a><span>Log out</span><i class="far fa-times-circle"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<main>
+    <div class="personal-info" id="user">
+        <div class="image-container" id="image-container">
+            <input id="file-input" type="file" style="display: none;" />
+            <img id = "avatar" src = "../img/blank_avatar.jpg" accept=".jpg, .jpeg, .png"/>
+        </div>
+        <div class="settings-container">
+            <div><label for="username">&emsp;</label></div>
+            <div><label for="email"><i class="fa fa-cog"></i></label></div>
+            <div><label for="firstName"><i class="fa fa-cog"></i></label></div>
+            <div><label for="lastName"><i class="fa fa-cog"></i></label></div>
+        </div>
+        <div class="template-container">
+            <div><p>username: </p></div>
+            <div><p>e-mail: </p></div>
+            <div><p>first name: </p></div>
+            <div><p>last name: </p></div>
+        </div>
+
+        <div class="data-container">
+            <div><input class='field' type='text' id="username" disabled/></div>
+            <div><input class='field' type='text' id="email" disabled/></div>
+            <div><input class='field' type='text' id="firstName" disabled/></div>
+            <div><input class='field' type='text' id="lastName"disabled/></div>
+        </div>
+    </div>
+    <div class="boards-container" id = "boards-container">
+    </div>
+</main>
+<footer></footer>
+</body>
+</html>

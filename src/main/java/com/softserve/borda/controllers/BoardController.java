@@ -49,7 +49,7 @@ public class BoardController {
         return boardService.getAll();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Board getBoard(@PathVariable Long id) {
         return boardService.getBoardById(id);
     }
@@ -121,7 +121,7 @@ public class BoardController {
         }
     }
 
-    @PostMapping("{boardId}/addBoardList")
+    @PostMapping("/{boardId}/addBoardList")
     public ResponseEntity<BoardListDTO> createBoardListsForBoard(@PathVariable Long boardId,
                                                                  @RequestBody BoardListDTO boardListDTO) {
         try {

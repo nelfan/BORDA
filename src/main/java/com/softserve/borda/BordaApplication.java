@@ -29,6 +29,8 @@ public class BordaApplication {
 
     BoardRoleRepository boardRoleRepository;
 
+    TagRepository tagRepository;
+
     UserService userService;
 
     JwtConvertor jwtConvertor;
@@ -44,7 +46,7 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService,
+                            BoardRoleRepository boardRoleRepository, TagRepository tagRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService,
                             JwtConvertor jwtConvertor) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
@@ -76,6 +78,16 @@ public class BordaApplication {
             users.add(user);
             jwtConvertor.saveUser(user);
         }
+
+        List<Tag> tags = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setText("label"+i);
+            tag.setColor("color " + i);
+            tagRepository.save(tag);
+            tags.add(tag);
+        }
+
         BoardRole owner = new BoardRole(BoardRole.BoardRoles.OWNER.name());
         boardRoleRepository.save(owner);
         BoardRole collaborator = new BoardRole(BoardRole.BoardRoles.COLLABORATOR.name());

@@ -3,7 +3,18 @@ const content = $('.content');
 const $main = $('.main_content');
 
 $(document).ready(() => {
-
+    let boardID = localStorage.getItem('current_board');
+    console.log(boardID);
+    $.ajax({
+        url: `/boards/${boardID}`,
+        headers: {
+            'Authorization':'Bearer '+localStorage.getItem('token'),
+        },
+        method: 'GET',
+        success: function(data){
+            console.log(data);
+        }
+    });
     DragAndDrop();
 });
 
@@ -14,8 +25,6 @@ $('.colorpicker').on('input', function() {
 $('.hexcolor').on('input', function() {
     $('.colorpicker').val(this.value);
 });
-
-
 
 
 class Task{
@@ -36,21 +45,29 @@ class Task{
 }
 
 
+
 $('.ok_board').on('click', () => {
     let title = $('.board_title input').val();
     let colorValue = $('.colorpicker').val();
 
-    /*
-    $.post('/addNewBoardList', {title, colorValue}).done(
-        entry => {
-            перерендерить борду всю
-        }
-    )
-    */
+    let input = {};
+    input.name = title;
 
-    let element = `<div class="default_ul">
-                        <div class="list_header" style="background: ${colorValue}">
-                            <span>${title}</span>
+    $.ajax({
+        url: `/boards/${localStorage.getItem("current_board")}/addBoardList`,
+        headers: {
+            'Authorization':'Bearer '+localStorage.getItem('token'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify(input),
+        dataType: 'json',
+        method: 'POST',
+        success: function(data){
+
+            let element = `<div class="default_ul">
+                        <div class="list_header" style="background: blue">
+                            <span>${data.name}</span>
                             <div class="edit_conf">
                                 <a href="#">
                                     <i class="fas fa-ellipsis-v"></i>
@@ -71,7 +88,7 @@ $('.ok_board').on('click', () => {
                                 </a>
                             </div>
                         </div>
-                        <ul data-draggable="target" class="target">
+                        <ul data-draggable="target" class="target" data-boardListId="${data.id}">
                             <div class="btn_new_activity">
                                 
                             </div>
@@ -83,8 +100,12 @@ $('.ok_board').on('click', () => {
                             </a>
                         </div>
                     </div>`;
+            $('.default_main').before(element);
+            console.log(data);
+        }
+    });
 
-    $('.default_main').before(element);
+
 });
 
 $(document).on('click', '.edit_conf a', (e) => {
@@ -100,6 +121,7 @@ $(document).on('click', '.btn_add_item', (e) => {
     let element = $(e.currentTarget).parent().find('.target');
 
     task.board = e;
+    task.boardID = element.data("boardListId");
     let a = element.parent().find('.list_header').css('background').substring(0,15);
     $(e.currentTarget).parent().find('.target li:last').css('border', `1px solid ${a}`);
     $('.add_new_task_toBoard').show();
@@ -117,14 +139,21 @@ $("#taskWindow").submit(function (e) {
     let input = {};
     inputData.map(({name, value}) => input[name] = value);
     objectTask = {...task, ...input};
-
     let labels_list = readLabels(objectTask.labels, task.label_colors);
-    console.log(objectTask);
-    // $.post('/addTaskToBoard', {objectTask}).done(
-    //     result => {
 
-    //     }
-    // );
+    console.log(objectTask);
+    // $.ajax({
+    //     url: `/boardsLists/${task.boardID}/addTicket`,
+    //     headers: {
+    //         'Authorization':'Bearer '+localStorage.getItem('token'),
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    //     data: JSON.stringify(objectTask),
+    //     dataType: 'json',
+    //     method: 'POST',
+    //     success: function(data){
+    console.log("Data from add ticket")
 
     let row = `<li data-draggable="item" data-task="1" class="item">
                     <div class="task_header">
@@ -147,11 +176,7 @@ $("#taskWindow").submit(function (e) {
                             <ul>${labels_list}</ul>
                         </div>
                     </div>
-                    <div class="align_task_members_win">
-                        <div class="task_members_win">
-                            <ul>${labels_list}</ul>
-                        </div>
-                    </div>
+                    
                     <div class="task_description">
                         ${objectTask.description}
                     </div>
@@ -166,6 +191,8 @@ $("#taskWindow").submit(function (e) {
                 </li>`;
 
     $(task.board.currentTarget).closest('.default_ul').find('.target').append(row);
+    //     }
+    // });
 
     $('#taskWindow')[0].reset();
     resetData();
@@ -188,7 +215,7 @@ function readLabels(labels, colors){
 
     let object = {};
     labels.forEach((key, i) => object[key] = colors[i]);
-    console.log(object);
+
     $.each(object, (key, value) => {
         list += `<li style="background: ${value}">
         <span style="">${key}</span></li>`;
@@ -224,32 +251,41 @@ $('.bg_input').on('change', function (e) {
 
 
 function getMembers() {
-    $.post('/getMembersNameAndAvatar').done(result => {
-        // let result = `[
-        //     {"name":"David", "avatar":"images/nature.jpg"},
-        //     {"name":"David_1", "avatar":"images/nature.jpg"}
-        // ]`;
+//     $.ajax({
+//         url: `/users`,
+//         headers: {
+//             'Authorization': 'Bearer ' + localStorage.getItem('token'),
+//         },
+//         method: 'GET',
+//         success: function (data) {
+//             $('.list_of_members').empty();
+//             let membersList = ``;
+//
+//             $.each(data, (key, object) => {
+//                 let {username} = object;
+//
+//                 membersList += `<li>
+//                                 <div class="user_info_task_members">
+//                                     <div class="member_avatar">
+//                                         <img src="../images/nature1.jpg">
+//                                     </div>
+//                                     <div class="member_name">
+//                                         <span>${username}</span>
+//                                     </div>
+//                                 </div>
+//                             </li>`;
+//             });
+//             $('.list_of_members').append(membersList);
+//         }
+//     })
+    // let result = `[
+    //     {"name":"David", "avatar":"images/nature.jpg"},
+    //     {"name":"David_1", "avatar":"images/nature.jpg"}
+    // ]`;
 
-        $('.list_of_members').empty();
-        let membersList = ``;
-
-        $.each(JSON.parse(result), (key, object) => {
-            let {name, avatar} = object;
-
-            membersList += `<li>
-                                <div class="user_info_task_members">
-                                    <div class="member_avatar">
-                                        <img src="${avatar}" default="images/default.jpg"> 
-                                    </div>
-                                    <div class="member_name">
-                                        <span>${name}</span>
-                                    </div>
-                                </div>
-                            </li>`;
-        });
-
-        $('.list_of_members').append(membersList);
-    });
+    //$.post('/getMembersNameAndAvatar').done(result => {
+    //
+    // });
 }
 
 function chooseMember(subject, point) {
@@ -262,8 +298,10 @@ $('.add_a_members_to_task').on('click', (e) => {
 });
 
 
-
-
+//
+// $('.add_a_labels_to_task').on('click', (e) => {
+//     $('.list_of_labels').toggle();
+// });
 
 $(document).on('click', '.list_of_members li', (e) => {
     let a = $(e.currentTarget).find('.member_name span').text();
@@ -298,12 +336,9 @@ $(document).on('click', '.list_of_members li', (e) => {
     }
 });
 
-
 $(document).on('click', '.task_members_ul', ()=> {
     $('.display_task_members').toggle();
 });
-
-
 
 $('.add_a_labels_to_task').on('click', ()=>{
     $('.list_of_labels').toggle();

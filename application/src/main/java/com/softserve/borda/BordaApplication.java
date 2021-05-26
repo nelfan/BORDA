@@ -8,6 +8,7 @@ import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserService;
+import com.softserve.borda.services.impl.BoardListServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;

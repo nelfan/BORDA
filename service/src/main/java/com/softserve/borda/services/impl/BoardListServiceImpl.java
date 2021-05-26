@@ -2,6 +2,8 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.TicketService;
@@ -36,14 +38,14 @@ public class BoardListServiceImpl implements BoardListService {
             ticketService.deleteTicketById(ticket.getId());
             return boardListRepository.save(boardList);
         } catch (Exception e) {
-            throw new com.softserve.borda.exceptions.CustomFailedToDeleteEntityException(e.getMessage());
+            throw new CustomFailedToDeleteEntityException(e.getMessage());
         }
     }
 
     @Override
     public BoardList getBoardListById(Long id) {
         return boardListRepository.findById(id)
-                .orElseThrow(() -> new com.softserve.borda.exceptions.CustomEntityNotFoundException(BoardList.class));
+                .orElseThrow(() -> new CustomEntityNotFoundException(BoardList.class));
     }
 
     @Override

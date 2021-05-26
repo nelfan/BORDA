@@ -10,7 +10,7 @@
     <name>shared</name>
 
     <parent>
-        <groupId>com.softserve</groupId>
+        <groupId>com.softserve.borda</groupId>
         <artifactId>borda</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>

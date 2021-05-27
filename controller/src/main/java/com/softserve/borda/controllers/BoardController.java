@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/boards")
 @AllArgsConstructor
 @Log
+@CrossOrigin
 public class BoardController {
 
     private final ModelMapper modelMapper;

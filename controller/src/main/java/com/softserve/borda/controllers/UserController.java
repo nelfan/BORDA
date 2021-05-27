@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/users")
 @AllArgsConstructor
 @Log
+@CrossOrigin
 public class UserController {
 
     private final ModelMapper modelMapper;

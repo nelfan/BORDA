@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @Log
+@CrossOrigin
 public class TicketController {
 
     private final ModelMapper modelMapper;

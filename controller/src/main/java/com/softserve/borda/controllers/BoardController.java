@@ -55,16 +55,16 @@ public class BoardController {
         return boardService.getBoardById(id);
     }
 
-    @PostMapping("createBoard/{userId}")
-    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
-                                                    @RequestBody CreateBoardDTO boardDTO) {
+    @PostMapping
+    public ResponseEntity<BoardFullDTO> createBoard(@RequestBody CreateBoardDTO boardDTO,
+                                                    @RequestHeader String authorization) {
         try {
             Board board = new Board();
             board.setName(boardDTO.getName());
 
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUser((userService.getUserById(userId)));
+            userBoardRelation.setUser((jwtConvertor.getUserByJWT(authorization)));
 
             userBoardRelation.setBoardRole(userBoardRelationService
                     .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));

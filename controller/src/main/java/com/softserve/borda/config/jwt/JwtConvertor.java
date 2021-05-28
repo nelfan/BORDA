@@ -2,15 +2,18 @@ package com.softserve.borda.config.jwt;
 
 import com.softserve.borda.entities.JWTUser;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.JWTUserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtConvertor {
 
-    private final com.softserve.borda.config.jwt.JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
 
     private final JWTUserRepository jwtUserRepository;
+
+    private static final int JWT_START = 7;
 
 
     public JwtConvertor(com.softserve.borda.config.jwt.JwtProvider jwtProvider, JWTUserRepository jwtUserRepository) {
@@ -25,6 +28,7 @@ public class JwtConvertor {
     }
 
     public User getUserByJWT(String jwt){
-        return jwtUserRepository.findById(jwt).orElseThrow().getUser();
+        return jwtUserRepository.findById(jwt.substring(JWT_START)).orElseThrow(
+                () -> new CustomEntityNotFoundException(User.class)).getUser();
     }
 }

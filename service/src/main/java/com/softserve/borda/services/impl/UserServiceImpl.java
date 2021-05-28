@@ -64,18 +64,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Board> getBoardsByUserId(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new CustomEntityNotFoundException(User.class));
+    public List<Board> getBoardsByUser(User user) {
         return user.getUserBoardRelations().stream().map(
                 UserBoardRelation::getBoard
         ).collect(Collectors.toList());
     }
 
     @Override
-    public List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomEntityNotFoundException(User.class));
+    public List<Board> getBoardsByUserAndBoardRoleId(User user, Long roleId) {
         return user.getUserBoardRelations().stream()
                 .filter(userBoardRelation ->
                         userBoardRelation.getBoardRole().equals(
@@ -106,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Comment> getAllCommentsByUserId(Long userId) {
-        return getUserById(userId).getComments();
+    public List<Comment> getAllCommentsByUser(User user) {
+        return user.getComments();
     }
 }

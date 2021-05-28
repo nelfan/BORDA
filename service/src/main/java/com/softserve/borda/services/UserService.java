@@ -12,9 +12,9 @@ public interface UserService {
     User createOrUpdate(User user);
     void deleteUserById(Long id);
 
-    List<Board> getBoardsByUserId(Long id);
+    List<Board> getBoardsByUser(User user);
 
-    List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId);
+    List<Board> getBoardsByUserAndBoardRoleId(User user, Long roleId);
 
     User getUserByUsername(String username);
 
@@ -22,5 +22,5 @@ public interface UserService {
 
     User deleteCommentFromUser(Long userId, Comment comment);
 
-    List<Comment> getAllCommentsByUserId(Long userId);
+    List<Comment> getAllCommentsByUser(User user);
 }

@@ -30,7 +30,7 @@ public class UserController {
 
     private final JwtConvertor jwtConvertor;
 
-    @GetMapping
+    @GetMapping(value = "getAll")
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
         try {
             return new ResponseEntity<>(userService.getAll().stream()
@@ -42,24 +42,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("getById/{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
+    @GetMapping
+    public ResponseEntity<UserSimpleDTO> getUserByToken(@RequestHeader String authorization) {
         try {
             return new ResponseEntity<>(modelMapper.map(
-                    userService.getUserById(id)
-                    ,
-                    UserSimpleDTO.class), HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
-        try {
-            return new ResponseEntity<>(modelMapper.map(
-                    jwtConvertor.getUserByJWT(id),
+                    jwtConvertor.getUserByJWT(authorization),
                     UserSimpleDTO.class), HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());
@@ -108,19 +95,21 @@ public class UserController {
         }
     }
 
-    @PostMapping("update/{id}")
-    public UserSimpleDTO updateUser(@RequestBody final UserUpdateDTO userDTO, @PathVariable String id) {
-        var user = jwtConvertor.getUserByJWT(id);
+    @PostMapping("update")
+    public UserSimpleDTO updateUser(@RequestBody final UserUpdateDTO userDTO,
+                                    @RequestHeader String authorization) {
+        var user = jwtConvertor.getUserByJWT(authorization);
         modelMapper.map(userDTO, user);
         return modelMapper.map(
                 userService.createOrUpdate(user),
                 UserSimpleDTO.class);
     }
 
-    @GetMapping("/{userId}/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
+    @GetMapping("/boards")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser(@RequestHeader String authorization) {
         try {
-            return new ResponseEntity<>(userService.getBoardsByUserId(userId)
+            return new ResponseEntity<>(userService.getBoardsByUser(
+                    jwtConvertor.getUserByJWT(authorization))
                     .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
 
@@ -131,12 +120,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("{userId}/boardsByRole/{boardRoleId}")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserIdAndBoardRoleId(@PathVariable Long userId,
+    @GetMapping("/boardsByRole/{boardRoleId}")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(@RequestHeader String authorization,
                                                                               @PathVariable Long boardRoleId) {
         try {
             return new ResponseEntity<>(
-                    userService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId)
+                    userService.getBoardsByUserAndBoardRoleId(
+                            jwtConvertor.getUserByJWT(authorization), boardRoleId)
                             .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
                     HttpStatus.OK);
@@ -146,11 +136,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{userId}/comments")
-    public ResponseEntity<List<CommentDTO>> getCommentsByTicketId(@PathVariable Long userId) {
+    @GetMapping("/comments")
+    public ResponseEntity<List<CommentDTO>> getCommentsByUser(@RequestHeader String authorization) {
         try {
             return new ResponseEntity<>(
-                    userService.getAllCommentsByUserId(userId)
+                    userService.getAllCommentsByUser(jwtConvertor.getUserByJWT(authorization))
                             .stream().map(comment ->
                             modelMapper.map(comment, CommentDTO.class))
                             .collect(Collectors.toList()),

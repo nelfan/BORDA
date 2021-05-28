@@ -1,5 +1,6 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.CommentDTO;
 import com.softserve.borda.dto.TagDTO;
 import com.softserve.borda.dto.TicketDTO;
@@ -40,6 +41,8 @@ public class TicketController {
     private final TagService tagService;
 
     private final UserService userService;
+
+    private final JwtConvertor jwtConvertor;
 
     @GetMapping("/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long ticketId) {
@@ -264,11 +267,11 @@ public class TicketController {
         }
     }
 
-    @PostMapping("/tickets/{ticketId}/addMember/{userId}")
+    @PostMapping("/tickets/{ticketId}/addMember")
     public ResponseEntity<TicketDTO> addUserToTicket(@PathVariable Long ticketId,
-                                                     @PathVariable Long userId) {
+                                                     @RequestHeader String authorization) {
         try {
-            User user = userService.getUserById(userId);
+            User user = jwtConvertor.getUserByJWT(authorization);
             return new ResponseEntity<>(
                     modelMapper.map(
                             ticketService.addMemberToTicket(ticketId, user),
@@ -280,11 +283,11 @@ public class TicketController {
         }
     }
 
-    @DeleteMapping("/tickets/{ticketId}/deleteMember/{userId}")
+    @DeleteMapping("/tickets/{ticketId}/deleteMember")
     public ResponseEntity<TicketDTO> deleteUserFromTicket(@PathVariable Long ticketId,
-                                                          @PathVariable Long userId) {
+                                                          @RequestHeader String authorization) {
         try {
-            User user = userService.getUserById(userId);
+            User user = jwtConvertor.getUserByJWT(authorization);
             return new ResponseEntity<>(
                     modelMapper.map(
                             ticketService.deleteMemberFromTicket(ticketId, user),

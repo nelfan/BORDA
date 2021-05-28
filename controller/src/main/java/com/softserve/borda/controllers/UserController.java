@@ -118,9 +118,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable String userId) {
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
         try {
-            return new ResponseEntity<>(userService.getBoardsByUserId(jwtConvertor.getUserByJWT(userId).getId())
+            return new ResponseEntity<>(userService.getBoardsByUserId(userId)
                     .stream().map(board -> modelMapper.map(board,
                             BoardFullDTO.class)).collect(Collectors.toList()),
 

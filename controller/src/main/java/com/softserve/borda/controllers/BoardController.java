@@ -56,7 +56,7 @@ public class BoardController {
     }
 
     @PostMapping("createBoard/{userId}")
-    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable String userId,
+    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
                                                     @RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
@@ -64,7 +64,7 @@ public class BoardController {
 
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUser((jwtConvertor.getUserByJWT(userId)));
+            userBoardRelation.setUser((userService.getUserById(userId)));
 
             userBoardRelation.setBoardRole(userBoardRelationService
                     .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));

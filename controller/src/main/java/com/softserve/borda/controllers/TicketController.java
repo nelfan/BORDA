@@ -216,6 +216,18 @@ public class TicketController {
         }
     }
 
+    @GetMapping("/tagList")
+    public ResponseEntity<List<TagDTO>> listOfTags(){
+        try {
+            return new ResponseEntity<>(tagService.getAll().stream()
+                    .map(user -> modelMapper.map(user, TagDTO.class))
+                    .collect(Collectors.toList()), HttpStatus.OK);
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PutMapping("/tags/{tagId}")
     public ResponseEntity<TagDTO> updateTagByTagId(@PathVariable Long tagId,
                                                    @RequestBody TagDTO tagDTO) {

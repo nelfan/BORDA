@@ -32,7 +32,7 @@ public class BoardListController {
 
     private final TicketService ticketService;
 
-    @GetMapping("{boardListId}")
+    @GetMapping("/{boardListId}")
     public ResponseEntity<BoardListDTO> getBoardListById(@PathVariable Long boardListId) {
         try {
             return new ResponseEntity<>(

@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
         try {
-            User user = jwtConvertor.getUserByJWT(id);
+            User user = userService.getUserById(id);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);

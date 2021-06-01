@@ -1,7 +1,6 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.impl.BoardServiceImpl;
@@ -29,31 +28,17 @@ class BoardServiceTest {
     @Mock
     BoardListService boardListService;
 
+    @Mock
+    UserBoardRelationService userBoardRelationService;
+
     @InjectMocks
     BoardServiceImpl boardService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardService = new BoardServiceImpl(boardRepository, boardListService);
-    }
-
-    @Test
-    void shouldGetAllBoardListsByBoardId() {
-        Board board = new Board();
-        for (int i = 0; i < 3; i++) {
-            BoardList boardList = new BoardList();
-            boardList.setId((long) i);
-            boardList.setName("boardList" + i);
-            board.getBoardLists().add(boardList);
-        }
-
-        when(boardRepository.findById(1L)).thenReturn(Optional.of(board));
-
-        List<BoardList> boardListList = boardService.getAllBoardListsByBoardId(1L);
-
-        assertEquals(3, boardListList.size());
-        verify(boardRepository, times(1)).findById(1L);
+        boardService = new BoardServiceImpl(boardRepository,
+                userBoardRelationService);
     }
 
     @Test
@@ -97,7 +82,7 @@ class BoardServiceTest {
 
         when(boardRepository.save(board)).thenReturn(expected);
 
-        Board actual = boardService.createOrUpdate(board);
+        Board actual = boardService.create(board);
 
         assertEquals(expected, actual);
         verify(boardRepository, times(1)).save(board);
@@ -120,9 +105,9 @@ class BoardServiceTest {
 
         when(boardRepository.save(boardUpdated)).thenReturn(boardUpdated);
 
-        boardService.createOrUpdate(board);
+        boardService.create(board);
 
-        Board actual = boardService.createOrUpdate(boardUpdated);
+        Board actual = boardService.update(boardUpdated);
 
         assertEquals(boardUpdated, actual);
         verify(boardRepository, times(1)).save(board);

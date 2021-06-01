@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -79,7 +80,7 @@ class UserBoardRelationServiceTest {
 
         when(userBoardRelationRepository.save(userBoardRelation)).thenReturn(expected);
 
-        UserBoardRelation actual = userBoardRelationService.createOrUpdate(userBoardRelation);
+        UserBoardRelation actual = userBoardRelationService.create(userBoardRelation);
 
         assertEquals(expected, actual);
         verify(userBoardRelationRepository, times(1)).save(userBoardRelation);
@@ -99,9 +100,9 @@ class UserBoardRelationServiceTest {
 
         when(userBoardRelationRepository.save(userBoardRelationUpdated)).thenReturn(userBoardRelationUpdated);
 
-        userBoardRelationService.createOrUpdate(userBoardRelation);
+        userBoardRelationService.create(userBoardRelation);
 
-        UserBoardRelation actual = userBoardRelationService.createOrUpdate(userBoardRelationUpdated);
+        UserBoardRelation actual = userBoardRelationService.update(userBoardRelationUpdated);
 
         assertEquals(userBoardRelationUpdated, actual);
         verify(userBoardRelationRepository, times(1)).save(userBoardRelation);

@@ -1,24 +1,25 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.Comment;
-import com.softserve.borda.entities.Tag;
-import com.softserve.borda.entities.Ticket;
-import com.softserve.borda.entities.User;
+import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TicketRepository;
-import com.softserve.borda.services.TicketService;
+import com.softserve.borda.services.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Log
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
+    private final BoardListService boardListService;
+    private final CommentService commentService;
+    private final TagService tagService;
+    private final UserService userService;
 
     @Override
     public Ticket getTicketById(Long id) {
@@ -27,26 +28,26 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket createOrUpdate(Ticket ticket) {
-        if (ticket.getId() != null) {
-            Optional<Ticket> ticketOptional = ticketRepository.findById(ticket.getId());
-
-            if (ticketOptional.isPresent()) {
-                Ticket newTicket = ticketOptional.get();
-                newTicket.setTitle(ticket.getTitle());
-                newTicket.setDescription(ticket.getDescription());
-                return ticketRepository.save(newTicket);
-            }
-        }
+    public Ticket create(Ticket ticket) {
         return ticketRepository.save(ticket);
     }
 
     @Override
-    public void deleteTicketById(Long id) {
+    public Ticket update(Ticket ticket) {
+        Ticket existingTicket = getTicketById(ticket.getId());
+        existingTicket.setTitle(ticket.getTitle());
+        existingTicket.setDescription(ticket.getDescription());
+        return ticketRepository.save(existingTicket);
+    }
+
+    @Override
+    public boolean deleteTicketById(Long id) {
         try {
             ticketRepository.deleteById(id);
+            return true;
         } catch (Exception e) {
-            throw new CustomFailedToDeleteEntityException(e.getMessage());
+            log.severe(e.getMessage());
+            return false;
         }
     }
 
@@ -61,48 +62,84 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Tag> getAllTagsByTicketId(Long id) {
-        return getTicketById(id).getTags();
+    public List<Tag> getAllTagsByTicketId(Long ticketId) {
+        return getTicketById(ticketId).getTags();
     }
 
     @Override
-    public Ticket addCommentToTicket(Long ticketId, Comment comment) {
+    public Ticket addCommentToTicket(Long ticketId, Long commentId) {
         Ticket ticket = getTicketById(ticketId);
+        Comment comment = commentService.getCommentById(commentId);
         ticket.getComments().add(comment);
         return ticketRepository.save(ticket);
     }
 
     @Override
-    public Ticket deleteCommentFromTicket(Long ticketId, Comment comment) {
+    public Ticket deleteCommentFromTicket(Long ticketId, Long commentId) {
         Ticket ticket = getTicketById(ticketId);
+        Comment comment = commentService.getCommentById(commentId);
         ticket.getComments().remove(comment);
         return ticketRepository.save(ticket);
     }
 
     @Override
-    public Ticket addTagToTicket(Long ticketId, Tag tag) {
+    public Ticket addTagToTicket(Long ticketId, Long tagId) {
         Ticket ticket = getTicketById(ticketId);
+        Tag tag = tagService.getTagById(tagId);
         ticket.getTags().add(tag);
         return ticketRepository.save(ticket);
     }
 
-    public Ticket deleteTagFromTicket(Long ticketId, Tag tag) {
+    public Ticket deleteTagFromTicket(Long ticketId, Long tagId) {
         Ticket ticket = getTicketById(ticketId);
+        Tag tag = tagService.getTagById(tagId);
         ticket.getTags().remove(tag);
         return ticketRepository.save(ticket);
     }
 
     @Override
-    public Ticket addMemberToTicket(Long ticketId, User user) {
+    public Ticket addMemberToTicket(Long ticketId, Long userId) {
         Ticket ticket = getTicketById(ticketId);
+        User user = userService.getUserById(userId);
         ticket.getMembers().add(user);
         return ticketRepository.save(ticket);
     }
 
     @Override
-    public Ticket deleteMemberFromTicket(Long ticketId, User user) {
+    public Ticket deleteMemberFromTicket(Long ticketId, Long userId) {
         Ticket ticket = getTicketById(ticketId);
+        User user = userService.getUserById(userId);
         ticket.getMembers().remove(user);
         return ticketRepository.save(ticket);
+    }
+
+    @Override
+    public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
+        return boardListService.getBoardListById(boardListId).getTickets();
+    }
+
+
+    @Override
+    public Ticket addTicketToBoardList(Long boardListId, Long ticketId) {
+        BoardList boardList = boardListService.getBoardListById(boardListId);
+        Ticket ticket = getTicketById(ticketId);
+        boardList.getTickets().add(ticket);
+        boardListService.update(boardList);
+        return ticket;
+    }
+
+    @Override
+    public boolean deleteTicketFromBoardList(Long boardListId, Long ticketId) {
+        try {
+            BoardList boardList = boardListService.getBoardListById(boardListId);
+            Ticket ticket = getTicketById(ticketId);
+            boardList.getTickets().remove(ticket);
+            deleteTicketById(ticket.getId());
+            boardListService.update(boardList);
+            return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
+        }
     }
 }

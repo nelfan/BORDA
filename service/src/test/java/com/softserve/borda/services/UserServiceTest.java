@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -97,7 +98,7 @@ class UserServiceTest {
 
         when(userRepository.save(user)).thenReturn(expected);
 
-        User actual = userService.createOrUpdate(user);
+        User actual = userService.create(user);
 
         assertEquals(expected, actual);
         verify(userRepository, times(1)).save(user);
@@ -132,9 +133,9 @@ class UserServiceTest {
 
         when(userRepository.save(userUpdated)).thenReturn(userUpdated);
 
-        userService.createOrUpdate(user);
-        
-        User actual = userService.createOrUpdate(userUpdated);
+        userService.create(user);
+
+        User actual = userService.update(userUpdated);
 
         assertEquals(userUpdated, actual);
         verify(userRepository, times(1)).save(user);

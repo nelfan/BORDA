@@ -41,7 +41,8 @@ public class AuthController {
             user.setLastName(registrationRequest.getLastName());
             userService.createOrUpdate(user);
             jwtConvertor.saveUser(user);
-            return auth(modelMapper.map(registrationRequest, AuthRequest.class));
+            AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
+            return auth(authRequest);
         } catch (Exception e) {
             log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +56,8 @@ public class AuthController {
             if (user != null &&
                     (passwordEncoder.matches(request.getPassword(), user.getPassword()))) {
                 String token = jwtProvider.generateToken(user.getUsername());
-                return ResponseEntity.ok(new AuthResponse(token));
+                AuthResponse authResponse = new AuthResponse(token);
+                return ResponseEntity.ok(authResponse);
             }
         } catch (Exception e) {
             log.severe(e.getMessage());

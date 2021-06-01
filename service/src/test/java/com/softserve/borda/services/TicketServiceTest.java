@@ -1,10 +1,11 @@
 package com.softserve.borda.services;
 
+import com.softserve.borda.entities.BoardList;
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.*;
+import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TicketServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,13 +28,23 @@ class TicketServiceTest {
     @Mock
     TicketRepository ticketRepository;
 
+    @Mock
+    BoardListService boardListService;
+    @Mock
+    CommentService commentService;
+    @Mock
+    TagService tagService;
+    @Mock
+    UserService userService;
+
     @InjectMocks
     TicketServiceImpl ticketService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository);
+        ticketService = new TicketServiceImpl(ticketRepository, boardListService,
+                commentService, tagService, userService);
     }
 
     @Test
@@ -59,7 +70,7 @@ class TicketServiceTest {
 
         when(ticketRepository.save(ticket)).thenReturn(expected);
 
-        Ticket actual = ticketService.createOrUpdate(ticket);
+        Ticket actual = ticketService.create(ticket);
 
         assertEquals(expected, actual);
         verify(ticketRepository, times(1)).save(ticket);
@@ -82,9 +93,9 @@ class TicketServiceTest {
 
         when(ticketRepository.save(ticketUpdated)).thenReturn(ticketUpdated);
 
-        ticketService.createOrUpdate(ticket);
+        ticketService.create(ticket);
 
-        Ticket actual = ticketService.createOrUpdate(ticketUpdated);
+        Ticket actual = ticketService.update(ticketUpdated);
 
         assertEquals(ticketUpdated, actual);
         verify(ticketRepository, times(1)).save(ticket);
@@ -151,5 +162,24 @@ class TicketServiceTest {
         assertEquals(3, tagList.size());
         assertEquals(tags, tagList);
         verify(ticketRepository, times(1)).findById(1L);
+    }
+
+
+    @Test
+    void shouldGetAllTicketsByBoardListId() {
+        BoardList boardList = new BoardList();
+        for (int i = 0; i < 3; i++) {
+            Ticket ticket = new Ticket();
+            ticket.setId((long) i);
+            ticket.setTitle("ticket" + i);
+            boardList.getTickets().add(ticket);
+        }
+
+        when(boardListService.getBoardListById(1L)).thenReturn(boardList);
+
+        List<Ticket> ticketList = ticketService.getAllTicketsByBoardListId(1L);
+
+        assertEquals(3, ticketList.size());
+        verify(boardListService, times(1)).getBoardListById(1L);
     }
 }

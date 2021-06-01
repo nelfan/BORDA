@@ -13,14 +13,10 @@ public class JwtConvertor {
 
     private final JWTUserRepository jwtUserRepository;
 
-    private static final int JWT_START = 7;
-
-
     public JwtConvertor(com.softserve.borda.config.jwt.JwtProvider jwtProvider, JWTUserRepository jwtUserRepository) {
         this.jwtProvider = jwtProvider;
         this.jwtUserRepository = jwtUserRepository;
     }
-
 
     public String saveUser(User user){
         jwtUserRepository.save(new JWTUser(jwtProvider.generateToken(user.getUsername()),user));
@@ -28,7 +24,7 @@ public class JwtConvertor {
     }
 
     public User getUserByJWT(String jwt){
-        return jwtUserRepository.findById(jwt.substring(JWT_START)).orElseThrow(
+        return jwtUserRepository.findById(jwt.substring(7)).orElseThrow(
                 () -> new CustomEntityNotFoundException(User.class)).getUser();
     }
 }

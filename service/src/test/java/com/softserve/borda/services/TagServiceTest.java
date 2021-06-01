@@ -3,7 +3,6 @@ package com.softserve.borda.services;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
-import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TagServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +23,6 @@ import static org.mockito.Mockito.*;
 class TagServiceTest {
 
     @Mock
-    TicketRepository ticketRepository;
-
-    @Mock
     TagRepository tagRepository;
 
     @InjectMocks
@@ -35,8 +31,7 @@ class TagServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        tagService = new TagServiceImpl(tagRepository,
-                ticketRepository);
+        tagService = new TagServiceImpl(tagRepository);
     }
 
     @Test
@@ -81,7 +76,7 @@ class TagServiceTest {
 
         when(tagRepository.save(tag)).thenReturn(expected);
 
-        Tag actual = tagService.createOrUpdate(tag);
+        Tag actual = tagService.create(tag);
 
         assertEquals(expected, actual);
         verify(tagRepository, times(1)).save(tag);
@@ -104,9 +99,9 @@ class TagServiceTest {
 
         when(tagRepository.save(tagUpdated)).thenReturn(tagUpdated);
 
-        tagService.createOrUpdate(tag);
+        tagService.create(tag);
 
-        Tag actual = tagService.createOrUpdate(tagUpdated);
+        Tag actual = tagService.update(tagUpdated);
 
         assertEquals(tagUpdated, actual);
         verify(tagRepository, times(1)).save(tag);

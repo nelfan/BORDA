@@ -121,14 +121,14 @@ public class BordaApplication {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boards.get(0).getBoardLists().add(boardList);
-        boardList = boardListService.createOrUpdate(boardList);
+        boardList = boardListService.create(boardList);
         Ticket ticket = new Ticket();
         ticket.setTitle("Ticket1");
         ticket.setDescription("Ticket for testing");
-        ticket = ticketService.createOrUpdate(ticket);
+        ticket = ticketService.create(ticket);
         boardList.getTickets().add(ticket);
-        boardListService.createOrUpdate(boardList);
-        boardService.createOrUpdate(boards.get(0));
+        boardListService.update(boardList);
+        boardService.update(boards.get(0));
     }
 
     public static void main(String[] args) {

@@ -17,8 +17,17 @@ public class RestResponseEntityExceptionHandler
         extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value
-            = {CustomEntityNotFoundException.class, CustomFailedToDeleteEntityException.class})
+            = {CustomEntityNotFoundException.class})
     protected ResponseEntity<Object> handleEntityNotFound(
+            RuntimeException ex, WebRequest request) {
+        log.severe(ex.getMessage());
+        return handleExceptionInternal(ex, ex.getMessage(),
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value
+            = {CustomFailedToDeleteEntityException.class})
+    protected ResponseEntity<Object> handleFailedToDeleteEntity(
             RuntimeException ex, WebRequest request) {
         log.severe(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(),

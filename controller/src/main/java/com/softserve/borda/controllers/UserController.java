@@ -47,19 +47,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("getById/{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
-        try {
-            User user = userService.getUserById(id);
-            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
-
-            return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
         try {

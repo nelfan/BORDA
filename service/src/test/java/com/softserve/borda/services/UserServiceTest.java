@@ -97,7 +97,7 @@ class UserServiceTest {
 
         when(userRepository.save(user)).thenReturn(expected);
 
-        User actual = userService.createOrUpdate(user);
+        User actual = userService.create(user);
 
         assertEquals(expected, actual);
         verify(userRepository, times(1)).save(user);
@@ -132,9 +132,9 @@ class UserServiceTest {
 
         when(userRepository.save(userUpdated)).thenReturn(userUpdated);
 
-        userService.createOrUpdate(user);
+        userService.create(user);
         
-        User actual = userService.createOrUpdate(userUpdated);
+        User actual = userService.update(userUpdated);
 
         assertEquals(userUpdated, actual);
         verify(userRepository, times(1)).save(user);

@@ -1,7 +1,7 @@
 package com.softserve.borda.services;
 
+import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
-import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.services.impl.BoardListServiceImpl;
@@ -26,6 +26,9 @@ class BoardListServiceTest {
     TicketService ticketService;
 
     @Mock
+    BoardService boardService;
+
+    @Mock
     BoardListRepository boardListRepository;
 
     @InjectMocks
@@ -34,26 +37,7 @@ class BoardListServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardListService = new BoardListServiceImpl(boardListRepository, ticketService);
-    }
-
-
-    @Test
-    void shouldGetAllTicketsByBoardListId() {
-        BoardList boardList = new BoardList();
-        for (int i = 0; i < 3; i++) {
-            Ticket ticket = new Ticket();
-            ticket.setId((long) i);
-            ticket.setTitle("ticket" + i);
-            boardList.getTickets().add(ticket);
-        }
-
-        when(boardListRepository.findById(1L)).thenReturn(Optional.of(boardList));
-
-        List<Ticket> ticketList = boardListService.getAllTicketsByBoardListId(1L);
-
-        assertEquals(3, ticketList.size());
-        verify(boardListRepository, times(1)).findById(1L);
+        boardListService = new BoardListServiceImpl(boardListRepository, boardService);
     }
 
     @Test
@@ -79,7 +63,7 @@ class BoardListServiceTest {
 
         when(boardListRepository.save(boardList)).thenReturn(expected);
 
-        BoardList actual = boardListService.createOrUpdate(boardList);
+        BoardList actual = boardListService.create(boardList);
 
         assertEquals(expected, actual);
         verify(boardListRepository, times(1)).save(boardList);
@@ -102,9 +86,9 @@ class BoardListServiceTest {
 
         when(boardListRepository.save(boardListUpdated)).thenReturn(boardListUpdated);
 
-        boardListService.createOrUpdate(boardList);
+        boardListService.create(boardList);
 
-        BoardList actual = boardListService.createOrUpdate(boardListUpdated);
+        BoardList actual = boardListService.update(boardListUpdated);
 
         assertEquals(boardListUpdated, actual);
         verify(boardListRepository, times(1)).save(boardList);
@@ -123,5 +107,24 @@ class BoardListServiceTest {
 
         assertThrows(CustomEntityNotFoundException.class, () -> boardListService.getBoardListById(1L));
         verify(boardListRepository, times(1)).deleteById(boardList.getId());
+    }
+
+
+    @Test
+    void shouldGetAllBoardListsByBoardId() {
+        Board board = new Board();
+        for (int i = 0; i < 3; i++) {
+            BoardList boardList = new BoardList();
+            boardList.setId((long) i);
+            boardList.setName("boardList" + i);
+            board.getBoardLists().add(boardList);
+        }
+
+        when(boardService.getBoardById(1L)).thenReturn(board);
+
+        List<BoardList> boardLists = boardListService.getAllBoardListsByBoardId(1L);
+
+        assertEquals(3, boardLists.size());
+        verify(boardService, times(1)).getBoardById(1L);
     }
 }

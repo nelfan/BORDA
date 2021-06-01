@@ -1,19 +1,19 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.BoardList;
-import com.softserve.borda.entities.Ticket;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface BoardListService {
-    BoardList deleteTicketFromBoardList(BoardList boardList, Ticket ticket);
 
     BoardList getBoardListById(Long id);
-    BoardList createOrUpdate(BoardList boardList);
-    void deleteBoardListById(Long id);
+    BoardList create(BoardList boardList);
+    BoardList update(BoardList boardList);
+    boolean deleteBoardListById(Long id);
 
-    List<Ticket> getAllTicketsByBoardListId(Long boardListId);
+    List<BoardList> getAllBoardListsByBoardId(Long boardId);
 
-    BoardList addTicketToBoardList(@NotNull BoardList boardList, Ticket ticket);
+    BoardList addBoardListToBoard(Long boardId, Long boardListId);
+
+    boolean deleteBoardListFromBoard(Long boardId, Long boardListId);
 }

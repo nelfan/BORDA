@@ -1,46 +1,24 @@
 package com.softserve.borda.services.impl;
 
+import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardList;
-import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardListRepository;
 import com.softserve.borda.services.BoardListService;
-import com.softserve.borda.services.TicketService;
+import com.softserve.borda.services.BoardService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Log
 public class BoardListServiceImpl implements BoardListService {
 
     private final BoardListRepository boardListRepository;
-    private final TicketService ticketService;
-
-    @Override
-    public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
-        return getBoardListById(boardListId).getTickets();
-    }
-
-    @Override
-    public BoardList addTicketToBoardList(BoardList boardList, Ticket ticket) {
-        boardList.getTickets().add(ticket);
-        return boardListRepository.save(boardList);
-    }
-
-    @Override
-    public BoardList deleteTicketFromBoardList(BoardList boardList, Ticket ticket) {
-        try {
-            boardList.getTickets().remove(ticket);
-            ticketService.deleteTicketById(ticket.getId());
-            return boardListRepository.save(boardList);
-        } catch (Exception e) {
-            throw new CustomFailedToDeleteEntityException(e.getMessage());
-        }
-    }
+    private final BoardService boardService;
 
     @Override
     public BoardList getBoardListById(Long id) {
@@ -49,21 +27,55 @@ public class BoardListServiceImpl implements BoardListService {
     }
 
     @Override
-    public BoardList createOrUpdate(BoardList boardList) {
-        if (boardList.getId() != null) {
-            Optional<BoardList> boardListOptional = boardListRepository.findById(boardList.getId());
-
-            if (boardListOptional.isPresent()) {
-                BoardList newBoardList = boardListOptional.get();
-                newBoardList.setName(boardList.getName());
-                return boardListRepository.save(newBoardList);
-            }
-        }
+    public BoardList create(BoardList boardList) {
         return boardListRepository.save(boardList);
     }
 
     @Override
-    public void deleteBoardListById(Long id) {
-        boardListRepository.deleteById(id);
+    public BoardList update(BoardList boardList) {
+        BoardList existingBoardList = getBoardListById(boardList.getId());
+        existingBoardList.setName(boardList.getName());
+        return boardListRepository.save(existingBoardList);
     }
+
+    @Override
+    public boolean deleteBoardListById(Long id) {
+        try {
+            boardListRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<BoardList> getAllBoardListsByBoardId(Long boardId) {
+        return boardService.getBoardById(boardId).getBoardLists();
+    }
+
+    @Override
+    public BoardList addBoardListToBoard(Long boardId, Long boardListId) {
+        Board board = boardService.getBoardById(boardId);
+        BoardList boardList = getBoardListById(boardListId);
+        board.getBoardLists().add(boardList);
+        boardService.update(board);
+        return boardList;
+    }
+
+    @Override
+    public boolean deleteBoardListFromBoard(Long boardId, Long boardListId) {
+        try {
+            Board board = boardService.getBoardById(boardId);
+            BoardList boardList = getBoardListById(boardListId);
+            board.getBoardLists().remove(boardList);
+            deleteBoardListById(boardList.getId());
+            boardService.update(board);
+            return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
+        }
+    }
+
 }

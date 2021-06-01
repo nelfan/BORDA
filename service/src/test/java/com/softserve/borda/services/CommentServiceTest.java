@@ -3,8 +3,6 @@ package com.softserve.borda.services;
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.CommentRepository;
-import com.softserve.borda.repositories.TicketRepository;
-import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.impl.CommentServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,13 +21,7 @@ import static org.mockito.Mockito.*;
 class CommentServiceTest {
 
     @Mock
-    TicketRepository ticketRepository;
-
-    @Mock
     CommentRepository commentRepository;
-
-    @Mock
-    UserRepository userRepository;
 
     @InjectMocks
     CommentServiceImpl commentService;
@@ -37,9 +29,7 @@ class CommentServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        commentService = new CommentServiceImpl(commentRepository, 
-                ticketRepository, 
-                userRepository);
+        commentService = new CommentServiceImpl(commentRepository);
     }
 
     @Test
@@ -65,7 +55,7 @@ class CommentServiceTest {
 
         when(commentRepository.save(comment)).thenReturn(expected);
 
-        Comment actual = commentService.createOrUpdate(comment);
+        Comment actual = commentService.create(comment);
 
         assertEquals(expected, actual);
         verify(commentRepository, times(1)).save(comment);
@@ -88,9 +78,9 @@ class CommentServiceTest {
 
         when(commentRepository.save(commentUpdated)).thenReturn(commentUpdated);
 
-        commentService.createOrUpdate(comment);
+        commentService.create(comment);
 
-        Comment actual = commentService.createOrUpdate(commentUpdated);
+        Comment actual = commentService.update(commentUpdated);
 
         assertEquals(commentUpdated, actual);
         verify(commentRepository, times(1)).save(comment);
@@ -107,7 +97,8 @@ class CommentServiceTest {
 
         commentService.deleteCommentById(comment.getId());
 
-        assertThrows(CustomEntityNotFoundException.class, () -> commentService.getCommentById(1L));
+        assertThrows(CustomEntityNotFoundException.class,
+                () -> commentService.getCommentById(1L));
         verify(commentRepository, times(1)).deleteById(comment.getId());
     }
 }

@@ -39,8 +39,6 @@ public class User {
     private String lastName;
 
     private boolean enabled = true;
-
-    @Column(name = "avatar")
     private byte[] avatar;
 
     @ToString.Exclude

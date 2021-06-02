@@ -118,8 +118,6 @@ public class TicketServiceImpl implements TicketService {
         return boardListService.getBoardListById(boardListId).getTickets();
     }
 
-
-
     @Override
     public Ticket addTicketToBoardList(Long boardListId, Long ticketId) {
         BoardList boardList = boardListService.getBoardListById(boardListId);

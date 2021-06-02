@@ -1,10 +1,12 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Board;
+import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.TagService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -21,6 +23,8 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
 
     private final UserBoardRelationService userBoardRelationService;
+
+    private final TagService tagService;
 
     @Override
     public List<Board> getAll() {
@@ -69,5 +73,18 @@ public class BoardServiceImpl implements BoardService {
                 .stream()
                 .map(UserBoardRelation::getBoard)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Board addTagToBoard(Long boardId, Long tagId) {
+        Board board = getBoardById(boardId);
+        Tag tag = tagService.getTagById(tagId);
+        board.getTags().add(tag);
+        return boardRepository.save(board);
+    }
+
+    @Override
+    public List<Tag> getAllTagsByBoardId(Long boardId) {
+        return getBoardById(boardId).getTags();
     }
 }

@@ -464,18 +464,32 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/tags")
+    @PostMapping("/boards/{boardId}/tags")
+    public ResponseEntity<BoardFullDTO> addNewTagToBoard
+            (@RequestBody TagDTO tagDTO,
+             @PathVariable Long boardId) {
+        try {
+
+            Tag tag = modelMapper.map(tagDTO, Tag.class);
+            tag = tagService.create(tag);
+            Board board = boardService.addTagToBoard(boardId, tag.getId());
+            BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+
+            return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/tags/{tagId}")
     public ResponseEntity<TicketDTO> addTagToTicket
             (@PathVariable Long ticketId,
-             @RequestBody TagDTO tagDTO,
+             @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
-            // TODO rework tags to relate to certain board
-            //  and here tags should not be created, just added to ticket
-            Tag tag = modelMapper.map(tagDTO, Tag.class);
-            tag = tagService.create(tag);
-            Ticket ticket = ticketService.addTagToTicket(ticketId, tag.getId());
+            Ticket ticket = ticketService.addTagToTicket(ticketId, tagId);
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -487,11 +501,14 @@ public class BoardController {
 
     @GetMapping("/boards/{boardId}/tags")
     public ResponseEntity<List<TagDTO>> getAllTagsForBoard
-            (@PathVariable String boardId) {
+            (@PathVariable Long boardId) {
         try {
-            // TODO rework tags to relate to certain board
-            //  and make this return all tags of one board
-            return new ResponseEntity<>(HttpStatus.OK);
+            List<Tag> tags = boardService.getAllTagsByBoardId(boardId);
+            List<TagDTO> tagDTOs = tags.stream().map(tag ->
+                    modelMapper.map(tag, TagDTO.class))
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
         } catch (Exception e) {
             log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

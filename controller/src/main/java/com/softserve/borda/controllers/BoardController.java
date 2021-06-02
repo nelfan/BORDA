@@ -1,6 +1,5 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.config.authorization.CustomUserDetails;
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
@@ -12,7 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -52,13 +51,9 @@ public class BoardController {
     }
 
     @GetMapping("/users/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser() {
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser(Authentication authentication) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            User user = userService.getUserByUsername(userDetails.getUsername());
+            User user = userService.getUserByUsername(authentication.getName());
 
             List<Board> boards = boardService.getBoardsByUserId(user.getId());
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
@@ -72,14 +67,10 @@ public class BoardController {
     }
 
     @GetMapping("/users/boards/{boardRoleId}")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(Authentication authentication,
             @PathVariable Long boardRoleId) {
         try {
-            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            User user = userService.getUserByUsername(userDetails.getUsername());
+            User user = userService.getUserByUsername(authentication.getName());
 
             List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(user.getId(), boardRoleId);
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
@@ -93,7 +84,8 @@ public class BoardController {
     }
 
     @PostMapping("/boards")
-    public ResponseEntity<BoardFullDTO> createBoard(@RequestBody CreateBoardDTO boardDTO) {
+    public ResponseEntity<BoardFullDTO> createBoard(Authentication authentication,
+                                                    @RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
             board.setName(boardDTO.getName());
@@ -101,11 +93,7 @@ public class BoardController {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
 
-            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            User user = userService.getUserByUsername(userDetails.getUsername());
+            User user = userService.getUserByUsername(authentication.getName());
             userBoardRelation.setUser(user);
 
             userBoardRelation.setBoardRole(userBoardRelationService
@@ -412,16 +400,13 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @RequestBody CommentDTO commentDTO,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String listId,
+             Authentication authentication) {
         try {
             Comment comment = new Comment();
             comment.setText(commentDTO.getText());
 
-            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            User user = userService.getUserByUsername(userDetails.getUsername());
+            User user = userService.getUserByUsername(authentication.getName());
             comment.setUser(user);
 
             comment = commentService.create(comment);

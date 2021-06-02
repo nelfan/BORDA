@@ -29,7 +29,7 @@ public class BoardController {
 
     private final UserService userService;
 
-    private final BoardListService boardListService;
+    private final BoardColumnService boardColumnService;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -90,8 +90,8 @@ public class BoardController {
             userBoardRelation.setBoard(board);
             userBoardRelation.setUser((userService.getUserById(userId)));
 
-            userBoardRelation.setBoardRole(userBoardRelationService
-                    .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
+            userBoardRelation.setUserBoardRole(userBoardRelationService
+                    .getBoardRoleByName(UserBoardRole.BoardRoles.OWNER.name()));
 
             board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
 
@@ -138,8 +138,8 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/lists")
     public ResponseEntity<List<BoardListDTO>> getAllBoardListsForBoard(@PathVariable Long boardId) {
         try {
-            List<BoardList> boardLists = boardListService.getAllBoardListsByBoardId(boardId);
-            List<BoardListDTO> boardListDTOs = boardLists.stream()
+            List<BoardColumn> boardColumns = boardColumnService.getAllBoardListsByBoardId(boardId);
+            List<BoardListDTO> boardListDTOs = boardColumns.stream()
                     .map(boardList -> modelMapper.map(boardList,
                             BoardListDTO.class)).collect(Collectors.toList());
 
@@ -154,11 +154,11 @@ public class BoardController {
     public ResponseEntity<BoardListDTO> createBoardListsForBoard(@PathVariable Long boardId,
                                                                  @RequestBody BoardListDTO boardListDTO) {
         try {
-            BoardList boardList = new BoardList();
-            boardList.setName(boardListDTO.getName());
-            boardList = boardListService.create(boardList);
-            boardList = boardListService.addBoardListToBoard(boardId, boardList.getId());
-            boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+            BoardColumn boardColumn = new BoardColumn();
+            boardColumn.setName(boardListDTO.getName());
+            boardColumn = boardColumnService.create(boardColumn);
+            boardColumn = boardColumnService.addBoardListToBoard(boardId, boardColumn.getId());
+            boardListDTO = modelMapper.map(boardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (Exception e) {
@@ -171,7 +171,7 @@ public class BoardController {
     public ResponseEntity<String> deleteBoardListFromBoard(@PathVariable Long boardId,
                                                            @PathVariable Long listId) {
         try {
-            boardListService.deleteBoardListFromBoard(boardId, listId);
+            boardColumnService.deleteBoardListFromBoard(boardId, listId);
 
             return new ResponseEntity<>("Entity was removed successfully",
                     HttpStatus.OK);
@@ -186,8 +186,8 @@ public class BoardController {
     public ResponseEntity<BoardListDTO> getBoardListById(@PathVariable Long listId,
                                                          @PathVariable String boardId) {
         try {
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+            BoardColumn boardColumn = boardColumnService.getBoardListById(listId);
+            BoardListDTO boardListDTO = modelMapper.map(boardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
@@ -201,10 +201,10 @@ public class BoardController {
                                                         @RequestBody BoardListDTO boardListDTO,
                                                         @PathVariable String boardId) {
         try {
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BeanUtils.copyProperties(boardListDTO, boardList);
-            boardList = boardListService.update(boardList);
-            boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+            BoardColumn boardColumn = boardColumnService.getBoardListById(listId);
+            BeanUtils.copyProperties(boardListDTO, boardColumn);
+            boardColumn = boardColumnService.update(boardColumn);
+            boardListDTO = modelMapper.map(boardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (Exception e) {
@@ -237,8 +237,8 @@ public class BoardController {
             Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
             ticket = ticketService.create(ticket);
             ticketService.addTicketToBoardList(listId, ticket.getId());
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+            BoardColumn boardColumn = boardColumnService.getBoardListById(listId);
+            BoardListDTO boardListDTO = modelMapper.map(boardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (Exception e) {
@@ -253,8 +253,8 @@ public class BoardController {
                                                                   @PathVariable String boardId) {
         try {
             ticketService.deleteTicketFromBoardList(listId, ticketId);
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+            BoardColumn boardColumn = boardColumnService.getBoardListById(listId);
+            BoardListDTO boardListDTO = modelMapper.map(boardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (CustomFailedToDeleteEntityException e) {
@@ -269,14 +269,14 @@ public class BoardController {
                                                                      @PathVariable Long ticketId,
                                                                      @PathVariable String boardId) {
         try {
-            BoardList oldBoardList = boardListService.getBoardListById(oldBoardListId);
-            BoardList newBoardList = boardListService.getBoardListById(newBoardListId);
+            BoardColumn oldBoardColumn = boardColumnService.getBoardListById(oldBoardListId);
+            BoardColumn newBoardColumn = boardColumnService.getBoardListById(newBoardListId);
             Ticket ticket = ticketService.getTicketById(ticketId);
-            oldBoardList.getTickets().remove(ticket);
-            newBoardList.getTickets().add(ticket);
-            boardListService.update(oldBoardList);
-            newBoardList = boardListService.update(newBoardList);
-            BoardListDTO boardListDTO = modelMapper.map(newBoardList, BoardListDTO.class);
+            oldBoardColumn.getTickets().remove(ticket);
+            newBoardColumn.getTickets().add(ticket);
+            boardColumnService.update(oldBoardColumn);
+            newBoardColumn = boardColumnService.update(newBoardColumn);
+            BoardListDTO boardListDTO = modelMapper.map(newBoardColumn, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {

@@ -24,13 +24,13 @@ public class Board {
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
-    private List<com.softserve.borda.entities.BoardList> boardLists = new ArrayList<>();
+    private List<BoardColumn> boardColumns = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board",
-    cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL)
     @NotEmpty
     @JsonManagedReference
-    private List<com.softserve.borda.entities.UserBoardRelation> userBoardRelations = new ArrayList<>();
+    private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final BoardListService boardListService;
+    private final BoardColumnService boardColumnService;
     private final CommentService commentService;
     private final TagService tagService;
     private final UserService userService;
@@ -115,28 +115,28 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
-        return boardListService.getBoardListById(boardListId).getTickets();
+        return boardColumnService.getBoardListById(boardListId).getTickets();
     }
 
 
 
     @Override
     public Ticket addTicketToBoardList(Long boardListId, Long ticketId) {
-        BoardList boardList = boardListService.getBoardListById(boardListId);
+        BoardColumn boardColumn = boardColumnService.getBoardListById(boardListId);
         Ticket ticket = getTicketById(ticketId);
-        boardList.getTickets().add(ticket);
-        boardListService.update(boardList);
+        boardColumn.getTickets().add(ticket);
+        boardColumnService.update(boardColumn);
         return ticket;
     }
 
     @Override
     public boolean deleteTicketFromBoardList(Long boardListId, Long ticketId) {
         try {
-            BoardList boardList = boardListService.getBoardListById(boardListId);
+            BoardColumn boardColumn = boardColumnService.getBoardListById(boardListId);
             Ticket ticket = getTicketById(ticketId);
-            boardList.getTickets().remove(ticket);
+            boardColumn.getTickets().remove(ticket);
             deleteTicketById(ticket.getId());
-            boardListService.update(boardList);
+            boardColumnService.update(boardColumn);
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());

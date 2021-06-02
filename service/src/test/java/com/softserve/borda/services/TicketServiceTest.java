@@ -1,6 +1,9 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.*;
+import com.softserve.borda.entities.BoardColumn;
+import com.softserve.borda.entities.Comment;
+import com.softserve.borda.entities.Tag;
+import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TicketServiceImpl;
@@ -26,7 +29,7 @@ class TicketServiceTest {
     TicketRepository ticketRepository;
 
     @Mock
-    BoardListService boardListService;
+    BoardColumnService boardColumnService;
     @Mock
     CommentService commentService;
     @Mock
@@ -40,7 +43,7 @@ class TicketServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository, boardListService,
+        ticketService = new TicketServiceImpl(ticketRepository, boardColumnService,
                 commentService, tagService, userService);
     }
 
@@ -166,19 +169,19 @@ class TicketServiceTest {
 
     @Test
     void shouldGetAllTicketsByBoardListId() {
-        BoardList boardList = new BoardList();
+        BoardColumn boardColumn = new BoardColumn();
         for (int i = 0; i < 3; i++) {
             Ticket ticket = new Ticket();
             ticket.setId((long) i);
             ticket.setTitle("ticket" + i);
-            boardList.getTickets().add(ticket);
+            boardColumn.getTickets().add(ticket);
         }
 
-        when(boardListService.getBoardListById(1L)).thenReturn(boardList);
+        when(boardColumnService.getBoardListById(1L)).thenReturn(boardColumn);
 
         List<Ticket> ticketList = ticketService.getAllTicketsByBoardListId(1L);
 
         assertEquals(3, ticketList.size());
-        verify(boardListService, times(1)).getBoardListById(1L);
+        verify(boardColumnService, times(1)).getBoardListById(1L);
     }
 }

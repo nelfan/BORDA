@@ -30,22 +30,22 @@ class TicketRepositoryTest {
     UserRepository userRepository;
 
     @Autowired
-    BoardListRepository boardListRepository;
+    BoardColumnRepository boardColumnRepository;
 
     @Autowired
     BoardRepository boardRepository;
 
     Board board;
-    BoardList boardList;
+    BoardColumn boardColumn;
 
     @BeforeEach
     void boardSetUp() {
         board = new Board();
         board.setName("Board1");
-        boardList = new BoardList();
-        boardList.setName("BoardList1");
+        boardColumn = new BoardColumn();
+        boardColumn.setName("BoardList1");
         boardRepository.save(board);
-        boardListRepository.save(boardList);
+        boardColumnRepository.save(boardColumn);
     }
 
     @Test

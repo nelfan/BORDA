@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @Entity(name = "board_roles")
-public class BoardRole {
+public class UserBoardRole {
 
     public enum BoardRoles {
         OWNER,
@@ -23,10 +23,10 @@ public class BoardRole {
     @NotBlank
     private String name;
 
-    public BoardRole() {
+    public UserBoardRole() {
     }
 
-    public BoardRole(@NotBlank String name) {
+    public UserBoardRole(@NotBlank String name) {
         this.name = name;
     }
 

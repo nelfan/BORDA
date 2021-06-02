@@ -1,7 +1,7 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.UserBoardRole;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
@@ -41,7 +41,7 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     public UserBoardRelation update(UserBoardRelation userBoardRelation) {
         UserBoardRelation existingUserBoardRelation =
                 getUserBoardRelationById(userBoardRelation.getId());
-        existingUserBoardRelation.setBoardRole(userBoardRelation.getBoardRole());
+        existingUserBoardRelation.setUserBoardRole(userBoardRelation.getUserBoardRole());
         return userBoardRelationRepository.save(existingUserBoardRelation);
     }
 
@@ -57,15 +57,15 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public BoardRole getBoardRoleByName(String name) {
+    public UserBoardRole getBoardRoleByName(String name) {
         return boardRoleRepository.findByName(name)
-                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
-    public BoardRole getBoardRoleById(Long id) {
+    public UserBoardRole getBoardRoleById(Long id) {
         return boardRoleRepository.findById(id)
-                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
@@ -76,6 +76,6 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     @Override
     public List<UserBoardRelation> getUserBoardRelationsByUserIdAndBoardRoleId(Long userId,
                                                                                Long boardRoleId) {
-        return userBoardRelationRepository.findAllByUserIdAndBoardRoleId(userId, boardRoleId);
+        return userBoardRelationRepository.findAllByUserIdAndUserBoardRoleId(userId, boardRoleId);
     }
 }

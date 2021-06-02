@@ -26,7 +26,7 @@ class BoardServiceTest {
     BoardRepository boardRepository;
 
     @Mock
-    BoardListService boardListService;
+    BoardColumnService boardColumnService;
 
     @Mock
     UserBoardRelationService userBoardRelationService;

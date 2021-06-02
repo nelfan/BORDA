@@ -1,7 +1,7 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.UserBoardRole;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public interface UserBoardRelationService {
     UserBoardRelation update(UserBoardRelation userBoardRelation);
     boolean deleteUserBoardRelationById(Long id);
 
-    BoardRole getBoardRoleByName(String name);
+    UserBoardRole getBoardRoleByName(String name);
 
-    BoardRole getBoardRoleById(Long id);
+    UserBoardRole getBoardRoleById(Long id);
 
     List<UserBoardRelation> getUserBoardRelationsByUserId(Long userId);
 

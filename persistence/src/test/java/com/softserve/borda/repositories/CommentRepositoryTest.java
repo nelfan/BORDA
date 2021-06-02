@@ -26,13 +26,13 @@ class CommentRepositoryTest {
     UserRepository userRepository;
 
     @Autowired
-    BoardListRepository boardListRepository;
+    BoardColumnRepository boardColumnRepository;
 
     @Autowired
     BoardRepository boardRepository;
 
     Board board;
-    BoardList boardList;
+    BoardColumn boardColumn;
     Ticket ticket;
     User user;
 
@@ -40,10 +40,10 @@ class CommentRepositoryTest {
     void boardSetUp() {
         board = new Board();
         board.setName("Board1");
-        boardList = new BoardList();
-        boardList.setName("BoardList1");
+        boardColumn = new BoardColumn();
+        boardColumn.setName("BoardList1");
         boardRepository.save(board);
-        boardListRepository.save(boardList);
+        boardColumnRepository.save(boardColumn);
         ticket = new Ticket();
         ticket.setTitle("Ticket1");
         ticket.setDescription("Ticket1Body");

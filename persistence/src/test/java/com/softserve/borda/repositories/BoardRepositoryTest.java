@@ -1,7 +1,7 @@
 package com.softserve.borda.repositories;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.entities.BoardColumn;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ class BoardRepositoryTest {
     BoardRepository boardRepository;
 
     @Autowired
-    BoardListRepository boardListRepository;
+    BoardColumnRepository boardColumnRepository;
 
     @Test
     void shouldInsertAndReturnBoard() {
@@ -59,18 +59,18 @@ class BoardRepositoryTest {
     void shouldSaveBoardListsWithBoard() {
         Board board = new Board();
         board.setName("Board1");
-        BoardList boardList1 = new BoardList();
-        boardList1.setName("BoardList1");
-        BoardList boardList2 = new BoardList();
-        boardList2.setName("BoardList2");
-        board.getBoardLists().add(boardList1);
-        board.getBoardLists().add(boardList2);
+        BoardColumn boardColumn1 = new BoardColumn();
+        boardColumn1.setName("BoardList1");
+        BoardColumn boardColumn2 = new BoardColumn();
+        boardColumn2.setName("BoardList2");
+        board.getBoardColumns().add(boardColumn1);
+        board.getBoardColumns().add(boardColumn2);
         boardRepository.save(board);
         Board actualBoard = boardRepository.getOne(board.getId());
-        List<BoardList> expected = new ArrayList<>();
-        expected.add(boardList1);
-        expected.add(boardList2);
-        List<BoardList> actual = boardListRepository.findAll();
+        List<BoardColumn> expected = new ArrayList<>();
+        expected.add(boardColumn1);
+        expected.add(boardColumn2);
+        List<BoardColumn> actual = boardColumnRepository.findAll();
         Assertions.assertEquals(board, actualBoard);
         Assertions.assertEquals(expected, actual);
     }
@@ -79,16 +79,16 @@ class BoardRepositoryTest {
     void shouldDeleteBoardListsWithBoard() {
         Board board = new Board();
         board.setName("Board1");
-        BoardList boardList1 = new BoardList();
-        boardList1.setName("BoardList1");
-        BoardList boardList2 = new BoardList();
-        boardList2.setName("BoardList2");
-        board.getBoardLists().add(boardList1);
-        board.getBoardLists().add(boardList2);
+        BoardColumn boardColumn1 = new BoardColumn();
+        boardColumn1.setName("BoardList1");
+        BoardColumn boardColumn2 = new BoardColumn();
+        boardColumn2.setName("BoardList2");
+        board.getBoardColumns().add(boardColumn1);
+        board.getBoardColumns().add(boardColumn2);
         boardRepository.save(board);
         boardRepository.delete(board);
-        List<BoardList> expected = new ArrayList<>();
-        List<BoardList> actual = boardListRepository.findAll();
+        List<BoardColumn> expected = new ArrayList<>();
+        List<BoardColumn> actual = boardColumnRepository.findAll();
         Assertions.assertFalse(boardRepository.findById(board.getId()).isPresent());
         Assertions.assertEquals(expected, actual);
     }

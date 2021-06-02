@@ -1,7 +1,6 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardList;
 
 import java.util.List;
 

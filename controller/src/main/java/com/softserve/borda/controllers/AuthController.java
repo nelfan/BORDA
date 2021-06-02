@@ -33,7 +33,8 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest)
+            throws CustomAuthenticationFailedException {
         try {
             User user = new User();
             user.setUsername(registrationRequest.getUsername());
@@ -52,7 +53,8 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request)
+            throws CustomAuthenticationFailedException {
         try {
             User user = userService.getUserByUsername(request.getUsername());
             if (user != null &&
@@ -61,10 +63,9 @@ public class AuthController {
                 AuthResponse authResponse = new AuthResponse(token);
                 return ResponseEntity.ok(authResponse);
             }
-            throw new CustomAuthenticationFailedException();
         } catch (Exception e) {
             log.warning(e.getMessage());
-            throw new CustomAuthenticationFailedException();
         }
+        throw new CustomAuthenticationFailedException();
     }
 }

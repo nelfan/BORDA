@@ -1,30 +1,26 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardRepository;
-import com.softserve.borda.services.BoardListService;
 import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Log
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
 
-    private final BoardListService boardListService;
-
-    @Override
-    public List<BoardList> getAllBoardListsByBoardId(Long boardId) {
-        return getBoardById(boardId).getBoardLists();
-    }
+    private final UserBoardRelationService userBoardRelationService;
 
     @Override
     public List<Board> getAll() {
@@ -38,39 +34,40 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board createOrUpdate(Board board) {
-        if (board.getId() != null) {
-            Optional<Board> boardOptional = boardRepository.findById(board.getId());
-
-            if (boardOptional.isPresent()) {
-                Board newBoard = boardOptional.get();
-                newBoard.setName(board.getName());
-                return boardRepository.save(newBoard);
-            }
-        }
+    public Board create(Board board) {
         return boardRepository.save(board);
     }
 
     @Override
-    public void deleteBoardById(Long id) {
-        boardRepository.deleteById(id);
+    public Board update(Board board) {
+        Board existingBoard = getBoardById(board.getId());
+        existingBoard.setName(board.getName());
+        return boardRepository.save(existingBoard);
     }
 
     @Override
-    public BoardList addBoardListToBoard(Board board, BoardList boardList) {
-        board.getBoardLists().add(boardList);
-        boardRepository.save(board);
-        return boardList;
-    }
-
-    @Override
-    public Board deleteBoardListFromBoard(Board board, BoardList boardList) {
+    public boolean deleteBoardById(Long id) {
         try {
-            board.getBoardLists().remove(boardList);
-            boardListService.deleteBoardListById(boardList.getId());
-            return boardRepository.save(board);
+            boardRepository.deleteById(id);
+            return true;
         } catch (Exception e) {
-            throw new CustomFailedToDeleteEntityException(e.getMessage());
+            log.severe(e.getMessage());
+            return false;
         }
+    }
+
+    @Override
+    public List<Board> getBoardsByUserId(Long userId) {
+        return userBoardRelationService.getUserBoardRelationsByUserId(userId).stream()
+                .map(UserBoardRelation::getBoard)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId) {
+        return userBoardRelationService.getUserBoardRelationsByUserIdAndBoardRoleId(userId, roleId)
+                .stream()
+                .map(UserBoardRelation::getBoard)
+                .collect(Collectors.toList());
     }
 }

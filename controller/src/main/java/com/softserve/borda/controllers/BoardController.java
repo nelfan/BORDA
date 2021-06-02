@@ -52,7 +52,7 @@ public class BoardController {
     @GetMapping("/users/{userId}/boards")
     public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
         try {
-            List<Board> boards = userService.getBoardsByUserId(userId);
+            List<Board> boards = boardService.getBoardsByUserId(userId);
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
 
@@ -68,7 +68,7 @@ public class BoardController {
             @PathVariable Long userId,
             @PathVariable Long boardRoleId) {
         try {
-            List<Board> boards = userService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId);
+            List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId);
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
 
@@ -95,7 +95,7 @@ public class BoardController {
 
             board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
 
-            board = boardService.createOrUpdate(board);
+            board = boardService.create(board);
             BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
             return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
@@ -125,7 +125,7 @@ public class BoardController {
         try {
             Board board = boardService.getBoardById(id);
             BeanUtils.copyProperties(boardFullDTO, board);
-            board = boardService.createOrUpdate(board);
+            board = boardService.update(board);
             boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
             return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
@@ -138,7 +138,7 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/lists")
     public ResponseEntity<List<BoardListDTO>> getAllBoardListsForBoard(@PathVariable Long boardId) {
         try {
-            List<BoardList> boardLists = boardService.getAllBoardListsByBoardId(boardId);
+            List<BoardList> boardLists = boardListService.getAllBoardListsByBoardId(boardId);
             List<BoardListDTO> boardListDTOs = boardLists.stream()
                     .map(boardList -> modelMapper.map(boardList,
                             BoardListDTO.class)).collect(Collectors.toList());
@@ -156,9 +156,8 @@ public class BoardController {
         try {
             BoardList boardList = new BoardList();
             boardList.setName(boardListDTO.getName());
-            boardList = boardListService.createOrUpdate(boardList);
-            boardList = boardService.addBoardListToBoard(
-                    boardService.getBoardById(boardId), boardList);
+            boardList = boardListService.create(boardList);
+            boardList = boardListService.addBoardListToBoard(boardId, boardList.getId());
             boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
@@ -172,8 +171,7 @@ public class BoardController {
     public ResponseEntity<String> deleteBoardListFromBoard(@PathVariable Long boardId,
                                                            @PathVariable Long listId) {
         try {
-            boardService.deleteBoardListFromBoard(boardService.getBoardById(boardId),
-                    boardListService.getBoardListById(listId));
+            boardListService.deleteBoardListFromBoard(boardId, listId);
 
             return new ResponseEntity<>("Entity was removed successfully",
                     HttpStatus.OK);
@@ -205,7 +203,7 @@ public class BoardController {
         try {
             BoardList boardList = boardListService.getBoardListById(listId);
             BeanUtils.copyProperties(boardListDTO, boardList);
-            boardList = boardListService.createOrUpdate(boardList);
+            boardList = boardListService.update(boardList);
             boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
@@ -219,7 +217,7 @@ public class BoardController {
     public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardList(@PathVariable Long listId,
                                                                      @PathVariable String boardId) {
         try {
-            List<Ticket> tickets = boardListService.getAllTicketsByBoardListId(listId);
+            List<Ticket> tickets = ticketService.getAllTicketsByBoardListId(listId);
             List<TicketDTO> ticketDTOs = tickets.stream()
                     .map(ticket -> modelMapper.map(ticket,
                             TicketDTO.class)).collect(Collectors.toList());
@@ -237,9 +235,9 @@ public class BoardController {
                                                                  @PathVariable String boardId) {
         try {
             Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
-            ticket = ticketService.createOrUpdate(ticket);
+            ticket = ticketService.create(ticket);
+            ticketService.addTicketToBoardList(listId, ticket.getId());
             BoardList boardList = boardListService.getBoardListById(listId);
-            boardList = boardListService.addTicketToBoardList(boardList, ticket);
             BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
@@ -254,10 +252,8 @@ public class BoardController {
                                                                   @PathVariable Long ticketId,
                                                                   @PathVariable String boardId) {
         try {
+            ticketService.deleteTicketFromBoardList(listId, ticketId);
             BoardList boardList = boardListService.getBoardListById(listId);
-            Ticket ticket = ticketService.getTicketById(ticketId);
-            boardList = boardListService.deleteTicketFromBoardList(boardList,
-                    ticket);
             BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
@@ -278,8 +274,8 @@ public class BoardController {
             Ticket ticket = ticketService.getTicketById(ticketId);
             oldBoardList.getTickets().remove(ticket);
             newBoardList.getTickets().add(ticket);
-            boardListService.createOrUpdate(oldBoardList);
-            newBoardList = boardListService.createOrUpdate(newBoardList);
+            boardListService.update(oldBoardList);
+            newBoardList = boardListService.update(newBoardList);
             BoardListDTO boardListDTO = modelMapper.map(newBoardList, BoardListDTO.class);
 
             return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
@@ -312,7 +308,7 @@ public class BoardController {
         try {
             Ticket ticket = ticketService.getTicketById(ticketId);
             BeanUtils.copyProperties(ticketDTO, ticket);
-            ticket = ticketService.createOrUpdate(ticket);
+            ticket = ticketService.update(ticket);
             ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -403,9 +399,8 @@ public class BoardController {
             Comment comment = new Comment();
             comment.setText(commentDTO.getText());
             comment.setUser(userService.getUserById(commentDTO.getUserId()));
-            comment = commentService.createOrUpdate(comment);
-            userService.addCommentToUser(comment.getUser().getId(), comment);
-            Ticket ticket = ticketService.addCommentToTicket(ticketId, comment);
+            comment = commentService.create(comment);
+            Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -425,7 +420,7 @@ public class BoardController {
         try {
             Comment comment = commentService.getCommentById(commentId);
             BeanUtils.copyProperties(commentDTO, comment);
-            comment = commentService.createOrUpdate(comment);
+            comment = commentService.update(comment);
             commentDTO = modelMapper.map(comment, CommentDTO.class);
 
             return new ResponseEntity<>(commentDTO, HttpStatus.OK);
@@ -442,11 +437,9 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
-            Comment comment = commentService.getCommentById(commentId);
-            ticketService.deleteCommentFromTicket(ticketId, comment);
-            userService.deleteCommentFromUser(comment.getUser().getId(), comment);
+            ticketService.deleteCommentFromTicket(ticketId, commentId);
             commentService.deleteCommentById(commentId);
-            Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, comment);
+            Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -478,9 +471,11 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
+            // TODO rework tags to relate to certain board
+            //  and here tags should not be created, just added to ticket
             Tag tag = modelMapper.map(tagDTO, Tag.class);
-            tag = tagService.createOrUpdate(tag);
-            Ticket ticket = ticketService.addTagToTicket(ticketId, tag);
+            tag = tagService.create(tag);
+            Ticket ticket = ticketService.addTagToTicket(ticketId, tag.getId());
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -511,7 +506,7 @@ public class BoardController {
         try {
             Tag tag = tagService.getTagById(tagId);
             BeanUtils.copyProperties(tagDTO, tag);
-            tag = tagService.createOrUpdate(tag);
+            tag = tagService.update(tag);
             tagDTO = modelMapper.map(tag, TagDTO.class);
 
             return new ResponseEntity<>(tagDTO, HttpStatus.OK);
@@ -530,7 +525,7 @@ public class BoardController {
              @PathVariable String listId) {
         try {
             Tag tag = tagService.getTagById(tagId);
-            Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag);
+            Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag.getId());
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -547,8 +542,7 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
-            User user = userService.getUserById(userId);
-            Ticket ticket = ticketService.addMemberToTicket(ticketId, user);
+            Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -565,8 +559,7 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
-            User user = userService.getUserById(userId);
-            Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, user);
+            Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
             return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -575,5 +568,4 @@ public class BoardController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }

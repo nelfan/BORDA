@@ -8,12 +8,11 @@ import java.util.List;
 public interface BoardService {
     List<Board> getAll();
     Board getBoardById(Long id);
-    Board createOrUpdate(Board board);
-    void deleteBoardById(Long id);
+    Board create(Board board);
+    Board update(Board board);
+    boolean deleteBoardById(Long id);
 
-    List<BoardList> getAllBoardListsByBoardId(Long boardId);
+    List<Board> getBoardsByUserId(Long id);
 
-    BoardList addBoardListToBoard(Board board, BoardList boardList);
-
-    Board deleteBoardListFromBoard(Board boardById, BoardList boardListById);
+    List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId);
 }

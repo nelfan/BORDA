@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable String id) {
+    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
         try {
-            User user = jwtConvertor.getUserByJWT(id);
+            User user = userService.getUserById(id);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<UserSimpleDTO> createUser(@RequestBody CreateUserDTO userDTO) {
         try {
             User user = modelMapper.map(userDTO, User.class);
-            user = userService.createOrUpdate(user);
+            user = userService.create(user);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.CREATED);
@@ -94,7 +94,7 @@ public class UserController {
         try {
             User user = userService.getUserById(id);
             BeanUtils.copyProperties(userFullDTO, user);
-            user = userService.createOrUpdate(user);
+            user = userService.update(user);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);

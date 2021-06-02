@@ -1,24 +1,21 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Tag;
-import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
-import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.TagService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Log
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
-    private final TicketRepository ticketRepository;
 
     @Override
     public List<Tag> getAll() {
@@ -27,38 +24,31 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Tag getTagById(Long id) {
-       return tagRepository.findById(id).orElseThrow(
+        return tagRepository.findById(id).orElseThrow(
                 () -> new CustomEntityNotFoundException(Tag.class));
     }
 
     @Override
-    public Tag createOrUpdate(Tag tag) {
-        if (tag.getId() != null) {
-            Optional<Tag> tagOptional = tagRepository.findById(tag.getId());
-
-            if (tagOptional.isPresent()) {
-                Tag newTag = tagOptional.get();
-                newTag.setText(tag.getText());
-                newTag.setColor(tag.getColor());
-                return tagRepository.save(newTag);
-            }
-        }
+    public Tag create(Tag tag) {
         return tagRepository.save(tag);
     }
 
     @Override
-    public void deleteTagById(Long id) {
-        tagRepository.deleteById(id);
+    public Tag update(Tag tag) {
+        Tag existingTag = getTagById(tag.getId());
+        existingTag.setText(tag.getText());
+        existingTag.setColor(tag.getColor());
+        return tagRepository.save(existingTag);
     }
 
     @Override
-    public boolean addTagToTicket(Tag tag, @NotNull Ticket ticket) {
-        if (tag.getId() == null) {
-            Ticket ticketEntity = ticketRepository.getOne(ticket.getId());
-            ticketEntity.getTags().add(tag);
-            ticketRepository.save(ticketEntity);
+    public boolean deleteTagById(Long id) {
+        try {
+            tagRepository.deleteById(id);
             return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
         }
-        return false;
     }
 }

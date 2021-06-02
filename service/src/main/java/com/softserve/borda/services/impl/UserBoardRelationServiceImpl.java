@@ -7,15 +7,16 @@ import com.softserve.borda.repositories.BoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Log
 public class UserBoardRelationServiceImpl implements UserBoardRelationService {
-    
+
     private final UserBoardRelationRepository userBoardRelationRepository;
 
     private final BoardRoleRepository boardRoleRepository;
@@ -32,21 +33,27 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public UserBoardRelation createOrUpdate(UserBoardRelation userBoardRelation) {
-        if (userBoardRelation.getId() != null) {
-            Optional<UserBoardRelation> userBoardRelationOptional = userBoardRelationRepository.findById(userBoardRelation.getId());
-
-            if (userBoardRelationOptional.isPresent()) {
-                UserBoardRelation newUserBoardRelation = userBoardRelationOptional.get();
-                return userBoardRelationRepository.save(newUserBoardRelation);
-            }
-        }
+    public UserBoardRelation create(UserBoardRelation userBoardRelation) {
         return userBoardRelationRepository.save(userBoardRelation);
     }
 
     @Override
-    public void deleteUserBoardRelationById(Long id) {
-        userBoardRelationRepository.deleteById(id);
+    public UserBoardRelation update(UserBoardRelation userBoardRelation) {
+        UserBoardRelation existingUserBoardRelation =
+                getUserBoardRelationById(userBoardRelation.getId());
+        existingUserBoardRelation.setBoardRole(userBoardRelation.getBoardRole());
+        return userBoardRelationRepository.save(existingUserBoardRelation);
+    }
+
+    @Override
+    public boolean deleteUserBoardRelationById(Long id) {
+        try {
+            userBoardRelationRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -59,5 +66,16 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     public BoardRole getBoardRoleById(Long id) {
         return boardRoleRepository.findById(id)
                 .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+    }
+
+    @Override
+    public List<UserBoardRelation> getUserBoardRelationsByUserId(Long userId) {
+        return userBoardRelationRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public List<UserBoardRelation> getUserBoardRelationsByUserIdAndBoardRoleId(Long userId,
+                                                                               Long boardRoleId) {
+        return userBoardRelationRepository.findAllByUserIdAndBoardRoleId(userId, boardRoleId);
     }
 }

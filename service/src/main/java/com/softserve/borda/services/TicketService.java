@@ -9,25 +9,31 @@ import java.util.List;
 
 public interface TicketService {
     Ticket getTicketById(Long id);
-    Ticket createOrUpdate(Ticket ticket);
-    void deleteTicketById(Long id);
+    Ticket create(Ticket ticket);
+    Ticket update(Ticket ticket);
+    boolean deleteTicketById(Long id);
 
     List<Comment> getAllCommentsByTicketId(Long ticketId);
 
     List<User> getAllMembersByTicketId(Long ticketId);
 
-    List<Tag> getAllTagsByTicketId(Long id);
+    List<Tag> getAllTagsByTicketId(Long ticketId);
   
-    Ticket addCommentToTicket(Long ticketId, Comment comment);
+    Ticket addCommentToTicket(Long ticketId, Long commentId);
 
-    Ticket deleteCommentFromTicket(Long ticketId, Comment comment);
+    Ticket deleteCommentFromTicket(Long ticketId, Long commentId);
 
-    Ticket addTagToTicket(Long ticketId, Tag tag);
+    Ticket addTagToTicket(Long ticketId, Long tagId);
 
-    Ticket deleteTagFromTicket(Long ticketId, Tag tag);
+    Ticket deleteTagFromTicket(Long ticketId, Long tagId);
 
-    Ticket addMemberToTicket(Long ticketId, User user);
+    Ticket addMemberToTicket(Long ticketId, Long userId);
 
-    Ticket deleteMemberFromTicket(Long ticketId, User user);
-  
+    Ticket deleteMemberFromTicket(Long ticketId, Long userId);
+
+    List<Ticket> getAllTicketsByBoardListId(Long boardListId);
+
+    Ticket addTicketToBoardList(Long boardListId, Long ticketId);
+
+    boolean deleteTicketFromBoardList(Long boardListId, Long ticketId);
 }

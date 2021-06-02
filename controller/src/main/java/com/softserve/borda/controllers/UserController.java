@@ -1,5 +1,6 @@
 package com.softserve.borda.controllers;
 
+import com.softserve.borda.config.authorization.CustomUserDetails;
 import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,9 +50,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<UserSimpleDTO> getUserByToken(@RequestHeader String authorization) {
+    public ResponseEntity<UserSimpleDTO> getAuthenticatedUser() {
         try {
-            User user = jwtConvertor.getUserByJWT(authorization);
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
+
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
@@ -88,10 +95,14 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserSimpleDTO> updateUser(@RequestHeader String authorization,
-                                                    @RequestBody UserFullDTO userFullDTO) {
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO) {
         try {
-            User user = jwtConvertor.getUserByJWT(authorization);
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
+
             BeanUtils.copyProperties(userFullDTO, user);
             user = userService.update(user);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);

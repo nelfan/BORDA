@@ -1,6 +1,6 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
+import com.softserve.borda.config.authorization.CustomUserDetails;
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -40,8 +41,6 @@ public class BoardController {
 
     private final TagService tagService;
 
-    private final JwtConvertor jwtConvertor;
-
     @GetMapping("/boards")
     public List<Board> getAllBoards() {
         return boardService.getAll();
@@ -53,9 +52,14 @@ public class BoardController {
     }
 
     @GetMapping("/users/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser(@RequestHeader String authorization) {
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser() {
         try {
-            User user = jwtConvertor.getUserByJWT(authorization);
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
+
             List<Board> boards = boardService.getBoardsByUserId(user.getId());
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
@@ -69,10 +73,14 @@ public class BoardController {
 
     @GetMapping("/users/boards/{boardRoleId}")
     public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(
-            @RequestHeader String authorization,
             @PathVariable Long boardRoleId) {
         try {
-            User user = jwtConvertor.getUserByJWT(authorization);
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
+
             List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(user.getId(), boardRoleId);
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
@@ -85,8 +93,7 @@ public class BoardController {
     }
 
     @PostMapping("/boards")
-    public ResponseEntity<BoardFullDTO> createBoard(@RequestHeader String authorization,
-                                                    @RequestBody CreateBoardDTO boardDTO) {
+    public ResponseEntity<BoardFullDTO> createBoard(@RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
             board.setName(boardDTO.getName());
@@ -94,7 +101,11 @@ public class BoardController {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
 
-            User user = jwtConvertor.getUserByJWT(authorization);
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
             userBoardRelation.setUser(user);
 
             userBoardRelation.setBoardRole(userBoardRelationService
@@ -400,15 +411,21 @@ public class BoardController {
     public ResponseEntity<TicketDTO> addCommentToTicket
             (@PathVariable Long ticketId,
              @RequestBody CommentDTO commentDTO,
-             @RequestHeader String authorization,
              @PathVariable String boardId,
              @PathVariable String listId) {
         try {
             Comment comment = new Comment();
             comment.setText(commentDTO.getText());
-            User user = jwtConvertor.getUserByJWT(authorization);
+
+            CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            User user = userService.getUserByUsername(userDetails.getUsername());
             comment.setUser(user);
+
             comment = commentService.create(comment);
+
             Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 

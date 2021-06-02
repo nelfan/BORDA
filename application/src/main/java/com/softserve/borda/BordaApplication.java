@@ -26,7 +26,7 @@ public class BordaApplication {
 
     UserBoardRelationRepository userBoardRelationRepository;
 
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     TagRepository tagRepository;
 
@@ -42,12 +42,12 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, TagRepository tagRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardColumnService boardColumnService, TicketService ticketService,
+                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardColumnService boardColumnService, TicketService ticketService,
                             JwtConvertor jwtConvertor) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
-        this.boardRoleRepository = boardRoleRepository;
+        this.userBoardRoleRepository = userBoardRoleRepository;
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.boardService = boardService;
@@ -85,9 +85,9 @@ public class BordaApplication {
         }
 
         UserBoardRole owner = new UserBoardRole(UserBoardRole.BoardRoles.OWNER.name());
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.BoardRoles.COLLABORATOR.name());
-        boardRoleRepository.save(collaborator);
+        userBoardRoleRepository.save(collaborator);
         for(int i = 0; i < 10; i++) {
             Board board = new Board();
             board.setName("Board" + i);

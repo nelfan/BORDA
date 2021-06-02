@@ -32,7 +32,7 @@ class UserBoardRelationRepositoryTest {
     BoardRepository boardRepository;
 
     @Autowired
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     @Test
     void shouldInsertAndReturnUserBoardRelation() {
@@ -45,7 +45,7 @@ class UserBoardRelationRepositoryTest {
         userRepository.save(user);
         UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation expected = new UserBoardRelation();
@@ -71,7 +71,7 @@ class UserBoardRelationRepositoryTest {
         userRepository.save(user);
         UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation userBoardRelation = new UserBoardRelation();
@@ -97,7 +97,7 @@ class UserBoardRelationRepositoryTest {
         userRepository.save(user);
         UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation userBoardRelation = new UserBoardRelation();
@@ -111,7 +111,7 @@ class UserBoardRelationRepositoryTest {
         userBoardRelationRepository.save(userBoardRelation);
         UserBoardRole collaborator = new UserBoardRole();
         collaborator.setName("collaborator");
-        boardRoleRepository.save(collaborator);
+        userBoardRoleRepository.save(collaborator);
         userBoardRelation.setUserBoardRole(collaborator);
         UserBoardRelation expected = userBoardRelationRepository.save(userBoardRelation);
         UserBoardRelation actual = userBoardRelationRepository.getOne(userBoardRelation.getId());
@@ -134,10 +134,10 @@ class UserBoardRelationRepositoryTest {
         }
         UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         UserBoardRole collaborator = new UserBoardRole();
         collaborator.setName("collaborator");
-        boardRoleRepository.save(collaborator);
+        userBoardRoleRepository.save(collaborator);
         for (int i = 0; i < 3; i++) {
             Board board = new Board();
             board.setName("Board" + i);

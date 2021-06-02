@@ -14,17 +14,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserBoardRoleRepositoryTest {
+class UserUserBoardRoleRepositoryTest {
 
     @Autowired
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     @Test
     void shouldInsertAndReturnRole() {
         UserBoardRole userBoardRole = new UserBoardRole();
         userBoardRole.setName("Role1");
-        UserBoardRole expected = boardRoleRepository.save(userBoardRole);
-        UserBoardRole actual = boardRoleRepository.getOne(userBoardRole.getId());
+        UserBoardRole expected = userBoardRoleRepository.save(userBoardRole);
+        UserBoardRole actual = userBoardRoleRepository.getOne(userBoardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 
@@ -32,19 +32,19 @@ class UserBoardRoleRepositoryTest {
     void shouldInsertAndDeleteRole() {
         UserBoardRole userBoardRole = new UserBoardRole();
         userBoardRole.setName("Role1");
-        boardRoleRepository.save(userBoardRole);
-        boardRoleRepository.deleteById(userBoardRole.getId());
-        Assertions.assertFalse(boardRoleRepository.findById(userBoardRole.getId()).isPresent());
+        userBoardRoleRepository.save(userBoardRole);
+        userBoardRoleRepository.deleteById(userBoardRole.getId());
+        Assertions.assertFalse(userBoardRoleRepository.findById(userBoardRole.getId()).isPresent());
     }
 
     @Test
     void shouldInsertAndUpdateRole() {
         UserBoardRole userBoardRole = new UserBoardRole();
         userBoardRole.setName("Role1");
-        boardRoleRepository.save(userBoardRole);
+        userBoardRoleRepository.save(userBoardRole);
         userBoardRole.setName("Role1updated");
-        UserBoardRole expected = boardRoleRepository.save(userBoardRole);
-        UserBoardRole actual = boardRoleRepository.getOne(userBoardRole.getId());
+        UserBoardRole expected = userBoardRoleRepository.save(userBoardRole);
+        UserBoardRole actual = userBoardRoleRepository.getOne(userBoardRole.getId());
         Assertions.assertEquals(expected, actual);
     }
 }

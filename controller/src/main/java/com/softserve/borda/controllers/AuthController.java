@@ -6,13 +6,14 @@ import com.softserve.borda.authorization.RegistrationRequest;
 import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @Log
 @CrossOrigin
+@Validated
 public class AuthController {
 
     private final UserService userService;
@@ -41,12 +43,12 @@ public class AuthController {
             user.setLastName(registrationRequest.getLastName());
             userService.create(user);
             jwtConvertor.saveUser(user);
-            AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
-            return auth(authRequest);
         } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            log.warning(e.getMessage());
+            throw new CustomAuthenticationFailedException("Registration failed");
         }
+        AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
+        return auth(authRequest);
     }
 
     @PostMapping("/auth")
@@ -59,9 +61,10 @@ public class AuthController {
                 AuthResponse authResponse = new AuthResponse(token);
                 return ResponseEntity.ok(authResponse);
             }
+            throw new CustomAuthenticationFailedException();
         } catch (Exception e) {
-            log.severe(e.getMessage());
+            log.warning(e.getMessage());
+            throw new CustomAuthenticationFailedException();
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 }

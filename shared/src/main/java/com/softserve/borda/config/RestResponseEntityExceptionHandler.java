@@ -1,5 +1,6 @@
 package com.softserve.borda.config;
 
+import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import lombok.extern.java.Log;
@@ -20,7 +21,7 @@ public class RestResponseEntityExceptionHandler
             = {CustomEntityNotFoundException.class})
     protected ResponseEntity<Object> handleEntityNotFound(
             RuntimeException ex, WebRequest request) {
-        log.severe(ex.getMessage());
+        log.warning(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(),
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
@@ -29,8 +30,17 @@ public class RestResponseEntityExceptionHandler
             = {CustomFailedToDeleteEntityException.class})
     protected ResponseEntity<Object> handleFailedToDeleteEntity(
             RuntimeException ex, WebRequest request) {
-        log.severe(ex.getMessage());
+        log.warning(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(),
-                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+                new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(value
+            = {CustomAuthenticationFailedException.class})
+    protected ResponseEntity<Object> handleAuthenticationFailed(
+            RuntimeException ex, WebRequest request) {
+        log.warning(ex.getMessage());
+        return handleExceptionInternal(ex, ex.getMessage(),
+                new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 }

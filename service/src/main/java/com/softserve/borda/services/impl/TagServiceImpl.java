@@ -38,6 +38,7 @@ public class TagServiceImpl implements TagService {
         Tag existingTag = getTagById(tag.getId());
         existingTag.setText(tag.getText());
         existingTag.setColor(tag.getColor());
+        existingTag.setBoard(tag.getBoard());
         return tagRepository.save(existingTag);
     }
 

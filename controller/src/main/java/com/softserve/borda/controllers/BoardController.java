@@ -521,8 +521,11 @@ public class BoardController {
     public ResponseEntity<TagDTO> updateTagByTagId
             (@PathVariable Long tagId,
              @RequestBody TagDTO tagDTO,
-             @PathVariable String boardId) {
+             @PathVariable Long boardId) {
         try {
+            if(Objects.isNull(tagDTO.getBoardId())) {
+                tagDTO.setBoardId(boardId);
+            }
             Tag tag = tagService.getTagById(tagId);
             BeanUtils.copyProperties(tagDTO, tag);
             tag = tagService.update(tag);

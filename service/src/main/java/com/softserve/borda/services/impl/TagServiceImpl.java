@@ -51,4 +51,9 @@ public class TagServiceImpl implements TagService {
             return false;
         }
     }
+
+    @Override
+    public List<Tag> getAllTagsByBoardId(Long boardId) {
+        return tagRepository.getAllTagsByBoardId(boardId);
+    }
 }

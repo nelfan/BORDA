@@ -28,9 +28,6 @@ class BoardServiceTest {
     @Mock
     UserBoardRelationService userBoardRelationService;
 
-    @Mock
-    TagService tagService;
-
     @InjectMocks
     BoardServiceImpl boardService;
 
@@ -38,7 +35,7 @@ class BoardServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         boardService = new BoardServiceImpl(boardRepository,
-                userBoardRelationService, tagService);
+                userBoardRelationService);
     }
 
     @Test

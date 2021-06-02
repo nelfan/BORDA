@@ -75,15 +75,6 @@ public class BordaApplication {
             jwtConvertor.saveUser(user);
         }
 
-        List<Tag> tags = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setText("label"+i);
-            tag.setColor("color " + i);
-            tagRepository.save(tag);
-            tags.add(tag);
-        }
-
         BoardRole owner = new BoardRole(BoardRole.BoardRoles.OWNER.name());
         boardRoleRepository.save(owner);
         BoardRole collaborator = new BoardRole(BoardRole.BoardRoles.COLLABORATOR.name());
@@ -101,6 +92,16 @@ public class BordaApplication {
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
+        }
+
+        List<Tag> tags = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setText("label"+i);
+            tag.setColor("color " + i);
+            tag.setBoard(boards.get(0));
+            tagRepository.save(tag);
+            tags.add(tag);
         }
 
         for(int i = 10; i < 50; i++) {

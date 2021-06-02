@@ -1,6 +1,8 @@
 package com.softserve.borda.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,4 +21,10 @@ public class Tag {
 
     @NotBlank
     private String color;
+
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "board_id", nullable = false)
+    @JsonBackReference
+    private Board board;
 }

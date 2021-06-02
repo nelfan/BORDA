@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -465,17 +466,18 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/tags")
-    public ResponseEntity<BoardFullDTO> addNewTagToBoard
+    public ResponseEntity<TagDTO> addNewTagToBoard
             (@RequestBody TagDTO tagDTO,
              @PathVariable Long boardId) {
         try {
-
+            if(Objects.isNull(tagDTO.getBoardId())) {
+                tagDTO.setBoardId(boardId);
+            }
             Tag tag = modelMapper.map(tagDTO, Tag.class);
             tag = tagService.create(tag);
-            Board board = boardService.addTagToBoard(boardId, tag.getId());
-            BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+            tagDTO = modelMapper.map(tag, TagDTO.class);
 
-            return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
+            return new ResponseEntity<>(tagDTO, HttpStatus.OK);
         } catch (Exception e) {
             log.severe(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -503,7 +505,7 @@ public class BoardController {
     public ResponseEntity<List<TagDTO>> getAllTagsForBoard
             (@PathVariable Long boardId) {
         try {
-            List<Tag> tags = boardService.getAllTagsByBoardId(boardId);
+            List<Tag> tags = tagService.getAllTagsByBoardId(boardId);
             List<TagDTO> tagDTOs = tags.stream().map(tag ->
                     modelMapper.map(tag, TagDTO.class))
                     .collect(Collectors.toList());

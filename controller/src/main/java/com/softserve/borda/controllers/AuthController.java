@@ -5,11 +5,11 @@ import com.softserve.borda.authorization.AuthResponse;
 import com.softserve.borda.authorization.RegistrationRequest;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,7 +29,8 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest)
+            throws CustomAuthenticationFailedException {
         try {
             User user = new User();
             user.setUsername(registrationRequest.getUsername());
@@ -38,16 +39,17 @@ public class AuthController {
             user.setFirstName(registrationRequest.getFirstName());
             user.setLastName(registrationRequest.getLastName());
             userService.create(user);
-            AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
-            return auth(authRequest);
         } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            log.warning(e.getMessage());
+            throw new CustomAuthenticationFailedException("Registration failed");
         }
+        AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
+        return auth(authRequest);
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request)
+            throws CustomAuthenticationFailedException {
         try {
             User user = userService.getUserByUsername(request.getUsername());
             if (user != null &&
@@ -57,8 +59,8 @@ public class AuthController {
                 return ResponseEntity.ok(authResponse);
             }
         } catch (Exception e) {
-            log.severe(e.getMessage());
+            log.warning(e.getMessage());
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        throw new CustomAuthenticationFailedException();
     }
 }

@@ -2,6 +2,7 @@ package com.softserve.borda.config;
 
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
+import com.softserve.borda.exceptions.CustomValidationFailedException;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,14 @@ public class RestResponseEntityExceptionHandler
         log.warning(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(),
                 new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(value
+            = {CustomValidationFailedException.class})
+    protected ResponseEntity<Object> handleValidationFailed(
+            RuntimeException ex, WebRequest request) {
+        log.warning(ex.getMessage());
+        return handleExceptionInternal(ex, ex.getMessage(),
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

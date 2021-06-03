@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -49,10 +50,12 @@ public class BoardController {
         return boardService.getBoardById(id);
     }
 
-    @GetMapping("/users/{userId}/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
+    @GetMapping("/users/boards")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser(Authentication authentication) {
         try {
-            List<Board> boards = boardService.getBoardsByUserId(userId);
+            User user = userService.getUserByUsername(authentication.getName());
+
+            List<Board> boards = boardService.getBoardsByUserId(user.getId());
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
 
@@ -63,12 +66,13 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/users/{userId}/boards/{boardRoleId}")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserIdAndBoardRoleId(
-            @PathVariable Long userId,
+    @GetMapping("/users/boards/{boardRoleId}")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(Authentication authentication,
             @PathVariable Long boardRoleId) {
         try {
-            List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId);
+            User user = userService.getUserByUsername(authentication.getName());
+
+            List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(user.getId(), boardRoleId);
             List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
                     BoardFullDTO.class)).collect(Collectors.toList());
 
@@ -79,8 +83,8 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/boards/{userId}")
-    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
+    @PostMapping("/boards")
+    public ResponseEntity<BoardFullDTO> createBoard(Authentication authentication,
                                                     @RequestBody CreateBoardDTO boardDTO) {
         try {
             Board board = new Board();
@@ -88,7 +92,9 @@ public class BoardController {
 
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUser((userService.getUserById(userId)));
+
+            User user = userService.getUserByUsername(authentication.getName());
+            userBoardRelation.setUser(user);
 
             userBoardRelation.setBoardRole(userBoardRelationService
                     .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
@@ -390,16 +396,21 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments")
-    public ResponseEntity<TicketDTO> addCommentToTicketAndUser
+    public ResponseEntity<TicketDTO> addCommentToTicket
             (@PathVariable Long ticketId,
              @RequestBody CommentDTO commentDTO,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String listId,
+             Authentication authentication) {
         try {
             Comment comment = new Comment();
             comment.setText(commentDTO.getText());
-            comment.setUser(userService.getUserById(commentDTO.getUserId()));
+
+            User user = userService.getUserByUsername(authentication.getName());
+            comment.setUser(user);
+
             comment = commentService.create(comment);
+
             Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
             TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
@@ -431,7 +442,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/deleteComment/{commentId}")
-    public ResponseEntity<TicketDTO> deleteCommentFromTicketAndUser
+    public ResponseEntity<TicketDTO> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
              @PathVariable String boardId,

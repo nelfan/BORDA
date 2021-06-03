@@ -3,7 +3,6 @@ package com.softserve.borda.services;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
-import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TagServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,6 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.authorization.AuthRequest;
 import com.softserve.borda.authorization.AuthResponse;
 import com.softserve.borda.authorization.RegistrationRequest;
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
@@ -27,7 +26,6 @@ public class AuthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final JwtConvertor jwtConvertor;
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
@@ -40,7 +38,6 @@ public class AuthController {
             user.setFirstName(registrationRequest.getFirstName());
             user.setLastName(registrationRequest.getLastName());
             userService.create(user);
-            jwtConvertor.saveUser(user);
             AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
             return auth(authRequest);
         } catch (Exception e) {

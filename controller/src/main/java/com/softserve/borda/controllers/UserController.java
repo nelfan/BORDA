@@ -1,6 +1,5 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
@@ -14,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,9 +30,7 @@ public class UserController {
 
     private final UserService userService;
 
-    private final JwtConvertor jwtConvertor;
-
-    @GetMapping
+    @GetMapping("/admin/users")
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
         try {
             List<User> users = userService.getAll();
@@ -47,12 +45,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
+    @GetMapping
+    public ResponseEntity<UserSimpleDTO> getAuthenticatedUser(Authentication authentication) {
         try {
-            User user = userService.getUserById(id);
-            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+            User user = userService.getUserByUsername(authentication.getName());
 
+            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
             return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
         } catch (CustomEntityNotFoundException e) {
             log.severe(e.getMessage());
@@ -88,11 +86,12 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id,
-                                                    @RequestBody UserFullDTO userFullDTO) {
+    @PutMapping
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO,
+                                                    Authentication authentication) {
         try {
-            User user = userService.getUserById(id);
+            User user = userService.getUserByUsername(authentication.getName());
+
             BeanUtils.copyProperties(userFullDTO, user);
             user = userService.update(user);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);

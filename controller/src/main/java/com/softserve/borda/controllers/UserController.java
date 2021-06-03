@@ -1,9 +1,10 @@
 package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.CreateUserDTO;
-import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
+import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.exceptions.CustomValidationFailedException;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -12,8 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,15 +67,20 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO,
-                                                    Authentication authentication) {
-        User user = userService.getUserByUsername(authentication.getName());
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody @Valid UserUpdateDTO userUpdateDTO,
+                                                    Authentication authentication,
+                                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationFailedException(bindingResult);
+        } else {
+            User user = userService.getUserByUsername(authentication.getName());
 
-        BeanUtils.copyProperties(userFullDTO, user);
-        user = userService.update(user);
-        UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+            BeanUtils.copyProperties(userUpdateDTO, user);
+            user = userService.update(user);
+            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
-        return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
+            return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package com.softserve.borda;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
@@ -32,8 +31,6 @@ public class BordaApplication {
 
     UserService userService;
 
-    JwtConvertor jwtConvertor;
-
     BoardService boardService;
 
     BoardListService boardListService;
@@ -42,8 +39,10 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, TagRepository tagRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardListService boardListService, TicketService ticketService,
-                            JwtConvertor jwtConvertor) {
+                            BoardRoleRepository boardRoleRepository, TagRepository tagRepository,
+                            UserService userService, PasswordEncoder passwordEncoder,
+                            RoleRepository roleRepository, BoardService boardService,
+                            BoardListService boardListService, TicketService ticketService) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
@@ -53,8 +52,6 @@ public class BordaApplication {
         this.boardService = boardService;
         this.boardListService = boardListService;
         this.ticketService = ticketService;
-        this.jwtConvertor = jwtConvertor;
-
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
         Role adminRole = new Role(Role.Roles.ROLE_ADMIN.name());
@@ -72,7 +69,6 @@ public class BordaApplication {
             user.getRoles().add(userRole);
             userRepository.save(user);
             users.add(user);
-            jwtConvertor.saveUser(user);
         }
 
         List<Tag> tags = new ArrayList<>();
@@ -121,14 +117,14 @@ public class BordaApplication {
         BoardList boardList = new BoardList();
         boardList.setName("BoardList1");
         boards.get(0).getBoardLists().add(boardList);
-        boardList = boardListService.createOrUpdate(boardList);
+        boardList = boardListService.create(boardList);
         Ticket ticket = new Ticket();
         ticket.setTitle("Ticket1");
         ticket.setDescription("Ticket for testing");
-        ticket = ticketService.createOrUpdate(ticket);
+        ticket = ticketService.create(ticket);
         boardList.getTickets().add(ticket);
-        boardListService.createOrUpdate(boardList);
-        boardService.createOrUpdate(boards.get(0));
+        boardListService.update(boardList);
+        boardService.update(boards.get(0));
     }
 
     public static void main(String[] args) {

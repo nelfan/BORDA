@@ -21,7 +21,7 @@ public class RegistrationRequest {
     @NotBlank
     @Size(min = 2, message = "First name cannot be less than 2 characters")
     @Size(max = 30, message = "First name cannot be more than 30 characters")
-    @Pattern(regexp = ValidationUtils.REG_EXP_LAST_NAME,
+    @Pattern(regexp = ValidationUtils.REG_EXP_FIRST_NAME,
             message = "First name can only contain letters and should start with Upper case")
     private String firstName;
 

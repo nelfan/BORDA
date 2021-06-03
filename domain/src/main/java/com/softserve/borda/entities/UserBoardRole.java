@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@Entity(name = "board_roles")
+@Entity(name = "user_board_roles")
 public class UserBoardRole {
 
     public enum UserBoardRoles {

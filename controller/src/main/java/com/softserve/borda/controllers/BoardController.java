@@ -2,6 +2,7 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
+import com.softserve.borda.exceptions.CustomValidationFailedException;
 import com.softserve.borda.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -10,8 +11,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,25 +74,30 @@ public class BoardController {
 
     @PostMapping("/boards")
     public ResponseEntity<BoardFullDTO> createBoard(Authentication authentication,
-                                                    @RequestBody CreateBoardDTO boardDTO) {
-        Board board = new Board();
-        board.setName(boardDTO.getName());
+                                                    @RequestBody @Valid CreateBoardDTO boardDTO,
+                                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationFailedException(bindingResult);
+        } else {
+            Board board = new Board();
+            board.setName(boardDTO.getName());
 
-        UserBoardRelation userBoardRelation = new UserBoardRelation();
-        userBoardRelation.setBoard(board);
+            UserBoardRelation userBoardRelation = new UserBoardRelation();
+            userBoardRelation.setBoard(board);
 
-        User user = userService.getUserByUsername(authentication.getName());
-        userBoardRelation.setUser(user);
+            User user = userService.getUserByUsername(authentication.getName());
+            userBoardRelation.setUser(user);
 
-        userBoardRelation.setBoardRole(userBoardRelationService
-                .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
+            userBoardRelation.setBoardRole(userBoardRelationService
+                    .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
 
-        board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
+            board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
 
-        board = boardService.create(board);
-        BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+            board = boardService.create(board);
+            BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
-        return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
+            return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
+        }
     }
 
     @DeleteMapping(value = "/boards/{id}")
@@ -102,13 +110,18 @@ public class BoardController {
 
     @PutMapping(value = "/boards/{id}")
     public ResponseEntity<BoardFullDTO> updateBoard(@PathVariable Long id,
-                                                    @RequestBody BoardFullDTO boardFullDTO) {
-        Board board = boardService.getBoardById(id);
-        BeanUtils.copyProperties(boardFullDTO, board);
-        board = boardService.update(board);
-        boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+                                                    @RequestBody @Valid BoardFullDTO boardFullDTO,
+                                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CustomValidationFailedException(bindingResult);
+        } else {
+            Board board = boardService.getBoardById(id);
+            BeanUtils.copyProperties(boardFullDTO, board);
+            board = boardService.update(board);
+            boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
-        return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
+            return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/boards/{boardId}/lists")

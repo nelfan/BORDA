@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Entity(name = "board_roles")
 public class UserBoardRole {
 
-    public enum BoardRoles {
+    public enum UserBoardRoles {
         OWNER,
         COLLABORATOR,
         GUEST

@@ -8,6 +8,6 @@ public class UserBoardRelationDTO {
     private Long id;
     private Long userId;
     private Long boardId;
-    private UserBoardRoleDTO boardRole;
+    private UserBoardRoleDTO userBoardRole;
 
 }

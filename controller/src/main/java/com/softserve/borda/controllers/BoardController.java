@@ -82,7 +82,7 @@ public class BoardController {
         userBoardRelation.setUser(user);
 
         userBoardRelation.setUserBoardRole(userBoardRelationService
-                .getUserBoardRoleByName(UserBoardRole.BoardRoles.OWNER.name()));
+                .getUserBoardRoleByName(UserBoardRole.UserBoardRoles.OWNER.name()));
 
         board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
 

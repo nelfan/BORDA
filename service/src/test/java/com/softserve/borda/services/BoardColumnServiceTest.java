@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class BoardBoardColumnServiceTest {
+class BoardColumnServiceTest {
 
     @Mock
     BoardService boardService;
@@ -38,7 +38,7 @@ class BoardBoardColumnServiceTest {
     }
 
     @Test
-    void shouldGetBoardListById() {
+    void shouldGetBoardColumnById() {
         BoardColumn expected = new BoardColumn();
         expected.setId(1L);
         expected.setName("boardColumn");
@@ -50,7 +50,7 @@ class BoardBoardColumnServiceTest {
     }
 
     @Test
-    void shouldCreateBoardList() {
+    void shouldCreateBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName("boardColumn");
 
@@ -67,7 +67,7 @@ class BoardBoardColumnServiceTest {
     }
 
     @Test
-    void shouldUpdateBoardList() {
+    void shouldUpdateBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName("boardColumn");
 
@@ -93,7 +93,7 @@ class BoardBoardColumnServiceTest {
     }
 
     @Test
-    void shouldDeleteBoardListById() {
+    void shouldDeleteBoardColumnById() {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setId(1L);
         boardColumn.setName("boardColumn");
@@ -108,7 +108,7 @@ class BoardBoardColumnServiceTest {
 
 
     @Test
-    void shouldGetAllBoardListsByBoardId() {
+    void shouldGetAllBoardColumnsByBoardId() {
         Board board = new Board();
         for (int i = 0; i < 3; i++) {
             BoardColumn boardColumn = new BoardColumn();

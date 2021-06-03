@@ -163,7 +163,7 @@ class TicketServiceTest {
 
 
     @Test
-    void shouldGetAllTicketsByBoardListId() {
+    void shouldGetAllTicketsByBoardColumnId() {
         BoardColumn boardColumn = new BoardColumn();
         for (int i = 0; i < 3; i++) {
             Ticket ticket = new Ticket();

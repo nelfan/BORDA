@@ -82,9 +82,9 @@ public class BordaApplication {
             tags.add(tag);
         }
 
-        UserBoardRole owner = new UserBoardRole(UserBoardRole.BoardRoles.OWNER.name());
+        UserBoardRole owner = new UserBoardRole(UserBoardRole.UserBoardRoles.OWNER.name());
         userBoardRoleRepository.save(owner);
-        UserBoardRole collaborator = new UserBoardRole(UserBoardRole.BoardRoles.COLLABORATOR.name());
+        UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
         userBoardRoleRepository.save(collaborator);
         for(int i = 0; i < 10; i++) {
             Board board = new Board();

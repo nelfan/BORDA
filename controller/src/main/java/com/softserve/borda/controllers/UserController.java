@@ -1,7 +1,6 @@
 package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.CreateUserDTO;
-import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;

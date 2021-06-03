@@ -1,6 +1,5 @@
 package com.softserve.borda;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
@@ -32,8 +31,6 @@ public class BordaApplication {
 
     UserService userService;
 
-    JwtConvertor jwtConvertor;
-
     BoardService boardService;
 
     BoardColumnService boardColumnService;
@@ -42,8 +39,11 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository, UserService userService, UserController userController, PasswordEncoder passwordEncoder, RoleRepository roleRepository, BoardService boardService, BoardColumnService boardColumnService, TicketService ticketService,
-                            JwtConvertor jwtConvertor) {
+                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository,
+                            UserService userService, UserController userController,
+                            PasswordEncoder passwordEncoder, RoleRepository roleRepository,
+                            BoardService boardService, BoardColumnService boardColumnService,
+                            TicketService ticketService) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
@@ -53,7 +53,6 @@ public class BordaApplication {
         this.boardService = boardService;
         this.boardColumnService = boardColumnService;
         this.ticketService = ticketService;
-        this.jwtConvertor = jwtConvertor;
 
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
@@ -72,7 +71,6 @@ public class BordaApplication {
             user.getRoles().add(userRole);
             userRepository.save(user);
             users.add(user);
-            jwtConvertor.saveUser(user);
         }
 
         List<Tag> tags = new ArrayList<>();

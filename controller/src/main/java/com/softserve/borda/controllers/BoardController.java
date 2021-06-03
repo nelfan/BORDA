@@ -2,8 +2,6 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
-import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -11,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -50,218 +49,154 @@ public class BoardController {
         return boardService.getBoardById(id);
     }
 
-    @GetMapping("/users/{userId}/boards")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserId(@PathVariable Long userId) {
-        try {
-            List<Board> boards = boardService.getBoardsByUserId(userId);
-            List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
-                    BoardFullDTO.class)).collect(Collectors.toList());
+    @GetMapping("/users/boards")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUser(Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+        List<Board> boards = boardService.getBoardsByUserId(user.getId());
+        List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
+                BoardFullDTO.class)).collect(Collectors.toList());
 
-            return new ResponseEntity<>(boardDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/users/{userId}/boards/{boardRoleId}")
-    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserIdAndBoardRoleId(
-            @PathVariable Long userId,
-            @PathVariable Long boardRoleId) {
-        try {
-            List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(userId, boardRoleId);
-            List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
-                    BoardFullDTO.class)).collect(Collectors.toList());
+    @GetMapping("/users/boards/{boardRoleId}")
+    public ResponseEntity<List<BoardFullDTO>> getBoardsByUserAndBoardRoleId(Authentication authentication,
+                                                                            @PathVariable Long boardRoleId) {
+        User user = userService.getUserByUsername(authentication.getName());
+        List<Board> boards = boardService.getBoardsByUserIdAndBoardRoleId(user.getId(), boardRoleId);
+        List<BoardFullDTO> boardDTOs = boards.stream().map(board -> modelMapper.map(board,
+                BoardFullDTO.class)).collect(Collectors.toList());
 
-            return new ResponseEntity<>(boardDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardDTOs, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{userId}")
-    public ResponseEntity<BoardFullDTO> createBoard(@PathVariable Long userId,
+    @PostMapping("/boards")
+    public ResponseEntity<BoardFullDTO> createBoard(Authentication authentication,
                                                     @RequestBody CreateBoardDTO boardDTO) {
-        try {
-            Board board = new Board();
-            board.setName(boardDTO.getName());
+        Board board = new Board();
+        board.setName(boardDTO.getName());
 
-            UserBoardRelation userBoardRelation = new UserBoardRelation();
-            userBoardRelation.setBoard(board);
-            userBoardRelation.setUser((userService.getUserById(userId)));
+        UserBoardRelation userBoardRelation = new UserBoardRelation();
+        userBoardRelation.setBoard(board);
 
-            userBoardRelation.setBoardRole(userBoardRelationService
-                    .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
+        User user = userService.getUserByUsername(authentication.getName());
+        userBoardRelation.setUser(user);
 
-            board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
+        userBoardRelation.setBoardRole(userBoardRelationService
+                .getBoardRoleByName(BoardRole.BoardRoles.OWNER.name()));
 
-            board = boardService.create(board);
-            BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+        board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
 
-            return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        board = boardService.create(board);
+        BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+
+        return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/boards/{id}")
     public ResponseEntity<String> deleteBoard(@PathVariable Long id) {
-        try {
-            boardService.deleteBoardById(id);
+        boardService.deleteBoardById(id);
 
-            return new ResponseEntity<>("Entity was removed successfully",
-                    HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>("Failed to delete board with Id: " + id,
-                    HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>("Entity was removed successfully",
+                HttpStatus.OK);
     }
 
     @PutMapping(value = "/boards/{id}")
     public ResponseEntity<BoardFullDTO> updateBoard(@PathVariable Long id,
                                                     @RequestBody BoardFullDTO boardFullDTO) {
-        try {
-            Board board = boardService.getBoardById(id);
-            BeanUtils.copyProperties(boardFullDTO, board);
-            board = boardService.update(board);
-            boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
+        Board board = boardService.getBoardById(id);
+        BeanUtils.copyProperties(boardFullDTO, board);
+        board = boardService.update(board);
+        boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
-            return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists")
     public ResponseEntity<List<BoardListDTO>> getAllBoardListsForBoard(@PathVariable Long boardId) {
-        try {
-            List<BoardList> boardLists = boardListService.getAllBoardListsByBoardId(boardId);
-            List<BoardListDTO> boardListDTOs = boardLists.stream()
-                    .map(boardList -> modelMapper.map(boardList,
-                            BoardListDTO.class)).collect(Collectors.toList());
+        List<BoardList> boardLists = boardListService.getAllBoardListsByBoardId(boardId);
+        List<BoardListDTO> boardListDTOs = boardLists.stream()
+                .map(boardList -> modelMapper.map(boardList,
+                        BoardListDTO.class)).collect(Collectors.toList());
 
-            return new ResponseEntity<>(boardListDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardListDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/lists")
     public ResponseEntity<BoardListDTO> createBoardListsForBoard(@PathVariable Long boardId,
                                                                  @RequestBody BoardListDTO boardListDTO) {
-        try {
-            BoardList boardList = new BoardList();
-            boardList.setName(boardListDTO.getName());
-            boardList = boardListService.create(boardList);
-            boardList = boardListService.addBoardListToBoard(boardId, boardList.getId());
-            boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+        BoardList boardList = new BoardList();
+        boardList.setName(boardListDTO.getName());
+        boardList = boardListService.create(boardList);
+        boardList = boardListService.addBoardListToBoard(boardId, boardList.getId());
+        boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/boards/{boardId}/lists/{listId}")
     public ResponseEntity<String> deleteBoardListFromBoard(@PathVariable Long boardId,
                                                            @PathVariable Long listId) {
-        try {
-            boardListService.deleteBoardListFromBoard(boardId, listId);
+        boardListService.deleteBoardListFromBoard(boardId, listId);
 
-            return new ResponseEntity<>("Entity was removed successfully",
-                    HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>("Failed to delete boardList with Id: " + listId,
-                    HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>("Entity was removed successfully",
+                HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}")
     public ResponseEntity<BoardListDTO> getBoardListById(@PathVariable Long listId,
                                                          @PathVariable String boardId) {
-        try {
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+        BoardList boardList = boardListService.getBoardListById(listId);
+        BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/boards/{boardId}/lists/{listId}")
     public ResponseEntity<BoardListDTO> updateBoardList(@PathVariable Long listId,
                                                         @RequestBody BoardListDTO boardListDTO,
                                                         @PathVariable String boardId) {
-        try {
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BeanUtils.copyProperties(boardListDTO, boardList);
-            boardList = boardListService.update(boardList);
-            boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+        BoardList boardList = boardListService.getBoardListById(listId);
+        BeanUtils.copyProperties(boardListDTO, boardList);
+        boardList = boardListService.update(boardList);
+        boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets")
     public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardList(@PathVariable Long listId,
                                                                      @PathVariable String boardId) {
-        try {
-            List<Ticket> tickets = ticketService.getAllTicketsByBoardListId(listId);
-            List<TicketDTO> ticketDTOs = tickets.stream()
-                    .map(ticket -> modelMapper.map(ticket,
-                            TicketDTO.class)).collect(Collectors.toList());
+        List<Ticket> tickets = ticketService.getAllTicketsByBoardListId(listId);
+        List<TicketDTO> ticketDTOs = tickets.stream()
+                .map(ticket -> modelMapper.map(ticket,
+                        TicketDTO.class)).collect(Collectors.toList());
 
-            return new ResponseEntity<>(ticketDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTOs, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/lists/{listId}/tickets")
     public ResponseEntity<BoardListDTO> createTicketForBoardList(@PathVariable long listId,
                                                                  @RequestBody TicketDTO ticketDTO,
                                                                  @PathVariable String boardId) {
-        try {
-            Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
-            ticket = ticketService.create(ticket);
-            ticketService.addTicketToBoardList(listId, ticket.getId());
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+        Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
+        ticket = ticketService.create(ticket);
+        ticketService.addTicketToBoardList(listId, ticket.getId());
+        BoardList boardList = boardListService.getBoardListById(listId);
+        BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
     public ResponseEntity<BoardListDTO> deleteTicketFromBoardList(@PathVariable Long listId,
                                                                   @PathVariable Long ticketId,
                                                                   @PathVariable String boardId) {
-        try {
-            ticketService.deleteTicketFromBoardList(listId, ticketId);
-            BoardList boardList = boardListService.getBoardListById(listId);
-            BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
+        ticketService.deleteTicketFromBoardList(listId, ticketId);
+        BoardList boardList = boardListService.getBoardListById(listId);
+        BoardListDTO boardListDTO = modelMapper.map(boardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/lists/{oldBoardListId}/move/{newBoardListId}/tickets/{ticketId}/")
@@ -269,36 +204,26 @@ public class BoardController {
                                                                      @PathVariable Long newBoardListId,
                                                                      @PathVariable Long ticketId,
                                                                      @PathVariable String boardId) {
-        try {
-            BoardList oldBoardList = boardListService.getBoardListById(oldBoardListId);
-            BoardList newBoardList = boardListService.getBoardListById(newBoardListId);
-            Ticket ticket = ticketService.getTicketById(ticketId);
-            oldBoardList.getTickets().remove(ticket);
-            newBoardList.getTickets().add(ticket);
-            boardListService.update(oldBoardList);
-            newBoardList = boardListService.update(newBoardList);
-            BoardListDTO boardListDTO = modelMapper.map(newBoardList, BoardListDTO.class);
+        BoardList oldBoardList = boardListService.getBoardListById(oldBoardListId);
+        BoardList newBoardList = boardListService.getBoardListById(newBoardListId);
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        oldBoardList.getTickets().remove(ticket);
+        newBoardList.getTickets().add(ticket);
+        boardListService.update(oldBoardList);
+        newBoardList = boardListService.update(newBoardList);
+        BoardListDTO boardListDTO = modelMapper.map(newBoardList, BoardListDTO.class);
 
-            return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(boardListDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long ticketId,
                                                    @PathVariable String boardId,
                                                    @PathVariable String listId) {
-        try {
-            Ticket ticket = ticketService.getTicketById(ticketId);
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @PutMapping(value = "/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
@@ -306,17 +231,12 @@ public class BoardController {
                                                   @RequestBody TicketDTO ticketDTO,
                                                   @PathVariable String boardId,
                                                   @PathVariable String listId) {
-        try {
-            Ticket ticket = ticketService.getTicketById(ticketId);
-            BeanUtils.copyProperties(ticketDTO, ticket);
-            ticket = ticketService.update(ticket);
-            ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Ticket ticket = ticketService.getTicketById(ticketId);
+        BeanUtils.copyProperties(ticketDTO, ticket);
+        ticket = ticketService.update(ticket);
+        ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments")
@@ -324,17 +244,12 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            List<Comment> comments = ticketService.getAllCommentsByTicketId(ticketId);
-            List<CommentDTO> commentDTOs = comments.stream().map(comment ->
-                    modelMapper.map(comment, CommentDTO.class))
-                    .collect(Collectors.toList());
+        List<Comment> comments = ticketService.getAllCommentsByTicketId(ticketId);
+        List<CommentDTO> commentDTOs = comments.stream().map(comment ->
+                modelMapper.map(comment, CommentDTO.class))
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(commentDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(commentDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/tags")
@@ -342,17 +257,12 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            List<Tag> tags = ticketService.getAllTagsByTicketId(ticketId);
-            List<TagDTO> tagDTOs = tags.stream().map(tag ->
-                    modelMapper.map(tag, TagDTO.class))
-                    .collect(Collectors.toList());
+        List<Tag> tags = ticketService.getAllTagsByTicketId(ticketId);
+        List<TagDTO> tagDTOs = tags.stream().map(tag ->
+                modelMapper.map(tag, TagDTO.class))
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members")
@@ -360,17 +270,12 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            List<User> users = ticketService.getAllMembersByTicketId(ticketId);
-            List<UserSimpleDTO> userDTOs = users.stream().map(user ->
-                    modelMapper.map(user, UserSimpleDTO.class))
-                    .collect(Collectors.toList());
+        List<User> users = ticketService.getAllMembersByTicketId(ticketId);
+        List<UserSimpleDTO> userDTOs = users.stream().map(user ->
+                modelMapper.map(user, UserSimpleDTO.class))
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(userDTOs, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments/{commentId}")
@@ -379,36 +284,31 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId,
              @PathVariable String ticketId) {
-        try {
-            Comment comment = commentService.getCommentById(commentId);
-            CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+        Comment comment = commentService.getCommentById(commentId);
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
 
-            return new ResponseEntity<>(commentDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments")
-    public ResponseEntity<TicketDTO> addCommentToTicketAndUser
+    public ResponseEntity<TicketDTO> addCommentToTicket
             (@PathVariable Long ticketId,
              @RequestBody CommentDTO commentDTO,
              @PathVariable String boardId,
-             @PathVariable String listId) {
-        try {
-            Comment comment = new Comment();
-            comment.setText(commentDTO.getText());
-            comment.setUser(userService.getUserById(commentDTO.getUserId()));
-            comment = commentService.create(comment);
-            Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+             @PathVariable String listId,
+             Authentication authentication) {
+        Comment comment = new Comment();
+        comment.setText(commentDTO.getText());
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        User user = userService.getUserByUsername(authentication.getName());
+        comment.setUser(user);
+
+        comment = commentService.create(comment);
+
+        Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments/{commentId}")
@@ -418,51 +318,36 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String listId,
              @PathVariable String ticketId) {
-        try {
-            Comment comment = commentService.getCommentById(commentId);
-            BeanUtils.copyProperties(commentDTO, comment);
-            comment = commentService.update(comment);
-            commentDTO = modelMapper.map(comment, CommentDTO.class);
+        Comment comment = commentService.getCommentById(commentId);
+        BeanUtils.copyProperties(commentDTO, comment);
+        comment = commentService.update(comment);
+        commentDTO = modelMapper.map(comment, CommentDTO.class);
 
-            return new ResponseEntity<>(commentDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/deleteComment/{commentId}")
-    public ResponseEntity<TicketDTO> deleteCommentFromTicketAndUser
+    public ResponseEntity<TicketDTO> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            ticketService.deleteCommentFromTicket(ticketId, commentId);
-            commentService.deleteCommentById(commentId);
-            Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        ticketService.deleteCommentFromTicket(ticketId, commentId);
+        commentService.deleteCommentById(commentId);
+        Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/tags/{tagId}")
     public ResponseEntity<TagDTO> getTagByTagId
             (@PathVariable Long tagId,
              @PathVariable String boardId) {
-        try {
-            Tag tag = tagService.getTagById(tagId);
-            TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
+        Tag tag = tagService.getTagById(tagId);
+        TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
-            return new ResponseEntity<>(tagDTO, HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/tags")
@@ -470,7 +355,7 @@ public class BoardController {
             (@RequestBody TagDTO tagDTO,
              @PathVariable Long boardId) {
         try {
-            if(Objects.isNull(tagDTO.getBoardId())) {
+            if (Objects.isNull(tagDTO.getBoardId())) {
                 tagDTO.setBoardId(boardId);
             }
             Tag tag = modelMapper.map(tagDTO, Tag.class);
@@ -490,31 +375,21 @@ public class BoardController {
              @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            Ticket ticket = ticketService.addTagToTicket(ticketId, tagId);
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Ticket ticket = ticketService.addTagToTicket(ticketId, tagId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/tags")
     public ResponseEntity<List<TagDTO>> getAllTagsForBoard
             (@PathVariable Long boardId) {
-        try {
-            List<Tag> tags = tagService.getAllTagsByBoardId(boardId);
-            List<TagDTO> tagDTOs = tags.stream().map(tag ->
-                    modelMapper.map(tag, TagDTO.class))
-                    .collect(Collectors.toList());
+        List<Tag> tags = tagService.getAllTagsByBoardId(boardId);
+        List<TagDTO> tagDTOs = tags.stream().map(tag ->
+                modelMapper.map(tag, TagDTO.class))
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}/tags/{tagId}")
@@ -522,21 +397,15 @@ public class BoardController {
             (@PathVariable Long tagId,
              @RequestBody TagDTO tagDTO,
              @PathVariable Long boardId) {
-        try {
-            if(Objects.isNull(tagDTO.getBoardId())) {
-                tagDTO.setBoardId(boardId);
-            }
-            Tag tag = tagService.getTagById(tagId);
-            BeanUtils.copyProperties(tagDTO, tag);
-            tag = tagService.update(tag);
-            tagDTO = modelMapper.map(tag, TagDTO.class);
-
-            return new ResponseEntity<>(tagDTO, HttpStatus.OK);
-
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (Objects.isNull(tagDTO.getBoardId())) {
+            tagDTO.setBoardId(boardId);
         }
+        Tag tag = tagService.getTagById(tagId);
+        BeanUtils.copyProperties(tagDTO, tag);
+        tag = tagService.update(tag);
+        tagDTO = modelMapper.map(tag, TagDTO.class);
+
+        return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/deleteTag/{tagId}")
@@ -545,16 +414,11 @@ public class BoardController {
              @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            Tag tag = tagService.getTagById(tagId);
-            Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag.getId());
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Tag tag = tagService.getTagById(tagId);
+        Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag.getId());
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members/{userId}")
@@ -563,15 +427,10 @@ public class BoardController {
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members/{userId}")
@@ -580,14 +439,9 @@ public class BoardController {
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String listId) {
-        try {
-            Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
-            TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-            return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 }

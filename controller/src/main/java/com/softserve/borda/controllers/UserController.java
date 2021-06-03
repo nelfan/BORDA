@@ -1,12 +1,9 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.entities.User;
-import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -14,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,78 +28,51 @@ public class UserController {
 
     private final UserService userService;
 
-    private final JwtConvertor jwtConvertor;
-
-    @GetMapping
+    @GetMapping("/admin/users")
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
-        try {
-            List<User> users = userService.getAll();
-            List<UserSimpleDTO> userDTOs = users.stream()
-                    .map(user -> modelMapper.map(user, UserSimpleDTO.class))
-                    .collect(Collectors.toList());
+        List<User> users = userService.getAll();
+        List<UserSimpleDTO> userDTOs = users.stream()
+                .map(user -> modelMapper.map(user, UserSimpleDTO.class))
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(userDTOs, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserSimpleDTO> getUserById(@PathVariable Long id) {
-        try {
-            User user = userService.getUserById(id);
-            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+    @GetMapping
+    public ResponseEntity<UserSimpleDTO> getAuthenticatedUser(Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
 
-            return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
-        } catch (CustomEntityNotFoundException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+        return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<UserSimpleDTO> createUser(@RequestBody CreateUserDTO userDTO) {
-        try {
-            User user = modelMapper.map(userDTO, User.class);
-            user = userService.create(user);
-            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+        User user = modelMapper.map(userDTO, User.class);
+        user = userService.create(user);
+        UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 
-            return new ResponseEntity<>(userSimpleDTO, HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(userSimpleDTO, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "{id}")
     public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-        try {
-            userService.deleteUserById(id);
+        userService.deleteUserById(id);
 
-            return new ResponseEntity<>("Entity was removed successfully",
-                    HttpStatus.OK);
-        } catch (CustomFailedToDeleteEntityException e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>("Failed to delete user with Id: " + id,
-                    HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>("Entity was removed successfully",
+                HttpStatus.OK);
     }
 
-    @PutMapping(value = "{id}")
-    public ResponseEntity<UserSimpleDTO> updateUser(@PathVariable Long id,
-                                                    @RequestBody UserFullDTO userFullDTO) {
-        try {
-            User user = userService.getUserById(id);
-            BeanUtils.copyProperties(userFullDTO, user);
-            user = userService.update(user);
-            UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+    @PutMapping
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO,
+                                                    Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
 
-            return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        BeanUtils.copyProperties(userFullDTO, user);
+        user = userService.update(user);
+        UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
+
+        return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
     }
 
 }

@@ -27,4 +27,7 @@ public class Tag {
     @JoinColumn(name = "board_id", nullable = false)
     @JsonBackReference
     private Board board;
+
+    @Column
+    private Long boardId;
 }

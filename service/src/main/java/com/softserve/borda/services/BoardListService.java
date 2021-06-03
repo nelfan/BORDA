@@ -7,8 +7,11 @@ import java.util.List;
 public interface BoardListService {
 
     BoardList getBoardListById(Long id);
+
     BoardList create(BoardList boardList);
+
     BoardList update(BoardList boardList);
+
     boolean deleteBoardListById(Long id);
 
     List<BoardList> getAllBoardListsByBoardId(Long boardId);

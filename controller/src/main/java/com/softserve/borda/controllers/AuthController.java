@@ -3,7 +3,6 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.authorization.AuthRequest;
 import com.softserve.borda.authorization.AuthResponse;
 import com.softserve.borda.authorization.RegistrationRequest;
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
@@ -13,7 +12,6 @@ import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @Log
 @CrossOrigin
-@Validated
 public class AuthController {
 
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
-    private final JwtConvertor jwtConvertor;
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
@@ -43,7 +39,6 @@ public class AuthController {
             user.setFirstName(registrationRequest.getFirstName());
             user.setLastName(registrationRequest.getLastName());
             userService.create(user);
-            jwtConvertor.saveUser(user);
         } catch (Exception e) {
             log.warning(e.getMessage());
             throw new CustomAuthenticationFailedException("Registration failed");

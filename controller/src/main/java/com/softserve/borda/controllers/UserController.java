@@ -1,6 +1,5 @@
 package com.softserve.borda.controllers;
 
-import com.softserve.borda.config.jwt.JwtConvertor;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
@@ -12,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +28,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final JwtConvertor jwtConvertor;
-
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
         List<User> users = userService.getAll();
@@ -41,8 +39,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<UserSimpleDTO> getUserByToken(@RequestHeader String authorization) {
-        User user = jwtConvertor.getUserByJWT(authorization);
+    public ResponseEntity<UserSimpleDTO> getAuthenticatedUser(Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
         return new ResponseEntity<>(userSimpleDTO, HttpStatus.OK);
     }
@@ -65,9 +64,10 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserSimpleDTO> updateUser(@RequestHeader String authorization,
-                                                    @RequestBody UserFullDTO userFullDTO) {
-        User user = jwtConvertor.getUserByJWT(authorization);
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO,
+                                                    Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+
         BeanUtils.copyProperties(userFullDTO, user);
         user = userService.update(user);
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);

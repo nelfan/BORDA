@@ -3,6 +3,7 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.dto.CreateUserDTO;
 import com.softserve.borda.dto.UserFullDTO;
 import com.softserve.borda.dto.UserSimpleDTO;
+import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
@@ -64,11 +65,11 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserFullDTO userFullDTO,
+    public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserUpdateDTO userUpdateDTO,
                                                     Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
 
-        BeanUtils.copyProperties(userFullDTO, user);
+        BeanUtils.copyProperties(userUpdateDTO, user);
         user = userService.update(user);
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 

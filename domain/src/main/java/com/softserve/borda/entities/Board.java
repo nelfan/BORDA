@@ -24,7 +24,7 @@ public class Board {
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
-    private List<BoardList> boardLists = new ArrayList<>();
+    private List<BoardColumn> boardColumns = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board",

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -352,15 +351,13 @@ public class BoardController {
 
     @PostMapping("/boards/{boardId}/tags")
     public ResponseEntity<TagDTO> addNewTagToBoard
-            (@RequestBody TagDTO tagDTO,
+            (@RequestBody UpdateTagDTO updateTagDTO,
              @PathVariable Long boardId) {
         try {
-            if (Objects.isNull(tagDTO.getBoardId())) {
-                tagDTO.setBoardId(boardId);
-            }
-            Tag tag = modelMapper.map(tagDTO, Tag.class);
+            Tag tag = modelMapper.map(updateTagDTO, Tag.class);
+            tag.setBoardId(boardId);
             tag = tagService.create(tag);
-            tagDTO = modelMapper.map(tag, TagDTO.class);
+            TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
             return new ResponseEntity<>(tagDTO, HttpStatus.OK);
         } catch (Exception e) {
@@ -395,15 +392,13 @@ public class BoardController {
     @PutMapping("/boards/{boardId}/tags/{tagId}")
     public ResponseEntity<TagDTO> updateTagByTagId
             (@PathVariable Long tagId,
-             @RequestBody TagDTO tagDTO,
+             @RequestBody UpdateTagDTO updateTagDTO,
              @PathVariable Long boardId) {
-        if (Objects.isNull(tagDTO.getBoardId())) {
-            tagDTO.setBoardId(boardId);
-        }
-        Tag tag = tagService.getTagById(tagId);
-        BeanUtils.copyProperties(tagDTO, tag);
+        Tag tag = modelMapper.map(updateTagDTO, Tag.class);
+        tag.setId(tagId);
+        tag.setBoardId(boardId);
         tag = tagService.update(tag);
-        tagDTO = modelMapper.map(tag, TagDTO.class);
+        TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }

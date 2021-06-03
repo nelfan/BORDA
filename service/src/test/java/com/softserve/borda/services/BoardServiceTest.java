@@ -50,9 +50,9 @@ class BoardServiceTest {
 
         when(boardRepository.findAll()).thenReturn(boards);
 
-        List<Board> boardList = boardService.getAll();
+        List<Board> allBoards = boardService.getAll();
 
-        assertEquals(3, boardList.size());
+        assertEquals(3, allBoards.size());
         verify(boardRepository, times(1)).findAll();
     }
 

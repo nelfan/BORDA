@@ -4,7 +4,7 @@ import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.BoardRoleRepository;
+import com.softserve.borda.repositories.UserBoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.impl.UserBoardRelationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class UserBoardRelationServiceTest {
 
     @Mock
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     @Mock
     UserBoardRelationRepository userBoardRelationRepository;
@@ -38,7 +38,7 @@ class UserBoardRelationServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         userBoardRelationService = new UserBoardRelationServiceImpl(userBoardRelationRepository,
-                boardRoleRepository);
+                userBoardRoleRepository);
     }
 
     @Test

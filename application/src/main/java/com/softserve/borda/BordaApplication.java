@@ -3,7 +3,7 @@ package com.softserve.borda;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
-import com.softserve.borda.services.BoardListService;
+import com.softserve.borda.services.BoardColumnService;
 import com.softserve.borda.services.BoardService;
 import com.softserve.borda.services.TicketService;
 import com.softserve.borda.services.UserService;
@@ -25,7 +25,7 @@ public class BordaApplication {
 
     UserBoardRelationRepository userBoardRelationRepository;
 
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     TagRepository tagRepository;
 
@@ -33,25 +33,27 @@ public class BordaApplication {
 
     BoardService boardService;
 
-    BoardListService boardListService;
+    BoardColumnService boardColumnService;
 
     TicketService ticketService;
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            BoardRoleRepository boardRoleRepository, TagRepository tagRepository,
-                            UserService userService, PasswordEncoder passwordEncoder,
-                            RoleRepository roleRepository, BoardService boardService,
-                            BoardListService boardListService, TicketService ticketService) {
+                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository,
+                            UserService userService, UserController userController,
+                            PasswordEncoder passwordEncoder, RoleRepository roleRepository,
+                            BoardService boardService, BoardColumnService boardColumnService,
+                            TicketService ticketService) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
-        this.boardRoleRepository = boardRoleRepository;
+        this.userBoardRoleRepository = userBoardRoleRepository;
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.boardService = boardService;
-        this.boardListService = boardListService;
+        this.boardColumnService = boardColumnService;
         this.ticketService = ticketService;
+
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
         Role adminRole = new Role(Role.Roles.ROLE_ADMIN.name());
@@ -71,17 +73,32 @@ public class BordaApplication {
             users.add(user);
         }
 
-        BoardRole owner = new BoardRole(BoardRole.BoardRoles.OWNER.name());
-        boardRoleRepository.save(owner);
-        BoardRole collaborator = new BoardRole(BoardRole.BoardRoles.COLLABORATOR.name());
-        boardRoleRepository.save(collaborator);
+        UserBoardRole owner = new UserBoardRole(UserBoardRole.UserBoardRoles.OWNER.name());
+        userBoardRoleRepository.save(owner);
+        UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
+        userBoardRoleRepository.save(collaborator);
         for(int i = 0; i < 10; i++) {
             Board board = new Board();
             board.setName("Board" + i);
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setBoardRole(owner);
+            userBoardRelation.setUserBoardRole(owner);
+            board.getUserBoardRelations().add(userBoardRelation);
+            users.get(0).getUserBoardRelations().add(userBoardRelation);
+            boardRepository.save(board);
+            userRepository.save(users.get(0));
+            userBoardRelationRepository.save(userBoardRelation);
+            boards.add(board);
+        }
+
+        for(int i = 10; i < 50; i++) {
+            Board board = new Board();
+            board.setName("Board" + i);
+            UserBoardRelation userBoardRelation = new UserBoardRelation();
+            userBoardRelation.setUser(users.get(0));
+            userBoardRelation.setBoard(board);
+            userBoardRelation.setUserBoardRole(collaborator);
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
@@ -95,36 +112,20 @@ public class BordaApplication {
             Tag tag = new Tag();
             tag.setText("label"+i);
             tag.setColor("color " + i);
-            tag.setBoard(boards.get(0));
             tagRepository.save(tag);
             tags.add(tag);
         }
 
-        for(int i = 10; i < 50; i++) {
-            Board board = new Board();
-            board.setName("Board" + i);
-            UserBoardRelation userBoardRelation = new UserBoardRelation();
-            userBoardRelation.setUser(users.get(0));
-            userBoardRelation.setBoard(board);
-            userBoardRelation.setBoardRole(collaborator);
-            board.getUserBoardRelations().add(userBoardRelation);
-            users.get(0).getUserBoardRelations().add(userBoardRelation);
-            boardRepository.save(board);
-            userRepository.save(users.get(0));
-            userBoardRelationRepository.save(userBoardRelation);
-            boards.add(board);
-        }
-
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
-        boards.get(0).getBoardLists().add(boardList);
-        boardList = boardListService.create(boardList);
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
+        boards.get(0).getBoardColumns().add(boardColumn);
+        boardColumn = boardColumnService.create(boardColumn);
         Ticket ticket = new Ticket();
         ticket.setTitle("Ticket1");
         ticket.setDescription("Ticket for testing");
         ticket = ticketService.create(ticket);
-        boardList.getTickets().add(ticket);
-        boardListService.update(boardList);
+        boardColumn.getTickets().add(ticket);
+        boardColumnService.update(boardColumn);
         boardService.update(boards.get(0));
     }
 

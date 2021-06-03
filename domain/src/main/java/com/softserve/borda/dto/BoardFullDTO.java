@@ -9,6 +9,6 @@ public class BoardFullDTO {
 
     private Long id;
     private String name;
-    private List<BoardListDTO> boardLists;
+    private List<BoardColumnDTO> boardColumns;
     private List<UserBoardRelationDTO> userBoardRelations;
 }

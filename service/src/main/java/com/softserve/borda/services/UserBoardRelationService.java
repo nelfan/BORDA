@@ -12,12 +12,12 @@ public interface UserBoardRelationService {
     UserBoardRelation update(UserBoardRelation userBoardRelation);
     boolean deleteUserBoardRelationById(Long id);
 
-    UserBoardRole getBoardRoleByName(String name);
+    UserBoardRole getUserBoardRoleByName(String name);
 
-    UserBoardRole getBoardRoleById(Long id);
+    UserBoardRole getUserBoardRoleById(Long id);
 
     List<UserBoardRelation> getUserBoardRelationsByUserId(Long userId);
 
-    List<UserBoardRelation> getUserBoardRelationsByUserIdAndBoardRoleId(Long userId,
-                                                                        Long boardRoleId);
+    List<UserBoardRelation> getUserBoardRelationsByUserIdAndUserBoardRoleId(Long userId,
+                                                                            Long userBoardRoleId);
 }

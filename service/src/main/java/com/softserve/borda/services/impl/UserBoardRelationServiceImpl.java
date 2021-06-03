@@ -57,13 +57,13 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public UserBoardRole getBoardRoleByName(String name) {
+    public UserBoardRole getUserBoardRoleByName(String name) {
         return userBoardRoleRepository.findByName(name)
                 .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
-    public UserBoardRole getBoardRoleById(Long id) {
+    public UserBoardRole getUserBoardRoleById(Long id) {
         return userBoardRoleRepository.findById(id)
                 .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
@@ -74,8 +74,8 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public List<UserBoardRelation> getUserBoardRelationsByUserIdAndBoardRoleId(Long userId,
-                                                                               Long boardRoleId) {
-        return userBoardRelationRepository.findAllByUserIdAndUserBoardRoleId(userId, boardRoleId);
+    public List<UserBoardRelation> getUserBoardRelationsByUserIdAndUserBoardRoleId(Long userId,
+                                                                                   Long userBoardRoleId) {
+        return userBoardRelationRepository.findAllByUserIdAndUserBoardRoleId(userId, userBoardRoleId);
     }
 }

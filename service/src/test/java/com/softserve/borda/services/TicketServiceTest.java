@@ -177,11 +177,11 @@ class TicketServiceTest {
             boardColumn.getTickets().add(ticket);
         }
 
-        when(boardColumnService.getBoardListById(1L)).thenReturn(boardColumn);
+        when(boardColumnService.getBoardColumnById(1L)).thenReturn(boardColumn);
 
-        List<Ticket> ticketList = ticketService.getAllTicketsByBoardListId(1L);
+        List<Ticket> ticketList = ticketService.getAllTicketsByBoardColumnId(1L);
 
         assertEquals(3, ticketList.size());
-        verify(boardColumnService, times(1)).getBoardListById(1L);
+        verify(boardColumnService, times(1)).getBoardColumnById(1L);
     }
 }

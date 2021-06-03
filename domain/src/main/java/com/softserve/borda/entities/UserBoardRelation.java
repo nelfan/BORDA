@@ -29,7 +29,7 @@ public class UserBoardRelation {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "user_board_role_id")
     private UserBoardRole userBoardRole;
 
 }

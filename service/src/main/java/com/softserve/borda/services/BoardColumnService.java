@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface BoardColumnService {
 
-    BoardColumn getBoardListById(Long id);
+    BoardColumn getBoardColumnById(Long id);
 
     BoardColumn create(BoardColumn boardColumn);
 
     BoardColumn update(BoardColumn boardColumn);
 
-    boolean deleteBoardListById(Long id);
+    boolean deleteBoardColumnById(Long id);
 
-    List<BoardColumn> getAllBoardListsByBoardId(Long boardId);
+    List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId);
 
-    BoardColumn addBoardListToBoard(Long boardId, Long boardListId);
+    BoardColumn addBoardColumnToBoard(Long boardId, Long boardColumnId);
 
-    boolean deleteBoardListFromBoard(Long boardId, Long boardListId);
+    boolean deleteBoardColumnFromBoard(Long boardId, Long boardColumnId);
 }

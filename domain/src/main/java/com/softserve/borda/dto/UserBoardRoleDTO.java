@@ -3,7 +3,7 @@ package com.softserve.borda.dto;
 import lombok.Data;
 
 @Data
-public class BoardRoleDTO {
+public class UserBoardRoleDTO {
 
     private Long id;
     private String name;

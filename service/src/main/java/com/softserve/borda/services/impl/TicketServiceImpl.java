@@ -114,15 +114,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> getAllTicketsByBoardListId(Long boardListId) {
-        return boardColumnService.getBoardListById(boardListId).getTickets();
+    public List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId) {
+        return boardColumnService.getBoardColumnById(boardColumnId).getTickets();
     }
 
-
-
     @Override
-    public Ticket addTicketToBoardList(Long boardListId, Long ticketId) {
-        BoardColumn boardColumn = boardColumnService.getBoardListById(boardListId);
+    public Ticket addTicketToBoardColumn(Long boardColumnId, Long ticketId) {
+        BoardColumn boardColumn = boardColumnService.getBoardColumnById(boardColumnId);
         Ticket ticket = getTicketById(ticketId);
         boardColumn.getTickets().add(ticket);
         boardColumnService.update(boardColumn);
@@ -130,9 +128,9 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public boolean deleteTicketFromBoardList(Long boardListId, Long ticketId) {
+    public boolean deleteTicketFromBoardColumn(Long boardColumnId, Long ticketId) {
         try {
-            BoardColumn boardColumn = boardColumnService.getBoardListById(boardListId);
+            BoardColumn boardColumn = boardColumnService.getBoardColumnById(boardColumnId);
             Ticket ticket = getTicketById(ticketId);
             boardColumn.getTickets().remove(ticket);
             deleteTicketById(ticket.getId());

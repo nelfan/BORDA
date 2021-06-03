@@ -21,7 +21,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
     private final BoardService boardService;
 
     @Override
-    public BoardColumn getBoardListById(Long id) {
+    public BoardColumn getBoardColumnById(Long id) {
         return boardColumnRepository.findById(id)
                 .orElseThrow(() -> new CustomEntityNotFoundException(BoardColumn.class));
     }
@@ -33,13 +33,13 @@ public class BoardColumnServiceImpl implements BoardColumnService {
 
     @Override
     public BoardColumn update(BoardColumn boardColumn) {
-        BoardColumn existingBoardColumn = getBoardListById(boardColumn.getId());
+        BoardColumn existingBoardColumn = getBoardColumnById(boardColumn.getId());
         existingBoardColumn.setName(boardColumn.getName());
         return boardColumnRepository.save(existingBoardColumn);
     }
 
     @Override
-    public boolean deleteBoardListById(Long id) {
+    public boolean deleteBoardColumnById(Long id) {
         try {
             boardColumnRepository.deleteById(id);
             return true;
@@ -50,26 +50,26 @@ public class BoardColumnServiceImpl implements BoardColumnService {
     }
 
     @Override
-    public List<BoardColumn> getAllBoardListsByBoardId(Long boardId) {
+    public List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId) {
         return boardService.getBoardById(boardId).getBoardColumns();
     }
 
     @Override
-    public BoardColumn addBoardListToBoard(Long boardId, Long boardListId) {
+    public BoardColumn addBoardColumnToBoard(Long boardId, Long boardColumnId) {
         Board board = boardService.getBoardById(boardId);
-        BoardColumn boardColumn = getBoardListById(boardListId);
+        BoardColumn boardColumn = getBoardColumnById(boardColumnId);
         board.getBoardColumns().add(boardColumn);
         boardService.update(board);
         return boardColumn;
     }
 
     @Override
-    public boolean deleteBoardListFromBoard(Long boardId, Long boardListId) {
+    public boolean deleteBoardColumnFromBoard(Long boardId, Long boardColumnId) {
         try {
             Board board = boardService.getBoardById(boardId);
-            BoardColumn boardColumn = getBoardListById(boardListId);
+            BoardColumn boardColumn = getBoardColumnById(boardColumnId);
             board.getBoardColumns().remove(boardColumn);
-            deleteBoardListById(boardColumn.getId());
+            deleteBoardColumnById(boardColumn.getId());
             boardService.update(board);
             return true;
         } catch (Exception e) {

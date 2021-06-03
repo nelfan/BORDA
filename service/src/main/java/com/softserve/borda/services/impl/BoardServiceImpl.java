@@ -65,7 +65,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId) {
-        return userBoardRelationService.getUserBoardRelationsByUserIdAndBoardRoleId(userId, roleId)
+        return userBoardRelationService.getUserBoardRelationsByUserIdAndUserBoardRoleId(userId, roleId)
                 .stream()
                 .map(UserBoardRelation::getBoard)
                 .collect(Collectors.toList());

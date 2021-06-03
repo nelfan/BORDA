@@ -23,31 +23,28 @@ import static org.mockito.Mockito.*;
 class BoardBoardColumnServiceTest {
 
     @Mock
-    TicketService ticketService;
-
-    @Mock
     BoardService boardService;
 
     @Mock
     BoardColumnRepository boardColumnRepository;
 
     @InjectMocks
-    BoardColumnServiceImpl boardListService;
+    BoardColumnServiceImpl boardColumnService;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardListService = new BoardColumnServiceImpl(boardColumnRepository, boardService);
+        boardColumnService = new BoardColumnServiceImpl(boardColumnRepository, boardService);
     }
 
     @Test
     void shouldGetBoardListById() {
         BoardColumn expected = new BoardColumn();
         expected.setId(1L);
-        expected.setName("boardList");
+        expected.setName("boardColumn");
 
         when(boardColumnRepository.findById(1L)).thenReturn(java.util.Optional.of(expected));
-        BoardColumn actual = boardListService.getBoardListById(1L);
+        BoardColumn actual = boardColumnService.getBoardColumnById(1L);
         assertEquals(actual, expected);
         verify(boardColumnRepository, times(1)).findById(1L);
     }
@@ -63,7 +60,7 @@ class BoardBoardColumnServiceTest {
 
         when(boardColumnRepository.save(boardColumn)).thenReturn(expected);
 
-        BoardColumn actual = boardListService.create(boardColumn);
+        BoardColumn actual = boardColumnService.create(boardColumn);
 
         assertEquals(expected, actual);
         verify(boardColumnRepository, times(1)).save(boardColumn);
@@ -86,9 +83,9 @@ class BoardBoardColumnServiceTest {
 
         when(boardColumnRepository.save(boardColumnUpdated)).thenReturn(boardColumnUpdated);
 
-        boardListService.create(boardColumn);
+        boardColumnService.create(boardColumn);
 
-        BoardColumn actual = boardListService.update(boardColumnUpdated);
+        BoardColumn actual = boardColumnService.update(boardColumnUpdated);
 
         assertEquals(boardColumnUpdated, actual);
         verify(boardColumnRepository, times(1)).save(boardColumn);
@@ -103,9 +100,9 @@ class BoardBoardColumnServiceTest {
 
         when(boardColumnRepository.findById(1L)).thenReturn(Optional.empty());
 
-        boardListService.deleteBoardListById(boardColumn.getId());
+        boardColumnService.deleteBoardColumnById(boardColumn.getId());
 
-        assertThrows(CustomEntityNotFoundException.class, () -> boardListService.getBoardListById(1L));
+        assertThrows(CustomEntityNotFoundException.class, () -> boardColumnService.getBoardColumnById(1L));
         verify(boardColumnRepository, times(1)).deleteById(boardColumn.getId());
     }
 
@@ -122,7 +119,7 @@ class BoardBoardColumnServiceTest {
 
         when(boardService.getBoardById(1L)).thenReturn(board);
 
-        List<BoardColumn> boardColumns = boardListService.getAllBoardListsByBoardId(1L);
+        List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(1L);
 
         assertEquals(3, boardColumns.size());
         verify(boardService, times(1)).getBoardById(1L);

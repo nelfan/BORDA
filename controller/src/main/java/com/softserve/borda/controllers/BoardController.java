@@ -111,8 +111,8 @@ public class BoardController {
         return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists")
-    public ResponseEntity<List<BoardColumnDTO>> getAllBoardListsForBoard(@PathVariable Long boardId) {
+    @GetMapping("/boards/{boardId}/columns")
+    public ResponseEntity<List<BoardColumnDTO>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
         List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(boardId);
         List<BoardColumnDTO> boardColumnDTOS = boardColumns.stream()
                 .map(boardColumn -> modelMapper.map(boardColumn,
@@ -121,8 +121,8 @@ public class BoardController {
         return new ResponseEntity<>(boardColumnDTOS, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists")
-    public ResponseEntity<BoardColumnDTO> createBoardListsForBoard(@PathVariable Long boardId,
+    @PostMapping("/boards/{boardId}/columns")
+    public ResponseEntity<BoardColumnDTO> createBoardColumnsForBoard(@PathVariable Long boardId,
                                                                    @RequestBody BoardColumnDTO boardColumnDTO) {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName(boardColumnDTO.getName());
@@ -133,29 +133,29 @@ public class BoardController {
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/boards/{boardId}/lists/{listId}")
-    public ResponseEntity<String> deleteBoardListFromBoard(@PathVariable Long boardId,
-                                                           @PathVariable Long listId) {
-        boardColumnService.deleteBoardColumnFromBoard(boardId, listId);
+    @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}")
+    public ResponseEntity<String> deleteBoardColumnFromBoard(@PathVariable Long boardId,
+                                                           @PathVariable Long columnId) {
+        boardColumnService.deleteBoardColumnFromBoard(boardId, columnId);
 
         return new ResponseEntity<>("Entity was removed successfully",
                 HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}")
-    public ResponseEntity<BoardColumnDTO> getBoardListById(@PathVariable Long listId,
+    @GetMapping("/boards/{boardId}/columns/{columnId}")
+    public ResponseEntity<BoardColumnDTO> getBoardColumnById(@PathVariable Long columnId,
                                                            @PathVariable String boardId) {
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(listId);
+        BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/boards/{boardId}/lists/{listId}")
-    public ResponseEntity<BoardColumnDTO> updateBoardList(@PathVariable Long listId,
+    @PutMapping(value = "/boards/{boardId}/columns/{columnId}")
+    public ResponseEntity<BoardColumnDTO> updateBoardColumn(@PathVariable Long columnId,
                                                           @RequestBody BoardColumnDTO boardColumnDTO,
                                                           @PathVariable String boardId) {
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(listId);
+        BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BeanUtils.copyProperties(boardColumnDTO, boardColumn);
         boardColumn = boardColumnService.update(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
@@ -163,10 +163,10 @@ public class BoardController {
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets")
-    public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardList(@PathVariable Long listId,
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets")
+    public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardColumn(@PathVariable Long columnId,
                                                                      @PathVariable String boardId) {
-        List<Ticket> tickets = ticketService.getAllTicketsByBoardColumnId(listId);
+        List<Ticket> tickets = ticketService.getAllTicketsByBoardColumnId(columnId);
         List<TicketDTO> ticketDTOs = tickets.stream()
                 .map(ticket -> modelMapper.map(ticket,
                         TicketDTO.class)).collect(Collectors.toList());
@@ -174,37 +174,37 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTOs, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists/{listId}/tickets")
-    public ResponseEntity<BoardColumnDTO> createTicketForBoardList(@PathVariable long listId,
+    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets")
+    public ResponseEntity<BoardColumnDTO> createTicketForBoardColumn(@PathVariable long columnId,
                                                                    @RequestBody TicketDTO ticketDTO,
                                                                    @PathVariable String boardId) {
         Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
         ticket = ticketService.create(ticket);
-        ticketService.addTicketToBoardColumn(listId, ticket.getId());
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(listId);
+        ticketService.addTicketToBoardColumn(columnId, ticket.getId());
+        BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
-    public ResponseEntity<BoardColumnDTO> deleteTicketFromBoardList(@PathVariable Long listId,
+    @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
+    public ResponseEntity<BoardColumnDTO> deleteTicketFromBoardColumn(@PathVariable Long columnId,
                                                                     @PathVariable Long ticketId,
                                                                     @PathVariable String boardId) {
-        ticketService.deleteTicketFromBoardColumn(listId, ticketId);
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(listId);
+        ticketService.deleteTicketFromBoardColumn(columnId, ticketId);
+        BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists/{oldBoardListId}/move/{newBoardListId}/tickets/{ticketId}/")
-    public ResponseEntity<BoardColumnDTO> moveTicketToAnotherBoardList(@PathVariable Long oldBoardListId,
-                                                                       @PathVariable Long newBoardListId,
+    @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}/")
+    public ResponseEntity<BoardColumnDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
+                                                                       @PathVariable Long newBoardColumnId,
                                                                        @PathVariable Long ticketId,
                                                                        @PathVariable String boardId) {
-        BoardColumn oldBoardColumn = boardColumnService.getBoardColumnById(oldBoardListId);
-        BoardColumn newBoardColumn = boardColumnService.getBoardColumnById(newBoardListId);
+        BoardColumn oldBoardColumn = boardColumnService.getBoardColumnById(oldBoardColumnId);
+        BoardColumn newBoardColumn = boardColumnService.getBoardColumnById(newBoardColumnId);
         Ticket ticket = ticketService.getTicketById(ticketId);
         oldBoardColumn.getTickets().remove(ticket);
         newBoardColumn.getTickets().add(ticket);
@@ -215,21 +215,21 @@ public class BoardController {
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long ticketId,
                                                    @PathVariable String boardId,
-                                                   @PathVariable String listId) {
+                                                   @PathVariable String columnId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/boards/{boardId}/lists/{listId}/tickets/{ticketId}")
+    @PutMapping(value = "/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long ticketId,
                                                   @RequestBody TicketDTO ticketDTO,
                                                   @PathVariable String boardId,
-                                                  @PathVariable String listId) {
+                                                  @PathVariable String columnId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
         BeanUtils.copyProperties(ticketDTO, ticket);
         ticket = ticketService.update(ticket);
@@ -238,11 +238,11 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments")
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments")
     public ResponseEntity<List<CommentDTO>> getCommentsByTicketId
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         List<Comment> comments = ticketService.getAllCommentsByTicketId(ticketId);
         List<CommentDTO> commentDTOs = comments.stream().map(comment ->
                 modelMapper.map(comment, CommentDTO.class))
@@ -251,11 +251,11 @@ public class BoardController {
         return new ResponseEntity<>(commentDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/tags")
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags")
     public ResponseEntity<List<TagDTO>> getTagsByTicketId
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         List<Tag> tags = ticketService.getAllTagsByTicketId(ticketId);
         List<TagDTO> tagDTOs = tags.stream().map(tag ->
                 modelMapper.map(tag, TagDTO.class))
@@ -264,11 +264,11 @@ public class BoardController {
         return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members")
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members")
     public ResponseEntity<List<UserSimpleDTO>> getMembersByTicketId
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         List<User> users = ticketService.getAllMembersByTicketId(ticketId);
         List<UserSimpleDTO> userDTOs = users.stream().map(user ->
                 modelMapper.map(user, UserSimpleDTO.class))
@@ -277,11 +277,11 @@ public class BoardController {
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments/{commentId}")
+    @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> getCommentByCommentId
             (@PathVariable Long commentId,
              @PathVariable String boardId,
-             @PathVariable String listId,
+             @PathVariable String columnId,
              @PathVariable String ticketId) {
         Comment comment = commentService.getCommentById(commentId);
         CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
@@ -289,12 +289,12 @@ public class BoardController {
         return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments")
+    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments")
     public ResponseEntity<TicketDTO> addCommentToTicket
             (@PathVariable Long ticketId,
              @RequestBody CommentDTO commentDTO,
              @PathVariable String boardId,
-             @PathVariable String listId,
+             @PathVariable String columnId,
              Authentication authentication) {
         Comment comment = new Comment();
         comment.setText(commentDTO.getText());
@@ -310,12 +310,12 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/comments/{commentId}")
+    @PutMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateCommentByCommentId
             (@PathVariable Long commentId,
              @RequestBody CommentDTO commentDTO,
              @PathVariable String boardId,
-             @PathVariable String listId,
+             @PathVariable String columnId,
              @PathVariable String ticketId) {
         Comment comment = commentService.getCommentById(commentId);
         BeanUtils.copyProperties(commentDTO, comment);
@@ -325,12 +325,12 @@ public class BoardController {
         return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/deleteComment/{commentId}")
+    @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/deleteComment/{commentId}")
     public ResponseEntity<TicketDTO> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         ticketService.deleteCommentFromTicket(ticketId, commentId);
         commentService.deleteCommentById(commentId);
         Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
@@ -349,12 +349,12 @@ public class BoardController {
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/tags")
+    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags")
     public ResponseEntity<TicketDTO> addTagToTicket
             (@PathVariable Long ticketId,
              @RequestBody TagDTO tagDTO,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         // TODO rework tags to relate to certain board
         //  and here tags should not be created, just added to ticket
         Tag tag = modelMapper.map(tagDTO, Tag.class);
@@ -386,12 +386,12 @@ public class BoardController {
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/deleteTag/{tagId}")
+    @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/deleteTag/{tagId}")
     public ResponseEntity<TicketDTO> deleteTagFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         Tag tag = tagService.getTagById(tagId);
         Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag.getId());
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
@@ -399,24 +399,24 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members/{userId}")
+    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
     public ResponseEntity<TicketDTO> addUserToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}/lists/{listId}/tickets/{ticketId}/members/{userId}")
+    @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
     public ResponseEntity<TicketDTO> deleteUserFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
-             @PathVariable String listId) {
+             @PathVariable String columnId) {
         Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 

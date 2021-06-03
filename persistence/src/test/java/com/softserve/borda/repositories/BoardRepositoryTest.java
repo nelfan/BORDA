@@ -56,13 +56,13 @@ class BoardRepositoryTest {
     }
 
     @Test
-    void shouldSaveBoardListsWithBoard() {
+    void shouldSaveBoardColumnsWithBoard() {
         Board board = new Board();
         board.setName("Board1");
         BoardColumn boardColumn1 = new BoardColumn();
-        boardColumn1.setName("BoardList1");
+        boardColumn1.setName("BoardColumn1");
         BoardColumn boardColumn2 = new BoardColumn();
-        boardColumn2.setName("BoardList2");
+        boardColumn2.setName("BoardColumn2");
         board.getBoardColumns().add(boardColumn1);
         board.getBoardColumns().add(boardColumn2);
         boardRepository.save(board);
@@ -76,13 +76,13 @@ class BoardRepositoryTest {
     }
 
     @Test
-    void shouldDeleteBoardListsWithBoard() {
+    void shouldDeleteBoardColumnsWithBoard() {
         Board board = new Board();
         board.setName("Board1");
         BoardColumn boardColumn1 = new BoardColumn();
-        boardColumn1.setName("BoardList1");
+        boardColumn1.setName("BoardColumn1");
         BoardColumn boardColumn2 = new BoardColumn();
-        boardColumn2.setName("BoardList2");
+        boardColumn2.setName("BoardColumn2");
         board.getBoardColumns().add(boardColumn1);
         board.getBoardColumns().add(boardColumn2);
         boardRepository.save(board);

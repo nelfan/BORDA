@@ -119,7 +119,7 @@ public class BordaApplication {
         }
 
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         boards.get(0).getBoardColumns().add(boardColumn);
         boardColumn = boardColumnService.create(boardColumn);
         Ticket ticket = new Ticket();

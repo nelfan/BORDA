@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserUserBoardRoleRepositoryTest {
+class UserBoardRoleRepositoryTest {
 
     @Autowired
     UserBoardRoleRepository userBoardRoleRepository;

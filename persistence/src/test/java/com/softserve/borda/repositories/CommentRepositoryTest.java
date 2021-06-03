@@ -41,7 +41,7 @@ class CommentRepositoryTest {
         board = new Board();
         board.setName("Board1");
         boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         boardRepository.save(board);
         boardColumnRepository.save(boardColumn);
         ticket = new Ticket();

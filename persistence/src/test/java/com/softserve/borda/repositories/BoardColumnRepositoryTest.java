@@ -41,38 +41,38 @@ class BoardColumnRepositoryTest {
     }
 
     @Test
-    void shouldInsertAndReturnBoardList() {
+    void shouldInsertAndReturnBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         BoardColumn expected = boardColumnRepository.save(boardColumn);
         BoardColumn actual = boardColumnRepository.getOne(boardColumn.getId());
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldInsertAndDeleteBoardList() {
+    void shouldInsertAndDeleteBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         boardColumnRepository.save(boardColumn);
         boardColumnRepository.deleteById(boardColumn.getId());
         Assertions.assertFalse(boardColumnRepository.findById(boardColumn.getId()).isPresent());
     }
 
     @Test
-    void shouldInsertAndUpdateBoardList() {
+    void shouldInsertAndUpdateBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         boardColumnRepository.save(boardColumn);
-        boardColumn.setName("BoardList1updated");
+        boardColumn.setName("BoardColumn1updated");
         BoardColumn expected = boardColumnRepository.save(boardColumn);
         BoardColumn actual = boardColumnRepository.getOne(boardColumn.getId());
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldSaveTicketsWithBoardList() {
+    void shouldSaveTicketsWithBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         Ticket ticket1 = new Ticket();
         ticket1.setTitle("Ticket1");
         ticket1.setDescription("Ticket1Body");
@@ -92,9 +92,9 @@ class BoardColumnRepositoryTest {
     }
 
     @Test
-    void shouldDeleteTicketsWithBoardList() {
+    void shouldDeleteTicketsWithBoardColumn() {
         BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardList1");
+        boardColumn.setName("BoardColumn1");
         Ticket ticket1 = new Ticket();
         ticket1.setTitle("Ticket1");
         ticket1.setDescription("Ticket1Body");

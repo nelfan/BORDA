@@ -1,9 +1,6 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.BoardColumn;
-import com.softserve.borda.entities.Comment;
-import com.softserve.borda.entities.Tag;
-import com.softserve.borda.entities.Ticket;
+import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.impl.TicketServiceImpl;
@@ -163,8 +160,6 @@ class TicketServiceTest {
         assertEquals(tags, tagList);
         verify(ticketRepository, times(1)).findById(1L);
     }
-
-
 
 
     @Test

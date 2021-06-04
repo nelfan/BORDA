@@ -1,7 +1,7 @@
 package com.softserve.borda.repositories;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardList;
+import com.softserve.borda.entities.BoardColumn;
 import com.softserve.borda.entities.Ticket;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,14 +20,14 @@ import java.util.List;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BoardListRepositoryTest {
+class BoardColumnRepositoryTest {
 
     @Autowired
-    BoardListRepository boardListRepository;
+    BoardColumnRepository boardColumnRepository;
 
     @Autowired
     BoardRepository boardRepository;
-    
+
     @Autowired
     TicketRepository ticketRepository;
 
@@ -41,73 +41,73 @@ class BoardListRepositoryTest {
     }
 
     @Test
-    void shouldInsertAndReturnBoardList() {
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
-        BoardList expected = boardListRepository.save(boardList);
-        BoardList actual = boardListRepository.getOne(boardList.getId());
+    void shouldInsertAndReturnBoardColumn() {
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
+        BoardColumn expected = boardColumnRepository.save(boardColumn);
+        BoardColumn actual = boardColumnRepository.getOne(boardColumn.getId());
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldInsertAndDeleteBoardList() {
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
-        boardListRepository.save(boardList);
-        boardListRepository.deleteById(boardList.getId());
-        Assertions.assertFalse(boardListRepository.findById(boardList.getId()).isPresent());
+    void shouldInsertAndDeleteBoardColumn() {
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
+        boardColumnRepository.save(boardColumn);
+        boardColumnRepository.deleteById(boardColumn.getId());
+        Assertions.assertFalse(boardColumnRepository.findById(boardColumn.getId()).isPresent());
     }
 
     @Test
-    void shouldInsertAndUpdateBoardList() {
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
-        boardListRepository.save(boardList);
-        boardList.setName("BoardList1updated");
-        BoardList expected = boardListRepository.save(boardList);
-        BoardList actual = boardListRepository.getOne(boardList.getId());
+    void shouldInsertAndUpdateBoardColumn() {
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
+        boardColumnRepository.save(boardColumn);
+        boardColumn.setName("BoardColumn1updated");
+        BoardColumn expected = boardColumnRepository.save(boardColumn);
+        BoardColumn actual = boardColumnRepository.getOne(boardColumn.getId());
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldSaveTicketsWithBoardList() {
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
+    void shouldSaveTicketsWithBoardColumn() {
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
         Ticket ticket1 = new Ticket();
         ticket1.setTitle("Ticket1");
         ticket1.setDescription("Ticket1Body");
         Ticket ticket2 = new Ticket();
         ticket2.setTitle("Ticket2");
         ticket2.setDescription("Ticket2Body");
-        boardList.getTickets().add(ticket1);
-        boardList.getTickets().add(ticket2);
-        boardListRepository.save(boardList);
-        BoardList actualBoardList = boardListRepository.getOne(boardList.getId());
+        boardColumn.getTickets().add(ticket1);
+        boardColumn.getTickets().add(ticket2);
+        boardColumnRepository.save(boardColumn);
+        BoardColumn actualBoardColumn = boardColumnRepository.getOne(boardColumn.getId());
         List<Ticket> expected = new ArrayList<>();
         expected.add(ticket1);
         expected.add(ticket2);
         List<Ticket> actual = ticketRepository.findAll();
-        Assertions.assertEquals(boardList, actualBoardList);
+        Assertions.assertEquals(boardColumn, actualBoardColumn);
         Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldDeleteTicketsWithBoardList() {
-        BoardList boardList = new BoardList();
-        boardList.setName("BoardList1");
+    void shouldDeleteTicketsWithBoardColumn() {
+        BoardColumn boardColumn = new BoardColumn();
+        boardColumn.setName("BoardColumn1");
         Ticket ticket1 = new Ticket();
         ticket1.setTitle("Ticket1");
         ticket1.setDescription("Ticket1Body");
         Ticket ticket2 = new Ticket();
         ticket2.setTitle("Ticket2");
         ticket2.setDescription("Ticket2Body");
-        boardList.getTickets().add(ticket1);
-        boardList.getTickets().add(ticket2);
-        boardListRepository.save(boardList);
-        boardListRepository.delete(boardList);
+        boardColumn.getTickets().add(ticket1);
+        boardColumn.getTickets().add(ticket2);
+        boardColumnRepository.save(boardColumn);
+        boardColumnRepository.delete(boardColumn);
         List<Ticket> expected = new ArrayList<>();
         List<Ticket> actual = ticketRepository.findAll();
-        Assertions.assertFalse(boardListRepository.findById(boardList.getId()).isPresent());
+        Assertions.assertFalse(boardColumnRepository.findById(boardColumn.getId()).isPresent());
         Assertions.assertEquals(expected, actual);
     }
 }

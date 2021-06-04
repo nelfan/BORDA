@@ -1,6 +1,7 @@
 package com.softserve.borda.entities;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -19,4 +20,12 @@ public class Tag {
 
     @NotBlank
     private String color;
+
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "board_id", insertable = false, updatable = false)
+    private Board board;
+
+    @Column(name = "board_id")
+    private Long boardId;
 }

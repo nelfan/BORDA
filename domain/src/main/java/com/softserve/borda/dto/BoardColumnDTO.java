@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class BoardListDTO {
+public class BoardColumnDTO {
 
     private Long id;
     private String name;
-    private List<com.softserve.borda.dto.TicketDTO> tickets = new ArrayList<>();
+    private List<TicketDTO> tickets = new ArrayList<>();
 }

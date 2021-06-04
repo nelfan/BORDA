@@ -34,9 +34,9 @@ public interface TicketService {
 
     Ticket deleteMemberFromTicket(Long ticketId, Long userId);
 
-    List<Ticket> getAllTicketsByBoardListId(Long boardListId);
+    List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 
-    Ticket addTicketToBoardList(Long boardListId, Long ticketId);
+    Ticket addTicketToBoardColumn(Long boardColumnId, Long ticketId);
 
-    boolean deleteTicketFromBoardList(Long boardListId, Long ticketId);
+    boolean deleteTicketFromBoardColumn(Long boardColumnId, Long ticketId);
 }

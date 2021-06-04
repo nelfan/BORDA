@@ -24,7 +24,12 @@ public class Board {
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
-    private List<BoardList> boardLists = new ArrayList<>();
+    private List<BoardColumn> boardColumns = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "board",
+            cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board",
@@ -32,5 +37,6 @@ public class Board {
     @NotEmpty
     @JsonManagedReference
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
+
 
 }

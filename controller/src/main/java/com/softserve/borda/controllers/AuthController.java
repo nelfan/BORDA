@@ -4,7 +4,6 @@ import com.softserve.borda.authorization.AuthRequest;
 import com.softserve.borda.authorization.AuthResponse;
 import com.softserve.borda.authorization.RegistrationRequest;
 import com.softserve.borda.config.jwt.JwtProvider;
-import com.softserve.borda.dto.CheckUserDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
 import com.softserve.borda.exceptions.CustomValidationFailedException;
@@ -16,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -76,10 +72,10 @@ public class AuthController {
         throw new CustomAuthenticationFailedException();
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<Boolean> checkUserExistingByUsername(@RequestBody CheckUserDTO checkUserDTO) {
+    @GetMapping("/{username}")
+    public ResponseEntity<Boolean> checkUserExistingByUsername(@PathVariable String username) {
         try {
-            userService.getUserByUsername(checkUserDTO.getUsername());
+            userService.getUserByUsername(username);
             return new ResponseEntity<>(true, HttpStatus.FOUND);
         } catch (Exception e) {
             log.warning(e.getMessage());

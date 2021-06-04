@@ -1,5 +1,6 @@
 package com.softserve.borda.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

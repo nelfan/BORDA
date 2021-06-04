@@ -463,11 +463,10 @@ public class BoardController {
                                           @PathVariable Long userBoardRoleId) {
         var user = userService.getUserByUsername(authentication.getName());
         Invitation invitation = new Invitation();
-        invitation.setSender(user);
-        invitation.setReceiver(userService.getUserById(receiverId));
-        invitation.setBoard(boardService.getBoardById(boardId));
-        invitation.setUserBoardRole(
-                userBoardRelationService.getUserBoardRoleById(userBoardRoleId));
+        invitation.setSenderId(user.getId());
+        invitation.setReceiverId(receiverId);
+        invitation.setBoardId(boardId);
+        invitation.setUserBoardRoleId(userBoardRoleId);
         invitation = invitationService.create(invitation);
         InvitationDTO invitationDTO = modelMapper.map(invitation, InvitationDTO.class);
         return ResponseEntity.ok(invitationDTO);

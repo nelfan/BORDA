@@ -76,7 +76,7 @@ public class AuthController {
         throw new CustomAuthenticationFailedException();
     }
 
-    @PostMapping("/check-username")
+    @PostMapping("/users")
     public ResponseEntity<Boolean> checkUserExistingByUsername(@RequestBody CheckUserDTO checkUserDTO) {
         try {
             userService.getUserByUsername(checkUserDTO.getUsername());

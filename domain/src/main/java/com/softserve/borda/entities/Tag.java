@@ -24,6 +24,7 @@ public class Tag {
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn
     @JsonBackReference
     private Board board;
 

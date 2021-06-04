@@ -73,15 +73,6 @@ public class BordaApplication {
             users.add(user);
         }
 
-        List<Tag> tags = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setText("label"+i);
-            tag.setColor("color " + i);
-            tagRepository.save(tag);
-            tags.add(tag);
-        }
-
         UserBoardRole owner = new UserBoardRole(UserBoardRole.UserBoardRoles.OWNER.name());
         userBoardRoleRepository.save(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
@@ -114,6 +105,15 @@ public class BordaApplication {
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
+        }
+
+        List<Tag> tags = new ArrayList<>();
+        for(int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setText("label"+i);
+            tag.setColor("color " + i);
+            tagRepository.save(tag);
+            tags.add(tag);
         }
 
         BoardColumn boardColumn = new BoardColumn();

@@ -349,17 +349,30 @@ public class BoardController {
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags")
+    @PostMapping("/boards/{boardId}/tags")
+    public ResponseEntity<TagDTO> addNewTagToBoard
+            (@RequestBody UpdateTagDTO updateTagDTO,
+             @PathVariable Long boardId) {
+        try {
+            Tag tag = modelMapper.map(updateTagDTO, Tag.class);
+            tag.setBoardId(boardId);
+            tag = tagService.create(tag);
+            TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
+
+            return new ResponseEntity<>(tagDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
     public ResponseEntity<TicketDTO> addTagToTicket
             (@PathVariable Long ticketId,
-             @RequestBody TagDTO tagDTO,
+             @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        // TODO rework tags to relate to certain board
-        //  and here tags should not be created, just added to ticket
-        Tag tag = modelMapper.map(tagDTO, Tag.class);
-        tag = tagService.create(tag);
-        Ticket ticket = ticketService.addTagToTicket(ticketId, tag.getId());
+        Ticket ticket = ticketService.addTagToTicket(ticketId, tagId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -367,21 +380,25 @@ public class BoardController {
 
     @GetMapping("/boards/{boardId}/tags")
     public ResponseEntity<List<TagDTO>> getAllTagsForBoard
-            (@PathVariable String boardId) {
-        // TODO rework tags to relate to certain board
-        //  and make this return all tags of one board
-        return new ResponseEntity<>(HttpStatus.OK);
+            (@PathVariable Long boardId) {
+        List<Tag> tags = tagService.getAllTagsByBoardId(boardId);
+        List<TagDTO> tagDTOs = tags.stream().map(tag ->
+                modelMapper.map(tag, TagDTO.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(tagDTOs, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}/tags/{tagId}")
     public ResponseEntity<TagDTO> updateTagByTagId
             (@PathVariable Long tagId,
-             @RequestBody TagDTO tagDTO,
-             @PathVariable String boardId) {
-        Tag tag = tagService.getTagById(tagId);
-        BeanUtils.copyProperties(tagDTO, tag);
+             @RequestBody UpdateTagDTO updateTagDTO,
+             @PathVariable Long boardId) {
+        Tag tag = modelMapper.map(updateTagDTO, Tag.class);
+        tag.setId(tagId);
+        tag.setBoardId(boardId);
         tag = tagService.update(tag);
-        tagDTO = modelMapper.map(tag, TagDTO.class);
+        TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }

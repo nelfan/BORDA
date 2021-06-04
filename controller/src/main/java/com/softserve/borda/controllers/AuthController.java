@@ -72,14 +72,8 @@ public class AuthController {
         throw new CustomAuthenticationFailedException();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/usernames/{username}")
     public ResponseEntity<Boolean> checkUserExistingByUsername(@PathVariable String username) {
-        try {
-            userService.getUserByUsername(username);
-            return new ResponseEntity<>(true, HttpStatus.FOUND);
-        } catch (Exception e) {
-            log.warning(e.getMessage());
-            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(userService.existsUserByUsername(username), HttpStatus.OK);
     }
 }

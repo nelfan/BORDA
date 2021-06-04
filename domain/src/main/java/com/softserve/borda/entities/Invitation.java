@@ -1,6 +1,5 @@
 package com.softserve.borda.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -17,20 +16,19 @@ public class Invitation {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
-    private User user;
+    private User sender;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    @JsonBackReference
+    private User receiver;
+
+    @ToString.Exclude
+    @ManyToOne
     private Board board;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    private BoardRole boardRole;
+    private UserBoardRole userBoardRole;
 
     private Boolean isAccepted;
 }

@@ -1,20 +1,16 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Invitation;
-import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.InvitationRepository;
-import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.InvitationService;
 import com.softserve.borda.services.UserBoardRelationService;
-import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -36,31 +32,40 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public boolean acceptOrDecline(Invitation invitation) {
-        Invitation existingInvitation = invitationRepository.findById(invitation.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(Invitation.class));
-        if(invitation.getIsAccepted().booleanValue()){
+    public boolean accept(Long invitationId) {
+        try {
+            Invitation invitation = getInvitationById(invitationId);
             UserBoardRelation userBoardRelation =
                     new UserBoardRelation();
             userBoardRelation.setBoard(invitation.getBoard());
-            userBoardRelation.setUser(invitation.getUser());
-            userBoardRelation.setBoardRole(invitation.getBoardRole());
-            userBoardRelationService.createOrUpdate(userBoardRelation);
-        }
-        existingInvitation.setIsAccepted(invitation.getIsAccepted());
-        try {
-            invitationRepository.save(existingInvitation);
+            userBoardRelation.setUser(invitation.getReceiver());
+            userBoardRelation.setUserBoardRole(invitation.getUserBoardRole());
+            userBoardRelationService.create(userBoardRelation);
+            invitation.setIsAccepted(true);
+            invitationRepository.save(invitation);
             return true;
-        }
-        catch (Exception e){
-            log.severe(e.getMessage());
+        } catch (Exception e) {
+            log.warning(e.getMessage());
             return false;
         }
     }
 
     @Override
-    public List<Invitation> getAllByUser(User user) {
-        return invitationRepository.findAllByUser(user);
+    public boolean decline(Long invitationId) {
+        try {
+            Invitation invitation = getInvitationById(invitationId);
+            invitation.setIsAccepted(false);
+            invitationRepository.save(invitation);
+            return true;
+        } catch (Exception e) {
+            log.warning(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<Invitation> getAllByReceiverId(Long receiverId) {
+        return invitationRepository.findAllByReceiverId(receiverId);
     }
 
     @Override
@@ -68,9 +73,8 @@ public class InvitationServiceImpl implements InvitationService {
         try {
             invitationRepository.deleteById(id);
             return true;
-        }
-        catch (Exception e) {
-            log.severe(e.getMessage());
+        } catch (Exception e) {
+            log.warning(e.getMessage());
             return false;
         }
     }

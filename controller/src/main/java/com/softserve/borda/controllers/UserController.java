@@ -5,6 +5,7 @@ import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -66,7 +67,7 @@ public class UserController {
     public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserUpdateDTO userUpdateDTO,
                                                     Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
-        user = modelMapper.map(userUpdateDTO, User.class);
+        CustomBeanUtils.copyNotNullProperties(userUpdateDTO, user);
         user = userService.update(user);
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 

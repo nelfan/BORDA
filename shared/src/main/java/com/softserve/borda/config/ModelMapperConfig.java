@@ -15,7 +15,7 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper modelMapper =  new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
         modelMapper.addConverter(tagToTagDTO);
         modelMapper.addConverter(inviteToInviteDTO);
         return modelMapper;
@@ -32,19 +32,18 @@ public class ModelMapperConfig {
         }
     };
 
-    Converter<Invitation, InvitationDTO> inviteToInviteDTO =
-            new AbstractConverter<>() {
-                protected InvitationDTO convert(Invitation invitation) {
-                    InvitationDTO invitationDTO = new InvitationDTO();
+    Converter<Invitation, InvitationDTO> inviteToInviteDTO = new AbstractConverter<>() {
+        protected InvitationDTO convert(Invitation invitation) {
+            InvitationDTO invitationDTO = new InvitationDTO();
 
-                    invitationDTO.setId(invitation.getId());
-                    invitationDTO.setSenderId(invitation.getSenderId());
-                    invitationDTO.setReceiverId(invitation.getReceiverId());
-                    invitationDTO.setBoardId(invitation.getBoardId());
-                    invitationDTO.setUserBoardRoleId(invitation.getUserBoardRoleId());
-                    invitationDTO.setIsAccepted(invitation.getIsAccepted());
+            invitationDTO.setId(invitation.getId());
+            invitationDTO.setSenderId(invitation.getSenderId());
+            invitationDTO.setReceiverId(invitation.getReceiverId());
+            invitationDTO.setBoardId(invitation.getBoardId());
+            invitationDTO.setUserBoardRoleId(invitation.getUserBoardRoleId());
+            invitationDTO.setIsAccepted(invitation.getIsAccepted());
 
-                    return invitationDTO;
-                }
-            };
+            return invitationDTO;
+        }
+    };
 }

@@ -7,5 +7,4 @@ public class BoardSimpleDTO {
 
     private Long id;
     private String name;
-
 }

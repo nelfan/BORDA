@@ -14,4 +14,6 @@ public interface TagService {
     Tag update(Tag tag);
 
     boolean deleteTagById(Long id);
+
+    List<Tag> getAllTagsByBoardId(Long boardId);
 }

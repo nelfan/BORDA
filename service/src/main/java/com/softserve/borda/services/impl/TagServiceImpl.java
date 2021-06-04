@@ -38,6 +38,7 @@ public class TagServiceImpl implements TagService {
         Tag existingTag = getTagById(tag.getId());
         existingTag.setText(tag.getText());
         existingTag.setColor(tag.getColor());
+        existingTag.setBoardId(tag.getBoardId());
         return tagRepository.save(existingTag);
     }
 
@@ -50,5 +51,10 @@ public class TagServiceImpl implements TagService {
             log.severe(e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public List<Tag> getAllTagsByBoardId(Long boardId) {
+        return tagRepository.getAllTagsByBoardId(boardId);
     }
 }

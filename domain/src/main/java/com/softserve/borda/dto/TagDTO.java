@@ -8,4 +8,5 @@ public class TagDTO {
     private Long id;
     private String text;
     private String color;
+    private Long boardId;
 }

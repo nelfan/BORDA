@@ -21,6 +21,6 @@ public class BoardFullDTO {
             message = "Board name can contain only english letters")
     private String name;
 
-    private List<BoardListDTO> boardLists;
+    private List<BoardColumnDTO> boardColumns;
     private List<UserBoardRelationDTO> userBoardRelations;
 }

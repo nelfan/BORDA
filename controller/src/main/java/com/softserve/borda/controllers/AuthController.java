@@ -4,6 +4,7 @@ import com.softserve.borda.authorization.AuthRequest;
 import com.softserve.borda.authorization.AuthResponse;
 import com.softserve.borda.authorization.RegistrationRequest;
 import com.softserve.borda.config.jwt.JwtProvider;
+import com.softserve.borda.dto.CheckUserDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
 import com.softserve.borda.exceptions.CustomValidationFailedException;
@@ -11,6 +12,7 @@ import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
@@ -72,5 +74,16 @@ public class AuthController {
             log.warning(e.getMessage());
         }
         throw new CustomAuthenticationFailedException();
+    }
+
+    @PostMapping("/check-username")
+    public ResponseEntity<Boolean> checkUserExistingByUsername(@RequestBody CheckUserDTO checkUserDTO) {
+        try {
+            userService.getUserByUsername(checkUserDTO.getUsername());
+            return new ResponseEntity<>(true, HttpStatus.FOUND);
+        } catch (Exception e) {
+            log.warning(e.getMessage());
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        }
     }
 }

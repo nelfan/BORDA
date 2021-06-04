@@ -5,7 +5,6 @@ import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserRepository;
-import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -21,8 +20,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
-
-    private final UserBoardRelationService userBoardRelationService;
 
     @Override
     public List<User> getAll() {

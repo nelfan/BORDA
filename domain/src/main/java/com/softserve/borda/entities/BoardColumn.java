@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Entity(name = "board_lists")
-public class BoardList {
+@Entity(name = "board_columns")
+public class BoardColumn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_list_id")
+    @Column(name = "board_column_id")
     private Long id;
 
     @NotBlank

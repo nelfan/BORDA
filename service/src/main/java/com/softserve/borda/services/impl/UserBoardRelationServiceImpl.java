@@ -1,9 +1,9 @@
 package com.softserve.borda.services.impl;
 
-import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.UserBoardRole;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
-import com.softserve.borda.repositories.BoardRoleRepository;
+import com.softserve.borda.repositories.UserBoardRoleRepository;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     private final UserBoardRelationRepository userBoardRelationRepository;
 
-    private final BoardRoleRepository boardRoleRepository;
+    private final UserBoardRoleRepository userBoardRoleRepository;
 
     @Override
     public List<UserBoardRelation> getAll() {
@@ -41,7 +41,7 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     public UserBoardRelation update(UserBoardRelation userBoardRelation) {
         UserBoardRelation existingUserBoardRelation =
                 getUserBoardRelationById(userBoardRelation.getId());
-        existingUserBoardRelation.setBoardRole(userBoardRelation.getBoardRole());
+        existingUserBoardRelation.setUserBoardRole(userBoardRelation.getUserBoardRole());
         return userBoardRelationRepository.save(existingUserBoardRelation);
     }
 
@@ -57,15 +57,15 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public BoardRole getBoardRoleByName(String name) {
-        return boardRoleRepository.findByName(name)
-                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+    public UserBoardRole getUserBoardRoleByName(String name) {
+        return userBoardRoleRepository.findByName(name)
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
-    public BoardRole getBoardRoleById(Long id) {
-        return boardRoleRepository.findById(id)
-                .orElseThrow(() -> new CustomEntityNotFoundException(BoardRole.class));
+    public UserBoardRole getUserBoardRoleById(Long id) {
+        return userBoardRoleRepository.findById(id)
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
@@ -74,8 +74,8 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     }
 
     @Override
-    public List<UserBoardRelation> getUserBoardRelationsByUserIdAndBoardRoleId(Long userId,
-                                                                               Long boardRoleId) {
-        return userBoardRelationRepository.findAllByUserIdAndBoardRoleId(userId, boardRoleId);
+    public List<UserBoardRelation> getUserBoardRelationsByUserIdAndUserBoardRoleId(Long userId,
+                                                                                   Long userBoardRoleId) {
+        return userBoardRelationRepository.findAllByUserIdAndUserBoardRoleId(userId, userBoardRoleId);
     }
 }

@@ -1,9 +1,9 @@
 package com.softserve.borda.repositories;
 
 import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.BoardRole;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.UserBoardRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ class UserBoardRelationRepositoryTest {
     BoardRepository boardRepository;
 
     @Autowired
-    BoardRoleRepository boardRoleRepository;
+    UserBoardRoleRepository userBoardRoleRepository;
 
     @Test
     void shouldInsertAndReturnUserBoardRelation() {
@@ -43,15 +43,15 @@ class UserBoardRelationRepositoryTest {
         user.setFirstName("FirstName");
         user.setLastName("LastName");
         userRepository.save(user);
-        BoardRole owner = new BoardRole();
+        UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation expected = new UserBoardRelation();
         expected.setUser(user);
         expected.setBoard(board);
-        expected.setBoardRole(owner);
+        expected.setUserBoardRole(owner);
         board.getUserBoardRelations().add(expected);
         user.getUserBoardRelations().add(expected);
         boardRepository.save(board);
@@ -69,15 +69,15 @@ class UserBoardRelationRepositoryTest {
         user.setFirstName("FirstName");
         user.setLastName("LastName");
         userRepository.save(user);
-        BoardRole owner = new BoardRole();
+        UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation userBoardRelation = new UserBoardRelation();
         userBoardRelation.setUser(user);
         userBoardRelation.setBoard(board);
-        userBoardRelation.setBoardRole(owner);
+        userBoardRelation.setUserBoardRole(owner);
         board.getUserBoardRelations().add(userBoardRelation);
         user.getUserBoardRelations().add(userBoardRelation);
         boardRepository.save(board);
@@ -95,24 +95,24 @@ class UserBoardRelationRepositoryTest {
         user.setFirstName("FirstName");
         user.setLastName("LastName");
         userRepository.save(user);
-        BoardRole owner = new BoardRole();
+        UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
+        userBoardRoleRepository.save(owner);
         Board board = new Board();
         board.setName("Board");
         UserBoardRelation userBoardRelation = new UserBoardRelation();
         userBoardRelation.setUser(user);
         userBoardRelation.setBoard(board);
-        userBoardRelation.setBoardRole(owner);
+        userBoardRelation.setUserBoardRole(owner);
         board.getUserBoardRelations().add(userBoardRelation);
         user.getUserBoardRelations().add(userBoardRelation);
         boardRepository.save(board);
         userRepository.save(user);
         userBoardRelationRepository.save(userBoardRelation);
-        BoardRole collaborator = new BoardRole();
+        UserBoardRole collaborator = new UserBoardRole();
         collaborator.setName("collaborator");
-        boardRoleRepository.save(collaborator);
-        userBoardRelation.setBoardRole(collaborator);
+        userBoardRoleRepository.save(collaborator);
+        userBoardRelation.setUserBoardRole(collaborator);
         UserBoardRelation expected = userBoardRelationRepository.save(userBoardRelation);
         UserBoardRelation actual = userBoardRelationRepository.getOne(userBoardRelation.getId());
         Assertions.assertEquals(expected, actual);
@@ -132,19 +132,19 @@ class UserBoardRelationRepositoryTest {
             userRepository.save(user);
             users.add(user);
         }
-        BoardRole owner = new BoardRole();
+        UserBoardRole owner = new UserBoardRole();
         owner.setName("owner");
-        boardRoleRepository.save(owner);
-        BoardRole collaborator = new BoardRole();
+        userBoardRoleRepository.save(owner);
+        UserBoardRole collaborator = new UserBoardRole();
         collaborator.setName("collaborator");
-        boardRoleRepository.save(collaborator);
+        userBoardRoleRepository.save(collaborator);
         for (int i = 0; i < 3; i++) {
             Board board = new Board();
             board.setName("Board" + i);
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(i));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setBoardRole(owner);
+            userBoardRelation.setUserBoardRole(owner);
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(i).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
@@ -154,7 +154,7 @@ class UserBoardRelationRepositoryTest {
         UserBoardRelation expected = new UserBoardRelation();
         expected.setUser(users.get(2));
         expected.setBoard(boards.get(1));
-        expected.setBoardRole(collaborator);
+        expected.setUserBoardRole(collaborator);
         UserBoardRelation actual = userBoardRelationRepository.save(expected);
         users.get(2).getUserBoardRelations().add(expected);
         boards.get(1).getUserBoardRelations().add(expected);

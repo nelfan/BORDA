@@ -5,6 +5,7 @@ import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardService;
+import com.softserve.borda.services.TagService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -65,9 +66,11 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getBoardsByUserIdAndBoardRoleId(Long userId, Long roleId) {
-        return userBoardRelationService.getUserBoardRelationsByUserIdAndBoardRoleId(userId, roleId)
+        return userBoardRelationService.getUserBoardRelationsByUserIdAndUserBoardRoleId(userId, roleId)
                 .stream()
                 .map(UserBoardRelation::getBoard)
                 .collect(Collectors.toList());
     }
+
+
 }

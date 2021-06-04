@@ -1,6 +1,5 @@
 package com.softserve.borda.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -24,10 +23,9 @@ public class Tag {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn
-    @JsonBackReference
+    @JoinColumn(name = "board_id", insertable = false, updatable = false)
     private Board board;
 
-    @Column
+    @Column(name = "board_id")
     private Long boardId;
 }

@@ -17,16 +17,17 @@ public class UserBoardRelation {
 
     @ToString.Exclude
     @ManyToOne
-    @JsonBackReference
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ToString.Exclude
     @ManyToOne
-    @JsonBackReference
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ToString.Exclude
     @ManyToOne
+    @JoinColumn(name = "user_board_role_id")
     private UserBoardRole userBoardRole;
 
 }

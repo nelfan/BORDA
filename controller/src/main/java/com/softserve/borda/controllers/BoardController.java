@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,6 +38,8 @@ public class BoardController {
     private final CommentService commentService;
 
     private final TagService tagService;
+
+    private final InvitationService invitationService;
 
     @GetMapping("/boards")
     public List<Board> getAllBoards() {
@@ -438,5 +441,49 @@ public class BoardController {
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/invitations")
+    public ResponseEntity<List<InvitationDTO>> getAllInvitation(
+            Authentication authentication) {
+        var user = userService.getUserByUsername(authentication.getName());
+        List<Invitation> invitations = invitationService.getAllByReceiverId(user.getId());
+
+        List<InvitationDTO> invitationDTOs = invitations.stream().map(
+                invitation -> modelMapper.map(invitation,
+                        InvitationDTO.class)).collect(Collectors.toList());
+
+        return ResponseEntity.ok(invitationDTOs);
+    }
+
+    @PostMapping("/users/invitations/{receiverId}/boards/{boardId}/roles/{userBoardRoleId}")
+    public ResponseEntity<InvitationDTO> createInvitation(Authentication authentication,
+                                          @PathVariable Long receiverId,
+                                          @PathVariable Long boardId,
+                                          @PathVariable Long userBoardRoleId) {
+        var user = userService.getUserByUsername(authentication.getName());
+        Invitation invitation = new Invitation();
+        invitation.setSenderId(user.getId());
+        invitation.setReceiverId(receiverId);
+        invitation.setBoardId(boardId);
+        invitation.setUserBoardRoleId(userBoardRoleId);
+        invitation = invitationService.create(invitation);
+        InvitationDTO invitationDTO = modelMapper.map(invitation, InvitationDTO.class);
+        return ResponseEntity.ok(invitationDTO);
+    }
+
+
+    @PostMapping("/users/invitations/{invitationId}")
+    public ResponseEntity<Boolean> acceptOrDeclineInvitation(@PathVariable Long invitationId,
+                                                             @RequestBody InvitationAcceptDTO acceptDTO) {
+        Boolean isAccepted = acceptDTO.getIsAccepted();
+        if(Objects.isNull(isAccepted)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(isAccepted) {
+            return ResponseEntity.ok(invitationService.accept(invitationId));
+        } else {
+            return ResponseEntity.ok(invitationService.decline(invitationId));
+        }
     }
 }

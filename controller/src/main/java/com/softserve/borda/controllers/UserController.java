@@ -5,10 +5,10 @@ import com.softserve.borda.dto.UserSimpleDTO;
 import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.services.UserService;
+import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -67,8 +67,7 @@ public class UserController {
     public ResponseEntity<UserSimpleDTO> updateUser(@RequestBody UserUpdateDTO userUpdateDTO,
                                                     Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
-
-        BeanUtils.copyProperties(userUpdateDTO, user);
+        CustomBeanUtils.copyNotNullProperties(userUpdateDTO, user);
         user = userService.update(user);
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 

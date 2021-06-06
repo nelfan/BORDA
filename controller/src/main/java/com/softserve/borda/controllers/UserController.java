@@ -6,6 +6,7 @@ import com.softserve.borda.dto.UserUpdateDTO;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomValidationFailedException;
 import com.softserve.borda.services.UserService;
+import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -75,7 +76,7 @@ public class UserController {
         } else {
             User user = userService.getUserByUsername(authentication.getName());
 
-            BeanUtils.copyProperties(userUpdateDTO, user);
+            CustomBeanUtils.copyNotNullProperties(userUpdateDTO, user);
             user = userService.update(user);
             UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 

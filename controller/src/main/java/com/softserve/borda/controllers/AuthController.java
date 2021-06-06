@@ -6,7 +6,6 @@ import com.softserve.borda.authorization.RegistrationRequest;
 import com.softserve.borda.config.jwt.JwtProvider;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.exceptions.CustomAuthenticationFailedException;
-import com.softserve.borda.exceptions.CustomValidationFailedException;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -14,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,21 +29,16 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest,
-                                                     BindingResult bindingResult)
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
             throws CustomAuthenticationFailedException {
         try {
-            if (bindingResult.hasErrors()) {
-                throw new CustomValidationFailedException(bindingResult);
-            } else {
-                User user = new User();
-                user.setUsername(registrationRequest.getUsername());
-                user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-                user.setEmail(registrationRequest.getEmail());
-                user.setFirstName(registrationRequest.getFirstName());
-                user.setLastName(registrationRequest.getLastName());
-                userService.create(user);
-            }
+            User user = new User();
+            user.setUsername(registrationRequest.getUsername());
+            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+            user.setEmail(registrationRequest.getEmail());
+            user.setFirstName(registrationRequest.getFirstName());
+            user.setLastName(registrationRequest.getLastName());
+            userService.create(user);
         } catch (Exception e) {
             log.warning(e.getMessage());
             throw new CustomAuthenticationFailedException("Registration failed");

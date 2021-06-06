@@ -1,5 +1,6 @@
 package com.softserve.borda;
 
+import com.softserve.borda.controllers.BoardController;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.*;
@@ -16,6 +17,8 @@ import java.util.List;
 
 @SpringBootApplication
 public class BordaApplication {
+
+    BoardController boardController;
 
     UserRepository userRepository;
 
@@ -43,7 +46,7 @@ public class BordaApplication {
                             UserService userService, UserController userController,
                             PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                             BoardService boardService, BoardColumnService boardColumnService,
-                            TicketService ticketService) {
+                            TicketService ticketService, BoardController boardController) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;

@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public class UserController {
     private final ModelMapper modelMapper;
 
     private final UserService userService;
+
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/admin/users")
     public ResponseEntity<List<UserSimpleDTO>> getAllUsers() {
@@ -68,6 +71,9 @@ public class UserController {
                                                     Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
         CustomBeanUtils.copyNotNullProperties(userUpdateDTO, user);
+        if(userUpdateDTO.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+        }
         user = userService.update(user);
         UserSimpleDTO userSimpleDTO = modelMapper.map(user, UserSimpleDTO.class);
 

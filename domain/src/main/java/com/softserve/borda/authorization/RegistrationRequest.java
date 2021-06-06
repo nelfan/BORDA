@@ -33,7 +33,7 @@ public class RegistrationRequest {
     private String lastName;
 
     @NotBlank
-    @Email(message = "invalid email format")
+    @Pattern(regexp = ValidationUtils.EMAIL, flags = Pattern.Flag.CASE_INSENSITIVE, message = "invalid email format")
     private String email;
 
     @NotEmpty

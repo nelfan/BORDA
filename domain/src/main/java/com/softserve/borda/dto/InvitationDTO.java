@@ -1,6 +1,5 @@
 package com.softserve.borda.dto;
-import com.softserve.borda.entities.Board;
-import com.softserve.borda.entities.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

@@ -1,7 +1,6 @@
 package com.softserve.borda.config;
 
-import com.softserve.borda.dto.InvitationDTO;
-import com.softserve.borda.dto.TagDTO;
+import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.Invitation;
 import com.softserve.borda.entities.Tag;
 import org.modelmapper.AbstractConverter;
@@ -37,12 +36,11 @@ public class ModelMapperConfig {
             InvitationDTO invitationDTO = new InvitationDTO();
 
             invitationDTO.setId(invitation.getId());
-            invitationDTO.setSenderId(invitation.getSenderId());
+            invitationDTO.setSender(new ModelMapper().map(invitation.getSender(), UserSimpleDTO.class));
             invitationDTO.setReceiverId(invitation.getReceiverId());
-            invitationDTO.setBoardId(invitation.getBoardId());
-            invitationDTO.setUserBoardRoleId(invitation.getUserBoardRoleId());
+            invitationDTO.setBoard(new ModelMapper().map(invitation.getBoard(), BoardSimpleDTO.class));
+            invitationDTO.setUserBoardRole(new ModelMapper().map(invitation.getUserBoardRole(), UserBoardRoleDTO.class));
             invitationDTO.setIsAccepted(invitation.getIsAccepted());
-
             return invitationDTO;
         }
     };

@@ -10,12 +10,12 @@ import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest registrationRequest)
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
             throws CustomAuthenticationFailedException {
         try {
             User user = new User();
@@ -45,6 +45,7 @@ public class AuthController {
         }
         AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
         return auth(authRequest);
+
     }
 
     @PostMapping("/auth")
@@ -62,5 +63,10 @@ public class AuthController {
             log.warning(e.getMessage());
         }
         throw new CustomAuthenticationFailedException();
+    }
+
+    @GetMapping("/usernames/{username}")
+    public ResponseEntity<Boolean> checkUserExistingByUsername(@PathVariable String username) {
+        return new ResponseEntity<>(userService.existsUserByUsername(username), HttpStatus.OK);
     }
 }

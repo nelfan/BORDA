@@ -71,4 +71,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new CustomEntityNotFoundException(User.class));
     }
+
+    @Override
+    public Boolean existsUserByUsername(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
 }

@@ -80,6 +80,8 @@ public class BordaApplication {
         userBoardRoleRepository.save(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
         userBoardRoleRepository.save(collaborator);
+        String[] colors = {"#99ec91", "#e9af43", "#43d0e9"};
+        String[] tagText = {"Task", "Bug", "User Story"};
         for(int i = 0; i < 10; i++) {
             Board board = new Board();
             board.setName("Board" + i);
@@ -93,6 +95,13 @@ public class BordaApplication {
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
+            for(int j = 0; j < 3; j++) {
+                Tag tag = new Tag();
+                tag.setBoardId(board.getId());
+                tag.setText(tagText[j]);
+                tag.setColor(colors[j]);
+                tagRepository.save(tag);
+            }
         }
 
         for(int i = 10; i < 50; i++) {

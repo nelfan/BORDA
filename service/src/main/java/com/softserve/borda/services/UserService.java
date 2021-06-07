@@ -24,4 +24,6 @@ public interface UserService {
                                                    Long userBoardRoleId);
 
     List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations);
+
+    Boolean existsUserByUsername(String username);
 }

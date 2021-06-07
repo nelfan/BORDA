@@ -94,4 +94,9 @@ public class UserServiceImpl implements UserService {
                 userBoardRelationService.getUserBoardRelationsByBoardIdAndUserBoardRoleId(boardId, userBoardRoleId);
         return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
     }
+
+    @Override
+    public Boolean existsUserByUsername(String username) {
+        return userRepository.existsUserByUsername(username);
+    }
 }

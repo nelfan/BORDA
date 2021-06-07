@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/boardLists", "/boardLists/**",
                         "/tags", "/tags/**",
                         "/comments", "/comments/**").authenticated().
-                antMatchers("/register", "/auth").permitAll()
+                antMatchers("/register", "/auth", "/usernames/*").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }

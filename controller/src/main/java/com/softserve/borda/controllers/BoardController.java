@@ -406,7 +406,7 @@ public class BoardController {
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/deleteTag/{tagId}")
+    @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
     public ResponseEntity<TicketDTO> deleteTagFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,

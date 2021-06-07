@@ -23,8 +23,6 @@ public class Ticket {
 
     private String description;
 
-    private Byte[] img;
-
     @ToString.Exclude
     @ManyToMany
     @JoinColumn(name = "user_id")

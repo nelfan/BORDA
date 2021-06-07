@@ -24,4 +24,10 @@ public interface UserBoardRelationService {
 
     List<UserBoardRelation> getUserBoardRelationsByUserIdAndUserBoardRoleId(Long userId,
                                                                             Long userBoardRoleId);
+
+    List<UserBoardRelation> getUserBoardRelationsByBoardId(Long boardId);
+
+    List<UserBoardRelation> getUserBoardRelationsByBoardIdAndUserBoardRoleId(Long boardId,
+                                                                             Long userBoardRoleId);
+
 }

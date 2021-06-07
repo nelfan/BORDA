@@ -80,6 +80,8 @@ public class BordaApplication {
         userBoardRoleRepository.save(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
         userBoardRoleRepository.save(collaborator);
+        String[] colors = {"#99ec91", "#e9af43", "#43d0e9"};
+        String[] tagText = {"Task", "Bug", "User Story"};
         for(int i = 0; i < 10; i++) {
             Board board = new Board();
             board.setName("Board" + i);
@@ -93,6 +95,13 @@ public class BordaApplication {
             userRepository.save(users.get(0));
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
+            for(int j = 0; j < 3; j++) {
+                Tag tag = new Tag();
+                tag.setBoardId(board.getId());
+                tag.setText(tagText[j]);
+                tag.setColor(colors[j]);
+                tagRepository.save(tag);
+            }
         }
 
         for(int i = 10; i < 50; i++) {
@@ -109,27 +118,6 @@ public class BordaApplication {
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
-
-        List<Tag> tags = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setText("label"+i);
-            tag.setColor("color " + i);
-            tagRepository.save(tag);
-            tags.add(tag);
-        }
-
-        BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardColumn1");
-        boards.get(0).getBoardColumns().add(boardColumn);
-        boardColumn = boardColumnService.create(boardColumn);
-        Ticket ticket = new Ticket();
-        ticket.setTitle("Ticket1");
-        ticket.setDescription("Ticket for testing");
-        ticket = ticketService.create(ticket);
-        boardColumn.getTickets().add(ticket);
-        boardColumnService.update(boardColumn);
-        boardService.update(boards.get(0));
     }
 
     public static void main(String[] args) {

@@ -1,5 +1,6 @@
 package com.softserve.borda.dto;
-
+import com.softserve.borda.entities.Board;
+import com.softserve.borda.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,13 +9,13 @@ public class InvitationDTO {
 
     private Long id;
 
-    private Long senderId;
+    private UserSimpleDTO sender;
 
     private Long receiverId;
 
-    private Long boardId;
+    private BoardSimpleDTO board;
 
-    private Long userBoardRoleId;
+    private UserBoardRoleDTO userBoardRole;
 
     private Boolean isAccepted;
 }

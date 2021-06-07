@@ -12,4 +12,8 @@ public interface UserBoardRelationRepository extends JpaRepository<UserBoardRela
     List<UserBoardRelation> findAllByUserId(Long userId);
 
     List<UserBoardRelation> findAllByUserIdAndUserBoardRoleId(Long userId, Long userBoardRoleId);
+
+    List<UserBoardRelation> findAllByBoardIdAndUserBoardRoleId(Long boardId, Long userBoardRoleId);
+
+    List<UserBoardRelation> findAllByBoardId(Long boardId);
 }

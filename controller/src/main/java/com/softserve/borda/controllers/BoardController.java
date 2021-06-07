@@ -3,10 +3,10 @@ package com.softserve.borda.controllers;
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.services.*;
+import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -107,7 +107,7 @@ public class BoardController {
     public ResponseEntity<BoardFullDTO> updateBoard(@PathVariable Long id,
                                                     @RequestBody BoardFullDTO boardFullDTO) {
         Board board = boardService.getBoardById(id);
-        BeanUtils.copyProperties(boardFullDTO, board);
+        CustomBeanUtils.copyNotNullProperties(boardFullDTO, board);
         board = boardService.update(board);
         boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
@@ -159,7 +159,7 @@ public class BoardController {
                                                           @RequestBody BoardColumnDTO boardColumnDTO,
                                                           @PathVariable String boardId) {
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
-        BeanUtils.copyProperties(boardColumnDTO, boardColumn);
+        CustomBeanUtils.copyNotNullProperties(boardColumnDTO, boardColumn);
         boardColumn = boardColumnService.update(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
@@ -178,16 +178,15 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets")
-    public ResponseEntity<BoardColumnDTO> createTicketForBoardColumn(@PathVariable long columnId,
+    public ResponseEntity<TicketDTO> createTicketForBoardColumn(@PathVariable long columnId,
                                                                    @RequestBody TicketDTO ticketDTO,
                                                                    @PathVariable String boardId) {
         Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
         ticket = ticketService.create(ticket);
         ticketService.addTicketToBoardColumn(columnId, ticket.getId());
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
-        BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
+        ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-        return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
+        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
@@ -234,7 +233,7 @@ public class BoardController {
                                                   @PathVariable String boardId,
                                                   @PathVariable String columnId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
-        BeanUtils.copyProperties(ticketDTO, ticket);
+        CustomBeanUtils.copyNotNullProperties(ticketDTO, ticket);
         ticket = ticketService.update(ticket);
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
@@ -321,7 +320,7 @@ public class BoardController {
              @PathVariable String columnId,
              @PathVariable String ticketId) {
         Comment comment = commentService.getCommentById(commentId);
-        BeanUtils.copyProperties(commentDTO, comment);
+        CustomBeanUtils.copyNotNullProperties(commentDTO, comment);
         comment = commentService.update(comment);
         commentDTO = modelMapper.map(comment, CommentDTO.class);
 
@@ -485,5 +484,28 @@ public class BoardController {
         } else {
             return ResponseEntity.ok(invitationService.decline(invitationId));
         }
+    }
+
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardId(@PathVariable Long boardId,
+                                                                 Authentication authentication) {
+        List<User> users = userService.getUsersByBoardId(boardId);
+        List<UserSimpleDTO> userDTOs = users.stream()
+                .map(user -> modelMapper.map(user, UserSimpleDTO.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
+    }
+
+    @GetMapping("/boards/{boardId}/roles/{roleId}")
+    public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardIdAndUserBoardRoleId(@PathVariable Long boardId,
+                                                                                   @PathVariable Long roleId,
+                                                                                   Authentication authentication) {
+        List<User> users = userService.getUsersByBoardIdAndUserBoardRoleId(boardId, roleId);
+        List<UserSimpleDTO> userDTOs = users.stream()
+                .map(user -> modelMapper.map(user, UserSimpleDTO.class))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 }

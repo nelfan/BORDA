@@ -71,7 +71,7 @@ public class UserController {
                                                     Authentication authentication) {
         User user = userService.getUserByUsername(authentication.getName());
         CustomBeanUtils.copyNotNullProperties(userUpdateDTO, user);
-        if(userUpdateDTO.getPassword() != null) {
+        if (userUpdateDTO.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
         }
         user = userService.update(user);

@@ -109,27 +109,6 @@ public class BordaApplication {
             userBoardRelationRepository.save(userBoardRelation);
             boards.add(board);
         }
-
-        List<Tag> tags = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setText("label"+i);
-            tag.setColor("color " + i);
-            tagRepository.save(tag);
-            tags.add(tag);
-        }
-
-        BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardColumn1");
-        boards.get(0).getBoardColumns().add(boardColumn);
-        boardColumn = boardColumnService.create(boardColumn);
-        Ticket ticket = new Ticket();
-        ticket.setTitle("Ticket1");
-        ticket.setDescription("Ticket for testing");
-        ticket = ticketService.create(ticket);
-        boardColumn.getTickets().add(ticket);
-        boardColumnService.update(boardColumn);
-        boardService.update(boards.get(0));
     }
 
     public static void main(String[] args) {

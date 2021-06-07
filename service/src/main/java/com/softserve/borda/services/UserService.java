@@ -1,6 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.User;
+import com.softserve.borda.entities.UserBoardRelation;
 
 import java.util.List;
 
@@ -16,4 +17,11 @@ public interface UserService {
     boolean deleteUserById(Long id);
 
     User getUserByUsername(String username);
+
+    List<User> getUsersByBoardId(Long boardId);
+
+    List<User> getUsersByBoardIdAndUserBoardRoleId(Long boardId,
+                                                   Long userBoardRoleId);
+
+    List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations);
 }

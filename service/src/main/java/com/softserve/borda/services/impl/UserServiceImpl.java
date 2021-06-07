@@ -2,9 +2,11 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
+import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserRepository;
+import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,6 +22,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
+
+    private final UserBoardRelationService userBoardRelationService;
 
     @Override
     public List<User> getAll() {
@@ -70,5 +74,24 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new CustomEntityNotFoundException(User.class));
+    }
+
+    @Override
+    public List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations) {
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
+    }
+
+    @Override
+    public List<User> getUsersByBoardId(Long boardId) {
+        List<UserBoardRelation> userBoardRelations =
+                userBoardRelationService.getUserBoardRelationsByBoardId(boardId);
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
+    }
+
+    @Override
+    public List<User> getUsersByBoardIdAndUserBoardRoleId(Long boardId, Long userBoardRoleId) {
+        List<UserBoardRelation> userBoardRelations =
+                userBoardRelationService.getUserBoardRelationsByBoardIdAndUserBoardRoleId(boardId, userBoardRoleId);
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
     }
 }

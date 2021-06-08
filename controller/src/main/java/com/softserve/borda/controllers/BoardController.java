@@ -201,7 +201,7 @@ public class BoardController {
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}/")
+    @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}")
     public ResponseEntity<BoardColumnDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
                                                                          @PathVariable Long newBoardColumnId,
                                                                          @PathVariable Long ticketId,

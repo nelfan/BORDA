@@ -1,5 +1,6 @@
 package com.softserve.borda.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -7,13 +8,13 @@ public class InvitationDTO {
 
     private Long id;
 
-    private Long senderId;
+    private UserSimpleDTO sender;
 
     private Long receiverId;
 
-    private Long boardId;
+    private BoardSimpleDTO board;
 
-    private Long userBoardRoleId;
+    private UserBoardRoleDTO userBoardRole;
 
     private Boolean isAccepted;
 }

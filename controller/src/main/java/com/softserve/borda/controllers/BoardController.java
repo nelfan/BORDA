@@ -457,17 +457,23 @@ public class BoardController {
         return ResponseEntity.ok(invitationDTOs);
     }
 
-    @PostMapping("/users/invitations/{receiverId}/boards/{boardId}/roles/{userBoardRoleId}")
+    @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
     public ResponseEntity<InvitationDTO> createInvitation(Authentication authentication,
-                                                          @PathVariable Long receiverId,
+                                                          @PathVariable String receiverUsername,
                                                           @PathVariable Long boardId,
                                                           @PathVariable Long userBoardRoleId) {
         var user = userService.getUserByUsername(authentication.getName());
         Invitation invitation = new Invitation();
+        User receiver = userService.getUserByUsername(receiverUsername);
         invitation.setSenderId(user.getId());
-        invitation.setReceiverId(receiverId);
+        invitation.setSender(user);
+        invitation.setReceiverId(receiver.getId());
+        invitation.setReceiver(receiver);
+        invitation.setBoard(boardService.getBoardById(boardId));
         invitation.setBoardId(boardId);
         invitation.setUserBoardRoleId(userBoardRoleId);
+        invitation.setUserBoardRole(userBoardRelationService.getUserBoardRoleById(userBoardRoleId));
+
         invitation = invitationService.create(invitation);
         InvitationDTO invitationDTO = modelMapper.map(invitation, InvitationDTO.class);
         return ResponseEntity.ok(invitationDTO);

@@ -1,6 +1,5 @@
 package com.softserve.borda.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.ToString;
 
@@ -27,7 +26,10 @@ public class UserBoardRelation {
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_board_role_id")
+    @JoinColumn(name = "user_board_role_id", insertable = false, updatable = false)
     private UserBoardRole userBoardRole;
+
+    @Column(name = "user_board_role_id")
+    private Long userBoardRoleId;
 
 }

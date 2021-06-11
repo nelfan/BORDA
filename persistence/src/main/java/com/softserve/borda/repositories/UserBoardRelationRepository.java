@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserBoardRelationRepository extends JpaRepository<UserBoardRelation, Long> {
@@ -16,4 +17,7 @@ public interface UserBoardRelationRepository extends JpaRepository<UserBoardRela
     List<UserBoardRelation> findAllByBoardIdAndUserBoardRoleId(Long boardId, Long userBoardRoleId);
 
     List<UserBoardRelation> findAllByBoardId(Long boardId);
+
+    Optional<UserBoardRelation> findByUserIdAndBoardId(Long userId, Long boardId);
+
 }

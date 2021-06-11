@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.services.CommentService;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(Comment.class);
         }
     }
 }

@@ -26,9 +26,6 @@ import static org.mockito.Mockito.*;
 class UserBoardRelationServiceTest {
 
     @Mock
-    UserBoardRoleRepository userBoardRoleRepository;
-
-    @Mock
     UserBoardRelationRepository userBoardRelationRepository;
 
     @InjectMocks
@@ -37,8 +34,7 @@ class UserBoardRelationServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        userBoardRelationService = new UserBoardRelationServiceImpl(userBoardRelationRepository,
-                userBoardRoleRepository);
+        userBoardRelationService = new UserBoardRelationServiceImpl(userBoardRelationRepository);
     }
 
     @Test

@@ -16,10 +16,6 @@ public interface UserBoardRelationService {
 
     boolean deleteUserBoardRelationById(Long id);
 
-    UserBoardRole getUserBoardRoleByName(String name);
-
-    UserBoardRole getUserBoardRoleById(Long id);
-
     List<UserBoardRelation> getUserBoardRelationsByUserId(Long userId);
 
     List<UserBoardRelation> getUserBoardRelationsByUserIdAndUserBoardRoleId(Long userId,
@@ -30,4 +26,6 @@ public interface UserBoardRelationService {
     List<UserBoardRelation> getUserBoardRelationsByBoardIdAndUserBoardRoleId(Long boardId,
                                                                              Long userBoardRoleId);
 
+    UserBoardRelation getUserBoardRelationByUserIdAndBoardId(Long userId,
+                                                             Long boardId);
 }

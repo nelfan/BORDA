@@ -27,7 +27,7 @@ public class BordaApplication {
 
     UserBoardRelationRepository userBoardRelationRepository;
 
-    UserBoardRoleRepository userBoardRoleRepository;
+    UserBoardRoleService userBoardRoleService;
 
     TagRepository tagRepository;
 
@@ -45,7 +45,7 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationRepository userBoardRelationRepository,
-                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository,
+                            UserBoardRoleService userBoardRoleService, TagRepository tagRepository,
                             UserService userService, UserController userController,
                             PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                             BoardService boardService, BoardColumnService boardColumnService,
@@ -53,7 +53,7 @@ public class BordaApplication {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
         this.userBoardRelationRepository = userBoardRelationRepository;
-        this.userBoardRoleRepository = userBoardRoleRepository;
+        this.userBoardRoleService = userBoardRoleService;
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.boardService = boardService;
@@ -82,9 +82,11 @@ public class BordaApplication {
         }
 
         UserBoardRole owner = new UserBoardRole(UserBoardRole.UserBoardRoles.OWNER.name());
-        userBoardRoleRepository.save(owner);
+        userBoardRoleService.create(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
-        userBoardRoleRepository.save(collaborator);
+        userBoardRoleService.create(collaborator);
+        UserBoardRole viewer = new UserBoardRole(UserBoardRole.UserBoardRoles.VIEWER.name());
+        userBoardRoleService.create(viewer);
         String[] colors = {"#99ec91", "#e9af43", "#43d0e9"};
         String[] tagText = {"Task", "Bug", "User Story"};
         for(int i = 0; i < 10; i++) {

@@ -14,7 +14,7 @@ public class UserBoardRole {
     public enum UserBoardRoles {
         OWNER,
         COLLABORATOR,
-        GUEST
+        VIEWER
     }
 
     @Id

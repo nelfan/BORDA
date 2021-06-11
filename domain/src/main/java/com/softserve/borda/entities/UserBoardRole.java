@@ -28,9 +28,6 @@ public class UserBoardRole {
     @OneToMany(mappedBy = "userBoardRole")
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
-    @Column(name = "user_board_relation_id")
-    private Long userBoardRelationId;
-
     public UserBoardRole() {
     }
 

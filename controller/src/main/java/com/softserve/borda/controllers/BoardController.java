@@ -34,6 +34,8 @@ public class BoardController {
 
     private final UserBoardRelationService userBoardRelationService;
 
+    private final UserBoardRoleService userBoardRoleService;
+
     private final TicketService ticketService;
 
     private final CommentService commentService;
@@ -85,7 +87,7 @@ public class BoardController {
         User user = userService.getUserByUsername(authentication.getName());
         userBoardRelation.setUser(user);
 
-        userBoardRelation.setUserBoardRole(userBoardRelationService
+        userBoardRelation.setUserBoardRole(userBoardRoleService
                 .getUserBoardRoleByName(UserBoardRole.UserBoardRoles.OWNER.name()));
 
         board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
@@ -471,7 +473,7 @@ public class BoardController {
         invitation.setBoard(boardService.getBoardById(boardId));
         invitation.setBoardId(boardId);
         invitation.setUserBoardRoleId(userBoardRoleId);
-        invitation.setUserBoardRole(userBoardRelationService.getUserBoardRoleById(userBoardRoleId));
+        invitation.setUserBoardRole(userBoardRoleService.getUserBoardRoleById(userBoardRoleId));
 
         invitation = invitationService.create(invitation);
         InvitationDTO invitationDTO = modelMapper.map(invitation, InvitationDTO.class);

@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,18 +80,19 @@ public class BoardController {
         Board board = new Board();
         board.setName(boardDTO.getName());
 
+        User user = userService.getUserByUsername(authentication.getName());
+
+        boardService.create(board);
+
         UserBoardRelation userBoardRelation = new UserBoardRelation();
+
+        userBoardRelation.setUser(user);
         userBoardRelation.setBoard(board);
 
-        User user = userService.getUserByUsername(authentication.getName());
-        userBoardRelation.setUser(user);
+        userBoardRelation.setUserBoardRoleId(UserBoardRole.UserBoardRoles.OWNER.getId());
 
-        userBoardRelation.setUserBoardRole(userBoardRoleService
-                .getUserBoardRoleByName(UserBoardRole.UserBoardRoles.OWNER.name()));
+        userBoardRelationService.create(userBoardRelation);
 
-        board.setUserBoardRelations(Collections.singletonList(userBoardRelation));
-
-        board = boardService.create(board);
         BoardFullDTO boardFullDTO = modelMapper.map(board, BoardFullDTO.class);
 
         return new ResponseEntity<>(boardFullDTO, HttpStatus.CREATED);
@@ -182,8 +182,8 @@ public class BoardController {
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets")
     public ResponseEntity<TicketDTO> createTicketForBoardColumn(@PathVariable long columnId,
-                                                                     @RequestBody TicketDTO ticketDTO,
-                                                                     @PathVariable String boardId) {
+                                                                @RequestBody TicketDTO ticketDTO,
+                                                                @PathVariable String boardId) {
         Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
         ticket = ticketService.create(ticket);
         ticketService.addTicketToBoardColumn(columnId, ticket.getId());
@@ -467,13 +467,9 @@ public class BoardController {
         Invitation invitation = new Invitation();
         User receiver = userService.getUserByUsername(receiverUsername);
         invitation.setSenderId(user.getId());
-        invitation.setSender(user);
         invitation.setReceiverId(receiver.getId());
-        invitation.setReceiver(receiver);
-        invitation.setBoard(boardService.getBoardById(boardId));
         invitation.setBoardId(boardId);
         invitation.setUserBoardRoleId(userBoardRoleId);
-        invitation.setUserBoardRole(userBoardRoleService.getUserBoardRoleById(userBoardRoleId));
 
         invitation = invitationService.create(invitation);
         InvitationDTO invitationDTO = modelMapper.map(invitation, InvitationDTO.class);
@@ -495,7 +491,7 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/boards/{boardId}")
+    @GetMapping("/boards/users/{boardId}")
     public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardId(@PathVariable Long boardId,
                                                                  Authentication authentication) {
         List<User> users = userService.getUsersByBoardId(boardId);
@@ -506,7 +502,7 @@ public class BoardController {
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}/roles/{roleId}")
+    @GetMapping("/boards/{boardId}/users/roles/{roleId}")
     public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardIdAndUserBoardRoleId(@PathVariable Long boardId,
                                                                                    @PathVariable Long roleId,
                                                                                    Authentication authentication) {

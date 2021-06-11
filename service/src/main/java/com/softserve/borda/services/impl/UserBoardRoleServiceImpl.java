@@ -5,12 +5,14 @@ import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.UserBoardRoleRepository;
 import com.softserve.borda.services.UserBoardRoleService;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Log
 public class UserBoardRoleServiceImpl implements UserBoardRoleService {
 
     private final UserBoardRoleRepository userBoardRoleRepository;
@@ -43,5 +45,16 @@ public class UserBoardRoleServiceImpl implements UserBoardRoleService {
                 getUserBoardRoleById(userBoardRole.getId());
         existingUserBoardRole.setName(userBoardRole.getName());
         return userBoardRoleRepository.save(existingUserBoardRole);
+    }
+
+    @Override
+    public boolean deleteUserBoardRoleById(Long id) {
+        try {
+            userBoardRoleRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            return false;
+        }
     }
 }

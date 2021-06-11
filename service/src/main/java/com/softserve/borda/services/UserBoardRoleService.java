@@ -15,4 +15,6 @@ public interface UserBoardRoleService {
     UserBoardRole create(UserBoardRole userBoardRole);
 
     UserBoardRole update(UserBoardRole userBoardRole);
+
+    boolean deleteUserBoardRoleById(Long id);
 }

@@ -1,5 +1,6 @@
 package com.softserve.borda.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,9 +13,19 @@ import java.util.List;
 public class UserBoardRole {
 
     public enum UserBoardRoles {
-        OWNER,
-        COLLABORATOR,
-        VIEWER
+        OWNER(1L),
+        COLLABORATOR(2L),
+        VIEWER(3L);
+
+        private final Long id;
+
+        UserBoardRoles(Long id) {
+            this.id = id;
+        }
+
+        public Long getId() {
+            return id;
+        }
     }
 
     @Id
@@ -26,6 +37,7 @@ public class UserBoardRole {
     private String name;
 
     @OneToMany(mappedBy = "userBoardRole")
+    @JsonBackReference
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     public UserBoardRole() {
@@ -34,7 +46,6 @@ public class UserBoardRole {
     public UserBoardRole(@NotBlank String name) {
         this.name = name;
     }
-
 
 
 }

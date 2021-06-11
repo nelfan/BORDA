@@ -4,7 +4,10 @@ import com.softserve.borda.controllers.BoardController;
 import com.softserve.borda.controllers.UserController;
 import com.softserve.borda.dto.UpdateTagDTO;
 import com.softserve.borda.entities.*;
-import com.softserve.borda.repositories.*;
+import com.softserve.borda.repositories.BoardRepository;
+import com.softserve.borda.repositories.RoleRepository;
+import com.softserve.borda.repositories.TagRepository;
+import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +28,7 @@ public class BordaApplication {
 
     RoleRepository roleRepository;
 
-    UserBoardRelationRepository userBoardRelationRepository;
+    UserBoardRelationService userBoardRelationService;
 
     UserBoardRoleService userBoardRoleService;
 
@@ -44,7 +47,7 @@ public class BordaApplication {
     InvitationService invitationService;
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
-                            UserBoardRelationRepository userBoardRelationRepository,
+                            UserBoardRelationService userBoardRelationService,
                             UserBoardRoleService userBoardRoleService, TagRepository tagRepository,
                             UserService userService, UserController userController,
                             PasswordEncoder passwordEncoder, RoleRepository roleRepository,
@@ -52,7 +55,7 @@ public class BordaApplication {
                             TicketService ticketService, BoardController boardController, InvitationService invitationService, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
-        this.userBoardRelationRepository = userBoardRelationRepository;
+        this.userBoardRelationService = userBoardRelationService;
         this.userBoardRoleService = userBoardRoleService;
         this.userService = userService;
         this.roleRepository = roleRepository;
@@ -95,12 +98,12 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(owner);
+            userBoardRelation.setUserBoardRoleId(owner.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(0));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(int j = 0; j < 3; j++) {
                 Tag tag = new Tag();
@@ -122,12 +125,12 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(collaborator);
+            userBoardRelation.setUserBoardRoleId(collaborator.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(0));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(long j = 1; j <= 3; j++) {
                 Tag tag = tagRepository.findById(j).get();
@@ -144,12 +147,12 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(1));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(owner);
+            userBoardRelation.setUserBoardRoleId(owner.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(1).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(1));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(long j = 1; j <= 3; j++) {
                 Tag tag = tagRepository.findById(j).get();

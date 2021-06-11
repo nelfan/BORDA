@@ -2,6 +2,7 @@ package com.softserve.borda.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -38,6 +39,7 @@ public class UserBoardRole {
 
     @OneToMany(mappedBy = "userBoardRole")
     @JsonBackReference
+    @ToString.Exclude
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
     public UserBoardRole() {
@@ -46,6 +48,4 @@ public class UserBoardRole {
     public UserBoardRole(@NotBlank String name) {
         this.name = name;
     }
-
-
 }

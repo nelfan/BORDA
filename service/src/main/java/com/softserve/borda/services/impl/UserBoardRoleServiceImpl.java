@@ -57,4 +57,9 @@ public class UserBoardRoleServiceImpl implements UserBoardRoleService {
             return false;
         }
     }
+
+    @Override
+    public UserBoardRole findByUserBoardRelationId(Long userBoardRelationId) {
+        return userBoardRoleRepository.findByUserBoardRelationsId(userBoardRelationId);
+    }
 }

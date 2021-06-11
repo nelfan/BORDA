@@ -17,4 +17,6 @@ public interface UserBoardRoleService {
     UserBoardRole update(UserBoardRole userBoardRole);
 
     boolean deleteUserBoardRoleById(Long id);
+
+    UserBoardRole findByUserBoardRelationId(Long userBoardRelationId);
 }

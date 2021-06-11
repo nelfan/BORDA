@@ -459,14 +459,15 @@ public class BoardController {
     }
 
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
-    public ResponseEntity<InvitationDTO> createInvitation(Authentication authentication,
+    public ResponseEntity<Object> createInvitation(Authentication authentication,
                                                           @PathVariable String receiverUsername,
                                                           @PathVariable Long boardId,
                                                           @PathVariable Long userBoardRoleId) {
         var user = userService.getUserByUsername(authentication.getName());
         User receiver = userService.getUserByUsername(receiverUsername);
         if(user.getId().equals(receiver.getId())) {
-            return  ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest()
+                    .body("Sender Id and Receiver Id should not be the same");
         }
         Invitation invitation = new Invitation();
         invitation.setSenderId(user.getId());

@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.UserBoardRole;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.UserBoardRoleRepository;
 import com.softserve.borda.services.UserBoardRoleService;
 import lombok.AllArgsConstructor;
@@ -54,12 +55,13 @@ public class UserBoardRoleServiceImpl implements UserBoardRoleService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(UserBoardRole.class);
         }
     }
 
     @Override
     public UserBoardRole findByUserBoardRelationId(Long userBoardRelationId) {
-        return userBoardRoleRepository.findByUserBoardRelationsId(userBoardRelationId);
+        return userBoardRoleRepository.findByUserBoardRelationsId(userBoardRelationId)
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 }

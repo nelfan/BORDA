@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.services.TagService;
 import lombok.AllArgsConstructor;
@@ -49,7 +50,7 @@ public class TagServiceImpl implements TagService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(Tag.class);
         }
     }
 

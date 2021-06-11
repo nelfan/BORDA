@@ -22,7 +22,7 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    Converter<Tag, TagDTO> tagToTagDTO = new AbstractConverter<>() {
+    private Converter<Tag, TagDTO> tagToTagDTO = new AbstractConverter<>() {
         protected TagDTO convert(Tag tag) {
             TagDTO tagDTO = new TagDTO();
             tagDTO.setId(tag.getId());
@@ -33,7 +33,7 @@ public class ModelMapperConfig {
         }
     };
 
-    Converter<Invitation, InvitationDTO> inviteToInviteDTO = new AbstractConverter<>() {
+    private Converter<Invitation, InvitationDTO> inviteToInviteDTO = new AbstractConverter<>() {
         protected InvitationDTO convert(Invitation invitation) {
             InvitationDTO invitationDTO = new InvitationDTO();
 
@@ -47,7 +47,7 @@ public class ModelMapperConfig {
         }
     };
 
-    Converter<UserBoardRelation, UserBoardRelationDTO> userBoardRelationToUserBoardRelationDTO = new AbstractConverter<>() {
+    private Converter<UserBoardRelation, UserBoardRelationDTO> userBoardRelationToUserBoardRelationDTO = new AbstractConverter<>() {
         protected UserBoardRelationDTO convert(UserBoardRelation userBoardRelation) {
             UserBoardRelationDTO userBoardRelationDTO = new UserBoardRelationDTO();
 

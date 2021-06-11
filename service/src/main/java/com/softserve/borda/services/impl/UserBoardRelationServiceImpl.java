@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
@@ -48,7 +49,7 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(UserBoardRelation.class);
         }
     }
 

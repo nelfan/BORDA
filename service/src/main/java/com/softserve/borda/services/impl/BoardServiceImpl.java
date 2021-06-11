@@ -3,9 +3,9 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.services.BoardService;
-import com.softserve.borda.services.TagService;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -53,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(Board.class);
         }
     }
 

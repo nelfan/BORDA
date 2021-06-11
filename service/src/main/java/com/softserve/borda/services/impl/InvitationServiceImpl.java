@@ -3,6 +3,7 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Invitation;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.InvitationRepository;
 import com.softserve.borda.services.InvitationService;
 import com.softserve.borda.services.UserBoardRelationService;
@@ -33,6 +34,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public boolean accept(Long invitationId) {
+        boolean result = false;
         try {
             Invitation invitation = getInvitationById(invitationId);
             UserBoardRelation userBoardRelation =
@@ -43,24 +45,25 @@ public class InvitationServiceImpl implements InvitationService {
             userBoardRelationService.create(userBoardRelation);
             invitation.setIsAccepted(true);
             invitationRepository.save(invitation);
-            return true;
+            result = true;
         } catch (Exception e) {
             log.warning(e.getMessage());
-            return false;
         }
+        return result;
     }
 
     @Override
     public boolean decline(Long invitationId) {
+        boolean result = false;
         try {
             Invitation invitation = getInvitationById(invitationId);
             invitation.setIsAccepted(false);
             invitationRepository.save(invitation);
-            return true;
+            result = true;
         } catch (Exception e) {
             log.warning(e.getMessage());
-            return false;
         }
+        return result;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class InvitationServiceImpl implements InvitationService {
             return true;
         } catch (Exception e) {
             log.warning(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(Invitation.class);
         }
     }
 

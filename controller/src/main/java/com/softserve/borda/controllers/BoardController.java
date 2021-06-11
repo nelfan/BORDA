@@ -491,7 +491,7 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/boards/users/{boardId}")
+    @GetMapping("/boards/{boardId}/users")
     public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardId(@PathVariable Long boardId,
                                                                  Authentication authentication) {
         List<User> users = userService.getUsersByBoardId(boardId);

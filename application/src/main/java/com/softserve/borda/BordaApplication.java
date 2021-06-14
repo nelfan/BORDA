@@ -2,9 +2,14 @@ package com.softserve.borda;
 
 import com.softserve.borda.controllers.BoardController;
 import com.softserve.borda.controllers.UserController;
+import com.softserve.borda.dto.UpdateTagDTO;
 import com.softserve.borda.entities.*;
-import com.softserve.borda.repositories.*;
+import com.softserve.borda.repositories.BoardRepository;
+import com.softserve.borda.repositories.RoleRepository;
+import com.softserve.borda.repositories.TagRepository;
+import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +28,13 @@ public class BordaApplication {
 
     RoleRepository roleRepository;
 
-    UserBoardRelationRepository userBoardRelationRepository;
+    UserBoardRelationService userBoardRelationService;
 
-    UserBoardRoleRepository userBoardRoleRepository;
+    UserBoardRoleService userBoardRoleService;
 
     TagRepository tagRepository;
+
+    ModelMapper modelMapper;
 
     UserService userService;
 
@@ -40,22 +47,23 @@ public class BordaApplication {
     InvitationService invitationService;
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
-                            UserBoardRelationRepository userBoardRelationRepository,
-                            UserBoardRoleRepository userBoardRoleRepository, TagRepository tagRepository,
+                            UserBoardRelationService userBoardRelationService,
+                            UserBoardRoleService userBoardRoleService, TagRepository tagRepository,
                             UserService userService, UserController userController,
                             PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                             BoardService boardService, BoardColumnService boardColumnService,
-                            TicketService ticketService, BoardController boardController, InvitationService invitationService) {
+                            TicketService ticketService, BoardController boardController, InvitationService invitationService, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
-        this.userBoardRelationRepository = userBoardRelationRepository;
-        this.userBoardRoleRepository = userBoardRoleRepository;
+        this.userBoardRelationService = userBoardRelationService;
+        this.userBoardRoleService = userBoardRoleService;
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.boardService = boardService;
         this.boardColumnService = boardColumnService;
         this.ticketService = ticketService;
         this.invitationService = invitationService;
+        this.modelMapper = modelMapper;
 
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
@@ -77,9 +85,11 @@ public class BordaApplication {
         }
 
         UserBoardRole owner = new UserBoardRole(UserBoardRole.UserBoardRoles.OWNER.name());
-        userBoardRoleRepository.save(owner);
+        userBoardRoleService.create(owner);
         UserBoardRole collaborator = new UserBoardRole(UserBoardRole.UserBoardRoles.COLLABORATOR.name());
-        userBoardRoleRepository.save(collaborator);
+        userBoardRoleService.create(collaborator);
+        UserBoardRole viewer = new UserBoardRole(UserBoardRole.UserBoardRoles.VIEWER.name());
+        userBoardRoleService.create(viewer);
         String[] colors = {"#99ec91", "#e9af43", "#43d0e9"};
         String[] tagText = {"Task", "Bug", "User Story"};
         for(int i = 0; i < 10; i++) {
@@ -88,12 +98,12 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(owner);
+            userBoardRelation.setUserBoardRoleId(owner.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(0));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(int j = 0; j < 3; j++) {
                 Tag tag = new Tag();
@@ -101,6 +111,11 @@ public class BordaApplication {
                 tag.setText(tagText[j]);
                 tag.setColor(colors[j]);
                 tagRepository.save(tag);
+            }
+            for(long j = 1; j <= 3; j++) {
+                Tag tag = tagRepository.findById(j).get();
+                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
+                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
             }
         }
 
@@ -110,15 +125,21 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(collaborator);
+            userBoardRelation.setUserBoardRoleId(collaborator.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(0));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
+            for(long j = 1; j <= 3; j++) {
+                Tag tag = tagRepository.findById(j).get();
+                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
+                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
+            }
         }
 
+        List<Tag> tags = new ArrayList<>();
 
         for(int i = 50; i < 56; i++) {
             Board board = new Board();
@@ -126,13 +147,18 @@ public class BordaApplication {
             UserBoardRelation userBoardRelation = new UserBoardRelation();
             userBoardRelation.setUser(users.get(1));
             userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRole(owner);
+            userBoardRelation.setUserBoardRoleId(owner.getId());
             board.getUserBoardRelations().add(userBoardRelation);
             users.get(1).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
             userRepository.save(users.get(1));
-            userBoardRelationRepository.save(userBoardRelation);
+            userBoardRelationService.create(userBoardRelation);
             boards.add(board);
+            for(long j = 1; j <= 3; j++) {
+                Tag tag = tagRepository.findById(j).get();
+                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
+                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
+            }
         }
 
         for(int i = 0; i<3; i++){
@@ -172,28 +198,6 @@ public class BordaApplication {
         invitation2.setUserBoardRoleId(collaborator.getId());
         invitation2.setBoardId(boards.get(55).getId());
         invitationService.create(invitation2);
-
-
-        List<Tag> tags = new ArrayList<>();
-        for(int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setText("label"+i);
-            tag.setColor("color " + i);
-            tagRepository.save(tag);
-            tags.add(tag);
-        }
-
-        BoardColumn boardColumn = new BoardColumn();
-        boardColumn.setName("BoardColumn1");
-        boards.get(0).getBoardColumns().add(boardColumn);
-        boardColumn = boardColumnService.create(boardColumn);
-        Ticket ticket = new Ticket();
-        ticket.setTitle("Ticket1");
-        ticket.setDescription("Ticket for testing");
-        ticket = ticketService.create(ticket);
-        boardColumn.getTickets().add(ticket);
-        boardColumnService.update(boardColumn);
-        boardService.update(boards.get(0));
     }
 
     public static void main(String[] args) {

@@ -4,6 +4,7 @@ import com.softserve.borda.entities.Role;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.RoleRepository;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.UserBoardRelationService;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(User.class);
         }
     }
 

@@ -1,10 +1,9 @@
 package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.UserBoardRelation;
-import com.softserve.borda.entities.UserBoardRole;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.UserBoardRelationRepository;
-import com.softserve.borda.repositories.UserBoardRoleRepository;
 import com.softserve.borda.services.UserBoardRelationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -18,8 +17,6 @@ import java.util.List;
 public class UserBoardRelationServiceImpl implements UserBoardRelationService {
 
     private final UserBoardRelationRepository userBoardRelationRepository;
-
-    private final UserBoardRoleRepository userBoardRoleRepository;
 
     @Override
     public List<UserBoardRelation> getAll() {
@@ -52,20 +49,8 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(UserBoardRelation.class);
         }
-    }
-
-    @Override
-    public UserBoardRole getUserBoardRoleByName(String name) {
-        return userBoardRoleRepository.findByName(name)
-                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
-    }
-
-    @Override
-    public UserBoardRole getUserBoardRoleById(Long id) {
-        return userBoardRoleRepository.findById(id)
-                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRole.class));
     }
 
     @Override
@@ -88,5 +73,12 @@ public class UserBoardRelationServiceImpl implements UserBoardRelationService {
     public List<UserBoardRelation> getUserBoardRelationsByBoardIdAndUserBoardRoleId(Long boardId,
                                                                                     Long userBoardRoleId) {
         return userBoardRelationRepository.findAllByBoardIdAndUserBoardRoleId(boardId, userBoardRoleId);
+    }
+
+    @Override
+    public UserBoardRelation getUserBoardRelationByUserIdAndBoardId(Long userId,
+                                                                    Long boardId) {
+        return userBoardRelationRepository.findByUserIdAndBoardId(userId, boardId)
+                .orElseThrow(() -> new CustomEntityNotFoundException(UserBoardRelation.class));
     }
 }

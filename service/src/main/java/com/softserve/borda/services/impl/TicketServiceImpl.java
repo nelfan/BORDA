@@ -2,6 +2,7 @@ package com.softserve.borda.services.impl;
 
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.*;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ public class TicketServiceImpl implements TicketService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(Ticket.class);
         }
     }
 

@@ -6,7 +6,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,19 +23,19 @@ public class Board {
 
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<BoardColumn> boardColumns = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board",
             cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Tag> tags = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "board",
             cascade = CascadeType.ALL)
-    @NotEmpty
     @JsonManagedReference
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
-
 
 }

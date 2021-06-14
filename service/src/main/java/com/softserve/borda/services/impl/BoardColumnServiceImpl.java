@@ -3,6 +3,7 @@ package com.softserve.borda.services.impl;
 import com.softserve.borda.entities.Board;
 import com.softserve.borda.entities.BoardColumn;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.BoardColumnRepository;
 import com.softserve.borda.services.BoardColumnService;
 import com.softserve.borda.services.BoardService;
@@ -45,7 +46,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
             return true;
         } catch (Exception e) {
             log.severe(e.getMessage());
-            return false;
+            throw new CustomFailedToDeleteEntityException(BoardColumn.class);
         }
     }
 

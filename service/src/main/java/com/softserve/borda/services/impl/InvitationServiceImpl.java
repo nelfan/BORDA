@@ -41,7 +41,7 @@ public class InvitationServiceImpl implements InvitationService {
                     new UserBoardRelation();
             userBoardRelation.setBoard(invitation.getBoard());
             userBoardRelation.setUser(invitation.getReceiver());
-            userBoardRelation.setUserBoardRole(invitation.getUserBoardRole());
+            userBoardRelation.setUserBoardRoleId(invitation.getUserBoardRoleId());
             userBoardRelationService.create(userBoardRelation);
             invitation.setIsAccepted(true);
             invitationRepository.save(invitation);

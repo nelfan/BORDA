@@ -2,11 +2,9 @@ package com.softserve.borda;
 
 import com.softserve.borda.controllers.BoardController;
 import com.softserve.borda.controllers.UserController;
-import com.softserve.borda.dto.UpdateTagDTO;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.repositories.BoardRepository;
 import com.softserve.borda.repositories.RoleRepository;
-import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.UserRepository;
 import com.softserve.borda.services.*;
 import org.modelmapper.ModelMapper;
@@ -32,7 +30,7 @@ public class BordaApplication {
 
     UserBoardRoleService userBoardRoleService;
 
-    TagRepository tagRepository;
+    TagService tagService;
 
     ModelMapper modelMapper;
 
@@ -48,7 +46,7 @@ public class BordaApplication {
 
     public BordaApplication(UserRepository userRepository, BoardRepository boardRepository,
                             UserBoardRelationService userBoardRelationService,
-                            UserBoardRoleService userBoardRoleService, TagRepository tagRepository,
+                            UserBoardRoleService userBoardRoleService, TagService tagService,
                             UserService userService, UserController userController,
                             PasswordEncoder passwordEncoder, RoleRepository roleRepository,
                             BoardService boardService, BoardColumnService boardColumnService,
@@ -64,6 +62,7 @@ public class BordaApplication {
         this.ticketService = ticketService;
         this.invitationService = invitationService;
         this.modelMapper = modelMapper;
+        this.tagService = tagService;
 
         Role userRole = new Role(Role.Roles.ROLE_USER.name());
         roleRepository.save(userRole);
@@ -110,12 +109,12 @@ public class BordaApplication {
                 tag.setBoardId(board.getId());
                 tag.setText(tagText[j]);
                 tag.setColor(colors[j]);
-                tagRepository.save(tag);
+                tagService.create(tag);
             }
             for(long j = 1; j <= 3; j++) {
-                Tag tag = tagRepository.findById(j).get();
-                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
-                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
+                Tag tag = tagService.getTagById(j);
+                tag.setBoardId(i + 1L);
+                tagService.create(tag);
             }
         }
 
@@ -133,9 +132,9 @@ public class BordaApplication {
             userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(long j = 1; j <= 3; j++) {
-                Tag tag = tagRepository.findById(j).get();
-                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
-                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
+                Tag tag = tagService.getTagById(j);
+                tag.setBoardId(i + 1L);
+                tagService.create(tag);
             }
         }
 
@@ -155,9 +154,9 @@ public class BordaApplication {
             userBoardRelationService.create(userBoardRelation);
             boards.add(board);
             for(long j = 1; j <= 3; j++) {
-                Tag tag = tagRepository.findById(j).get();
-                UpdateTagDTO updateTagDTO = modelMapper.map(tag, UpdateTagDTO.class);
-                boardController.addNewTagToBoard(updateTagDTO, i + 1L);
+                Tag tag = tagService.getTagById(j);
+                tag.setBoardId(i + 1L);
+                tagService.create(tag);
             }
         }
 

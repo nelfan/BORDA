@@ -485,21 +485,19 @@ public class BoardController {
 
     @PreAuthorize("@securityService.hasBoardInviteRights(authentication, #boardId, #userBoardRoleId)")
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
-
-    public ResponseEntity<Object> createInvitation(Authentication authentication,
+ public ResponseEntity<Object> createInvitation(Authentication authentication,
                                                    @PathVariable String receiverUsername,
                                                    @PathVariable Long boardId,
                                                    @PathVariable Long userBoardRoleId) {
-        var user = userService.getUserByUsername(authentication.getName());
+        User sender = userService.getUserByUsername(authentication.getName());
         User receiver = userService.getUserByUsername(receiverUsername);
-        if (user.getId().equals(receiver.getId())) {
+        if (sender.getId().equals(receiver.getId())) {
             return ResponseEntity.badRequest()
                     .body("Sender Id and Receiver Id should not be the same");
         }
         Invitation invitation = new Invitation();
-        User receiver = userService.getUserByUsername(receiverUsername);
-        invitation.setSenderId(user.getId());
-        invitation.setSender(user);
+        invitation.setSenderId(sender.getId());
+        invitation.setSender(sender);
         invitation.setReceiverId(receiver.getId());
         invitation.setReceiver(receiver);
         invitation.setBoardId(boardId);

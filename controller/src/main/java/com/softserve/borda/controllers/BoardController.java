@@ -132,8 +132,8 @@ public class BoardController {
                                                                      @RequestBody BoardColumnDTO boardColumnDTO) {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName(boardColumnDTO.getName());
+        boardColumn.setBoardId(boardId);
         boardColumn = boardColumnService.create(boardColumn);
-        boardColumn = boardColumnService.addBoardColumnToBoard(boardId, boardColumn.getId());
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
@@ -142,7 +142,7 @@ public class BoardController {
     @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}")
     public ResponseEntity<String> deleteBoardColumnFromBoard(@PathVariable Long boardId,
                                                              @PathVariable Long columnId) {
-        boardColumnService.deleteBoardColumnFromBoard(boardId, columnId);
+        boardColumnService.deleteBoardColumnById(columnId);
 
         return new ResponseEntity<>("Entity was removed successfully",
                 HttpStatus.OK);
@@ -454,21 +454,19 @@ public class BoardController {
     }
 
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
-
     public ResponseEntity<Object> createInvitation(Authentication authentication,
                                                           @PathVariable String receiverUsername,
                                                           @PathVariable Long boardId,
                                                           @PathVariable Long userBoardRoleId) {
-        var user = userService.getUserByUsername(authentication.getName());
+        User sender = userService.getUserByUsername(authentication.getName());
         User receiver = userService.getUserByUsername(receiverUsername);
-        if(user.getId().equals(receiver.getId())) {
+        if(sender.getId().equals(receiver.getId())) {
             return  ResponseEntity.badRequest()
                     .body("Sender Id and Receiver Id should not be the same");
         }
         Invitation invitation = new Invitation();
-        User receiver = userService.getUserByUsername(receiverUsername);
-        invitation.setSenderId(user.getId());
-        invitation.setSender(user);
+        invitation.setSenderId(sender.getId());
+        invitation.setSender(sender);
         invitation.setReceiverId(receiver.getId());
         invitation.setReceiver(receiver);
         invitation.setBoardId(boardId);

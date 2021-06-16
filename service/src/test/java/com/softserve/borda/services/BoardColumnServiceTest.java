@@ -34,7 +34,7 @@ class BoardColumnServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        boardColumnService = new BoardColumnServiceImpl(boardColumnRepository, boardService);
+        boardColumnService = new BoardColumnServiceImpl(boardColumnRepository);
     }
 
     @Test

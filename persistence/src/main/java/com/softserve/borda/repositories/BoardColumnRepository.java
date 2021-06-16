@@ -6,16 +6,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
-    List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId);
+    List<BoardColumn> findAllByBoardId(Long boardId);
 
-    @Transactional
     @Modifying
     @Query("update board_columns board_column set board_column.boardId = :boardId where board_column.id = :boardColumnId")
-    Integer setBoardIdForBoardColumn(@Param("boardColumnId") Long boardColumnId, @Param("boardId") Long boardId);
+    Integer updateBoardIdForBoardColumn(@Param("boardColumnId") Long boardColumnId, @Param("boardId") Long boardId);
 }

@@ -5,6 +5,7 @@ import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardColumnRepository;
+import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.InvitationService;
 import com.softserve.borda.services.UserBoardRelationService;
@@ -26,6 +27,8 @@ public class SecurityService {
     private final BoardColumnRepository boardColumnRepository;
 
     private final TicketRepository ticketRepository;
+
+    private final TagRepository tagRepository;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -81,35 +84,38 @@ public class SecurityService {
         return hasBoardWorkAccess(authentication, boardId);
     }
 
+    public boolean isUserAReceiver(Authentication authentication, Long invitationId) {
+        Invitation invitation = invitationService.getInvitationById(invitationId);
+        return invitation.getReceiver().getUsername().equals(authentication.getName());
+    }
+
     public boolean isColumnBelongsToBoard(Long boardId, Long columnId) {
         return boardColumnRepository.existsBoardColumnByIdAndBoardId(columnId, boardId);
     }
 
     public boolean isTicketBelongsToBoard(Long boardId, Long columnId, Long ticketId) {
-        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
+        boolean ticketBelongsToColumn = isTicketBelongsToColumn(columnId, ticketId);
         return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+    }
+
+    private boolean isTicketBelongsToColumn(Long columnId, Long ticketId) {
+        return ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
     }
 
     public boolean isCommentBelongsToBoard(Long boardId, Long columnId, Long ticketId, Long commentId) {
-        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
-        // TODO: check whether comment belongs to ticket
-        return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+        boolean ticketBelongsToBoard = isTicketBelongsToBoard(boardId, columnId, ticketId);
+        boolean ticketBelongsToTicket = true; // TODO
+        return ticketBelongsToBoard && ticketBelongsToTicket;
     }
 
-
     public boolean isTagBelongsToTicket(Long boardId, Long columnId, Long ticketId, Long tagId) {
-        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
-        // TODO: check whether tag belongs to ticket
-        return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+        boolean ticketBelongsToBoard = isTicketBelongsToBoard(boardId, columnId, ticketId);
+        boolean tagBelongsToBoard = isTagBelongsToBoard(boardId, tagId);
+        boolean tagBelongsToTicket = true; // TODO
+        return ticketBelongsToBoard && tagBelongsToBoard && tagBelongsToTicket;
     }
 
     public boolean isTagBelongsToBoard(Long boardId, Long tagId) {
-        // TODO: check whether tag belongs to ticket
-        return true;
-    }
-
-    public boolean isUserAReceiver(Authentication authentication, Long invitationId) {
-        Invitation invitation = invitationService.getInvitationById(invitationId);
-        return invitation.getReceiver().getUsername().equals(authentication.getName());
+        return tagRepository.existsTagByIdAndBoardId(tagId, boardId);
     }
 }

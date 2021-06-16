@@ -38,4 +38,12 @@ public class Ticket {
     @JoinColumn(name = "tag_id")
     private List<Tag> tags = new ArrayList<>();
 
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "board_column_id", insertable = false, updatable = false)
+    private BoardColumn boardColumn;
+
+    @Column(name = "board_column_id")
+    private Long boardColumnId;
+
 }

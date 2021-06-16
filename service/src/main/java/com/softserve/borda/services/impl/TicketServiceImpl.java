@@ -17,7 +17,6 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final BoardColumnService boardColumnService;
     private final CommentService commentService;
     private final TagService tagService;
     private final UserService userService;
@@ -116,30 +115,13 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId) {
-        return boardColumnService.getBoardColumnById(boardColumnId).getTickets();
+        return ticketRepository.getAllTicketsByBoardColumnId(boardColumnId);
     }
 
     @Override
-    public Ticket addTicketToBoardColumn(Long boardColumnId, Long ticketId) {
-        BoardColumn boardColumn = boardColumnService.getBoardColumnById(boardColumnId);
+    public Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId) {
         Ticket ticket = getTicketById(ticketId);
-        boardColumn.getTickets().add(ticket);
-        boardColumnService.update(boardColumn);
-        return ticket;
-    }
-
-    @Override
-    public boolean deleteTicketFromBoardColumn(Long boardColumnId, Long ticketId) {
-        try {
-            BoardColumn boardColumn = boardColumnService.getBoardColumnById(boardColumnId);
-            Ticket ticket = getTicketById(ticketId);
-            boardColumn.getTickets().remove(ticket);
-            deleteTicketById(ticket.getId());
-            boardColumnService.update(boardColumn);
-            return true;
-        } catch (Exception e) {
-            log.severe(e.getMessage());
-            return false;
-        }
+        ticket.setBoardColumnId(boardColumnId);
+        return update(ticket);
     }
 }

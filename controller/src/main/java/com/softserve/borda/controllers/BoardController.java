@@ -196,8 +196,8 @@ public class BoardController {
                                                                 @RequestBody TicketDTO ticketDTO,
                                                                 @PathVariable String boardId) {
         Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
+        ticket.setBoardColumnId(columnId);
         ticket = ticketService.create(ticket);
-        ticketService.addTicketToBoardColumn(columnId, ticket.getId());
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -208,7 +208,7 @@ public class BoardController {
     public ResponseEntity<BoardColumnDTO> deleteTicketFromBoardColumn(@PathVariable Long columnId,
                                                                       @PathVariable Long ticketId,
                                                                       @PathVariable String boardId) {
-        ticketService.deleteTicketFromBoardColumn(columnId, ticketId);
+        ticketService.deleteTicketById(ticketId);
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
@@ -217,20 +217,15 @@ public class BoardController {
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
     @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}")
-    public ResponseEntity<BoardColumnDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
+    public ResponseEntity<TicketDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
                                                                          @PathVariable Long newBoardColumnId,
                                                                          @PathVariable Long ticketId,
                                                                          @PathVariable String boardId) {
-        BoardColumn oldBoardColumn = boardColumnService.getBoardColumnById(oldBoardColumnId);
-        BoardColumn newBoardColumn = boardColumnService.getBoardColumnById(newBoardColumnId);
-        Ticket ticket = ticketService.getTicketById(ticketId);
-        oldBoardColumn.getTickets().remove(ticket);
-        newBoardColumn.getTickets().add(ticket);
-        boardColumnService.update(oldBoardColumn);
-        newBoardColumn = boardColumnService.update(newBoardColumn);
-        BoardColumnDTO boardColumnDTO = modelMapper.map(newBoardColumn, BoardColumnDTO.class);
 
-        return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
+        Ticket ticket = ticketService.moveTicketToBoardColumn(newBoardColumnId, ticketId);
+        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+
+        return new ResponseEntity<TicketDTO>(ticketDTO, HttpStatus.OK);
     }
 
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
@@ -490,6 +485,7 @@ public class BoardController {
 
     @PreAuthorize("@securityService.hasBoardInviteRights(authentication, #boardId, #userBoardRoleId)")
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
+
     public ResponseEntity<Object> createInvitation(Authentication authentication,
                                                    @PathVariable String receiverUsername,
                                                    @PathVariable Long boardId,
@@ -501,6 +497,7 @@ public class BoardController {
                     .body("Sender Id and Receiver Id should not be the same");
         }
         Invitation invitation = new Invitation();
+        User receiver = userService.getUserByUsername(receiverUsername);
         invitation.setSenderId(user.getId());
         invitation.setSender(user);
         invitation.setReceiverId(receiver.getId());
@@ -508,6 +505,7 @@ public class BoardController {
         invitation.setBoardId(boardId);
         invitation.setBoard(boardService.getBoardById(boardId));
         invitation.setUserBoardRoleId(userBoardRoleId);
+
         invitation.setUserBoardRole(userBoardRoleService.getUserBoardRoleById(userBoardRoleId));
 
         invitation = invitationService.create(invitation);

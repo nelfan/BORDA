@@ -1,8 +1,10 @@
 package com.softserve.borda.config;
 
+import com.softserve.borda.entities.Invitation;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.services.InvitationService;
 import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class SecurityService {
 
     private final UserService userService;
+
+    private final InvitationService invitationService;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -53,5 +57,25 @@ public class SecurityService {
 
     public boolean hasBoardWorkAccess(Authentication authentication, Long boardId) {
         return hasUserBoardRole(authentication, boardId, 2L, 1L);
+    }
+
+    public boolean hasBoardInviteRights(Authentication authentication, Long boardId, Long userBoardRoleId) {
+        if(userBoardRoleId.equals(1L)) {
+            return hasBoardManagementAccess(authentication, boardId);
+        }
+        return hasBoardWorkAccess(authentication, boardId);
+    }
+
+    public boolean isColumnBelongsToBoard(Long boardId, Long columnId) {
+        return true;
+    }
+
+    public boolean isTicketBelongsToBoard(Long boardId, Long ticketId) {
+        return true;
+    }
+
+    public boolean isUserAReceiver(Authentication authentication, Long invitationId) {
+        Invitation invitation = invitationService.getInvitationById(invitationId);
+        return invitation.getReceiver().getUsername().equals(authentication.getName());
     }
 }

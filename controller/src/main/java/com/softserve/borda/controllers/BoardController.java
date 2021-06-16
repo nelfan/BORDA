@@ -488,15 +488,16 @@ public class BoardController {
         return ResponseEntity.ok(invitationDTOs);
     }
 
+    @PreAuthorize("@securityService.hasBoardInviteRights(authentication, #boardId, #userBoardRoleId)")
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
     public ResponseEntity<Object> createInvitation(Authentication authentication,
-                                                          @PathVariable String receiverUsername,
-                                                          @PathVariable Long boardId,
-                                                          @PathVariable Long userBoardRoleId) {
+                                                   @PathVariable String receiverUsername,
+                                                   @PathVariable Long boardId,
+                                                   @PathVariable Long userBoardRoleId) {
         var user = userService.getUserByUsername(authentication.getName());
         User receiver = userService.getUserByUsername(receiverUsername);
-        if(user.getId().equals(receiver.getId())) {
-            return  ResponseEntity.badRequest()
+        if (user.getId().equals(receiver.getId())) {
+            return ResponseEntity.badRequest()
                     .body("Sender Id and Receiver Id should not be the same");
         }
         Invitation invitation = new Invitation();
@@ -514,7 +515,7 @@ public class BoardController {
         return ResponseEntity.ok(invitationDTO);
     }
 
-
+    @PreAuthorize("@securityService.isUserAReceiver(authentication, #invitationId)")
     @PostMapping("/users/invitations/{invitationId}")
     public ResponseEntity<Boolean> acceptOrDeclineInvitation(@PathVariable Long invitationId,
                                                              @RequestBody InvitationAcceptDTO acceptDTO) {
@@ -529,6 +530,7 @@ public class BoardController {
         }
     }
 
+    @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping("/boards/{boardId}/users")
     public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardId(@PathVariable Long boardId,
                                                                  Authentication authentication) {
@@ -540,6 +542,7 @@ public class BoardController {
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
+    @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping("/boards/{boardId}/users/roles/{roleId}")
     public ResponseEntity<List<UserSimpleDTO>> getUsersByBoardIdAndUserBoardRoleId(@PathVariable Long boardId,
                                                                                    @PathVariable Long roleId,

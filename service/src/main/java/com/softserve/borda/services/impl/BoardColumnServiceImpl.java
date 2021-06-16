@@ -8,6 +8,7 @@ import com.softserve.borda.services.BoardColumnService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,14 +50,13 @@ public class BoardColumnServiceImpl implements BoardColumnService {
 
     @Override
     public List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId) {
-        return boardColumnRepository.getAllBoardColumnsByBoardId(boardId);
+        return boardColumnRepository.findAllByBoardId(boardId);
     }
 
+    @Transactional
     @Override
-    public BoardColumn moveBoardColumnToBoard(Long boardId, Long boardColumnId) {
-        BoardColumn boardColumn = getBoardColumnById(boardColumnId);
-        boardColumn.setBoardId(boardId);
-        return update(boardColumn);
+    public boolean moveBoardColumnToBoard(Long boardId, Long boardColumnId) {
+        return boardColumnRepository.updateBoardIdForBoardColumn(boardColumnId, boardId) == 1;
     }
 
 }

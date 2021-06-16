@@ -16,5 +16,5 @@ public interface BoardColumnService {
 
     List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId);
 
-    BoardColumn moveBoardColumnToBoard(Long boardId, Long boardColumnId);
+    boolean moveBoardColumnToBoard(Long boardId, Long boardColumnId);
 }

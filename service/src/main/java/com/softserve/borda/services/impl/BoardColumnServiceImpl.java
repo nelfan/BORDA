@@ -53,10 +53,8 @@ public class BoardColumnServiceImpl implements BoardColumnService {
     }
 
     @Override
-    public BoardColumn moveBoardColumnToBoard(Long boardId, Long boardColumnId) {
-        BoardColumn boardColumn = getBoardColumnById(boardColumnId);
-        boardColumn.setBoardId(boardId);
-        return update(boardColumn);
+    public boolean moveBoardColumnToBoard(Long boardId, Long boardColumnId) {
+        return boardColumnRepository.setBoardIdForBoardColumn(boardColumnId, boardId) == 1;
     }
 
 }

@@ -4,6 +4,8 @@ import com.softserve.borda.entities.Invitation;
 import com.softserve.borda.entities.User;
 import com.softserve.borda.entities.UserBoardRelation;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
+import com.softserve.borda.repositories.BoardColumnRepository;
+import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.InvitationService;
 import com.softserve.borda.services.UserBoardRelationService;
 import com.softserve.borda.services.UserService;
@@ -20,6 +22,10 @@ public class SecurityService {
     private final UserService userService;
 
     private final InvitationService invitationService;
+
+    private final BoardColumnRepository boardColumnRepository;
+
+    private final TicketRepository ticketRepository;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -67,11 +73,12 @@ public class SecurityService {
     }
 
     public boolean isColumnBelongsToBoard(Long boardId, Long columnId) {
-        return true;
+        return boardColumnRepository.existsBoardColumnByIdAndBoardId(columnId, boardId);
     }
 
-    public boolean isTicketBelongsToBoard(Long boardId, Long ticketId) {
-        return true;
+    public boolean isTicketBelongsToBoard(Long boardId, Long columnId, Long ticketId) {
+        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
+        return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
     }
 
     public boolean isUserAReceiver(Authentication authentication, Long invitationId) {

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
+    boolean existsTicketByIdAndBoardColumnId(Long id, Long boardColumnId);
 }

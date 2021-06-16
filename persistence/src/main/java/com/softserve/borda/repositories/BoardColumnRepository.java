@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
     List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId);
+    boolean existsBoardColumnByIdAndBoardId(Long id, Long boardId);
 }

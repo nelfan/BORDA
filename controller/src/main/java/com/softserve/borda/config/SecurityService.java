@@ -31,6 +31,15 @@ public class SecurityService {
 
     public boolean hasUserBoardRelation(Authentication authentication, Long boardId) {
         User user = userService.getUserByUsername(authentication.getName());
+        return checkUserBoardRelation(user, boardId);
+    }
+
+    public boolean hasUserBoardRelation(Long userId, Long boardId) {
+        User user = userService.getUserById(userId);
+        return checkUserBoardRelation(user, boardId);
+    }
+
+    private boolean checkUserBoardRelation(User user, Long boardId) {
         boolean result = false;
         try {
             userBoardRelationService.getUserBoardRelationByUserIdAndBoardId(user.getId(), boardId);
@@ -79,6 +88,24 @@ public class SecurityService {
     public boolean isTicketBelongsToBoard(Long boardId, Long columnId, Long ticketId) {
         boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
         return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+    }
+
+    public boolean isCommentBelongsToBoard(Long boardId, Long columnId, Long ticketId, Long commentId) {
+        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
+        // TODO: check whether comment belongs to ticket
+        return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+    }
+
+
+    public boolean isTagBelongsToTicket(Long boardId, Long columnId, Long ticketId, Long tagId) {
+        boolean ticketBelongsToColumn = ticketRepository.existsTicketByIdAndBoardColumnId(ticketId, columnId);
+        // TODO: check whether tag belongs to ticket
+        return ticketBelongsToColumn && isColumnBelongsToBoard(boardId, columnId);
+    }
+
+    public boolean isTagBelongsToBoard(Long boardId, Long tagId) {
+        // TODO: check whether tag belongs to ticket
+        return true;
     }
 
     public boolean isUserAReceiver(Authentication authentication, Long invitationId) {

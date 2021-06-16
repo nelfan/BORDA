@@ -330,7 +330,8 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
+            "&& @securityService.isCommentBelongsToBoard(#boardId, #columnId, #ticketId, #commentId)")
     @PutMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> updateCommentByCommentId
             (@PathVariable Long commentId,
@@ -346,7 +347,8 @@ public class BoardController {
         return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
+            "&& @securityService.isCommentBelongsToBoard(#boardId, #columnId, #ticketId, #commentId)")
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/deleteComment/{commentId}")
     public ResponseEntity<TicketDTO> deleteCommentFromTicket
             (@PathVariable Long ticketId,
@@ -390,7 +392,8 @@ public class BoardController {
         }
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId) " +
+            "&& @securityService.isTagBelongsToBoard(#boardId, #columnId, #ticketId)")
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
     public ResponseEntity<TicketDTO> addTagToTicket
             (@PathVariable Long ticketId,
@@ -430,7 +433,8 @@ public class BoardController {
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
+            "&& @securityService.isTagBelongsToTicket(#boardId, #columnId, #ticketId, #tagId)")
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
     public ResponseEntity<TicketDTO> deleteTagFromTicket
             (@PathVariable Long ticketId,
@@ -444,7 +448,9 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
+            "&& @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)" +
+            "&& @securityService.hasUserBoardRelation(authentication, #userId)")
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
     public ResponseEntity<TicketDTO> addUserToTicket
             (@PathVariable Long ticketId,
@@ -457,7 +463,9 @@ public class BoardController {
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
+    @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
+            "&& @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)" +
+            "&& @securityService.hasUserBoardRelation(#userId, #boardId)")
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
     public ResponseEntity<TicketDTO> deleteUserFromTicket
             (@PathVariable Long ticketId,

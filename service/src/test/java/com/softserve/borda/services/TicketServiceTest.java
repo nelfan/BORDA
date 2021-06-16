@@ -40,7 +40,7 @@ class TicketServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository, boardColumnService,
+        ticketService = new TicketServiceImpl(ticketRepository,
                 commentService, tagService, userService);
     }
 

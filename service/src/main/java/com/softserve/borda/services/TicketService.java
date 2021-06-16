@@ -36,7 +36,5 @@ public interface TicketService {
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 
-    Ticket addTicketToBoardColumn(Long boardColumnId, Long ticketId);
-
-    boolean deleteTicketFromBoardColumn(Long boardColumnId, Long ticketId);
+    Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId);
 }

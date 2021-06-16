@@ -160,7 +160,6 @@ public class BordaApplication {
         for(int i = 0; i<3; i++){
             Invitation invitation = new Invitation();
             invitation.setBoard(boards.get(i+50));
-            invitation.setUserBoardRole(collaborator);
             invitation.setReceiver(users.get(0));
             invitation.setSender(users.get(1));
             invitation.setIsAccepted(null);
@@ -173,7 +172,6 @@ public class BordaApplication {
 
         Invitation invitation1 = new Invitation();
         invitation1.setBoard(boards.get(54));
-        invitation1.setUserBoardRole(collaborator);
         invitation1.setReceiver(users.get(0));
         invitation1.setSender(users.get(1));
         invitation1.setIsAccepted(false);
@@ -185,7 +183,6 @@ public class BordaApplication {
 
         Invitation invitation2 = new Invitation();
         invitation2.setBoard(boards.get(55));
-        invitation2.setUserBoardRole(collaborator);
         invitation2.setReceiver(users.get(0));
         invitation2.setSender(users.get(1));
         invitation2.setIsAccepted(true);

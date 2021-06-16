@@ -16,7 +16,5 @@ public interface BoardColumnService {
 
     List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId);
 
-    BoardColumn addBoardColumnToBoard(Long boardId, Long boardColumnId);
-
-    boolean deleteBoardColumnFromBoard(Long boardId, Long boardColumnId);
+    BoardColumn moveBoardColumnToBoard(Long boardId, Long boardColumnId);
 }

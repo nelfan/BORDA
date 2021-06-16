@@ -23,4 +23,12 @@ public class BoardColumn {
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
+
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "board_id", insertable = false, updatable = false)
+    private Board board;
+
+    @Column(name = "board_id")
+    private Long boardId;
 }

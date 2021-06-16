@@ -138,8 +138,8 @@ public class BoardController {
                                                                      @RequestBody BoardColumnDTO boardColumnDTO) {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName(boardColumnDTO.getName());
+        boardColumn.setBoardId(boardId);
         boardColumn = boardColumnService.create(boardColumn);
-        boardColumn = boardColumnService.addBoardColumnToBoard(boardId, boardColumn.getId());
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
@@ -149,7 +149,7 @@ public class BoardController {
     @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}")
     public ResponseEntity<String> deleteBoardColumnFromBoard(@PathVariable Long boardId,
                                                              @PathVariable Long columnId) {
-        boardColumnService.deleteBoardColumnFromBoard(boardId, columnId);
+        boardColumnService.deleteBoardColumnById(columnId);
 
         return new ResponseEntity<>("Entity was removed successfully",
                 HttpStatus.OK);
@@ -485,10 +485,10 @@ public class BoardController {
 
     @PreAuthorize("@securityService.hasBoardInviteRights(authentication, #boardId, #userBoardRoleId)")
     @PostMapping("/users/invitations/{receiverUsername}/boards/{boardId}/roles/{userBoardRoleId}")
- public ResponseEntity<Object> createInvitation(Authentication authentication,
-                                                   @PathVariable String receiverUsername,
-                                                   @PathVariable Long boardId,
-                                                   @PathVariable Long userBoardRoleId) {
+    public ResponseEntity<Object> createInvitation(Authentication authentication,
+                                                          @PathVariable String receiverUsername,
+                                                          @PathVariable Long boardId,
+                                                          @PathVariable Long userBoardRoleId) {
         User sender = userService.getUserByUsername(authentication.getName());
         User receiver = userService.getUserByUsername(receiverUsername);
         if (sender.getId().equals(receiver.getId())) {

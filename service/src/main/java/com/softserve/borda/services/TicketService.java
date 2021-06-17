@@ -1,7 +1,6 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Comment;
-import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.User;
 
@@ -20,15 +19,9 @@ public interface TicketService {
 
     List<User> getAllMembersByTicketId(Long ticketId);
 
-    List<Tag> getAllTagsByTicketId(Long ticketId);
-
     Ticket addCommentToTicket(Long ticketId, Long commentId);
 
     Ticket deleteCommentFromTicket(Long ticketId, Long commentId);
-
-    Ticket addTagToTicket(Long ticketId, Long tagId);
-
-    Ticket deleteTagFromTicket(Long ticketId, Long tagId);
 
     Ticket addMemberToTicket(Long ticketId, Long userId);
 

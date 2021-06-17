@@ -256,7 +256,7 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        List<Tag> tags = ticketService.getAllTagsByTicketId(ticketId);
+        List<Tag> tags = tagService.getAllTagsByTicketId(ticketId);
         List<TagDTO> tagDTOs = tags.stream().map(tag ->
                 modelMapper.map(tag, TagDTO.class))
                 .collect(Collectors.toList());
@@ -367,15 +367,17 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
-    public ResponseEntity<TicketDTO> addTagToTicket
+    public ResponseEntity<String> addTagToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        Ticket ticket = ticketService.addTagToTicket(ticketId, tagId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
-
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        boolean result = tagService.addTagToTicket(ticketId, tagId);
+        if(result) {
+            return new ResponseEntity<>("Tag has been added to ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to add tag to ticket. " +
+                "Please make sure ticket id and tag id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/boards/{boardId}/tags")
@@ -404,16 +406,18 @@ public class BoardController {
     }
 
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags/{tagId}")
-    public ResponseEntity<TicketDTO> deleteTagFromTicket
+    public ResponseEntity<String> deleteTagFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
         Tag tag = tagService.getTagById(tagId);
-        Ticket ticket = ticketService.deleteTagFromTicket(ticketId, tag.getId());
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
-
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        boolean result = tagService.deleteTagFromTicket(ticketId, tag.getId());
+        if(result) {
+            return new ResponseEntity<>("Tag has been removed from ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to remove tag from ticket. " +
+                "Please make sure ticket id and tag id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")

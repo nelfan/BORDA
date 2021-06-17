@@ -1,6 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Tag;
+import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.services.impl.TagServiceImpl;
@@ -120,5 +121,29 @@ class TagServiceTest {
 
         assertThrows(CustomEntityNotFoundException.class, () -> tagService.getTagById(1L));
         verify(tagRepository, times(1)).deleteById(tag.getId());
+    }
+
+    @Test
+    void shouldGetAllTagsByTicketId() {
+        List<Tag> tags = new ArrayList<>();
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setTitle("ticketName");
+        ticket.setDescription("ticketBody");
+        for (int i = 0; i < 3; i++) {
+            Tag tag = new Tag();
+            tag.setId((long) i);
+            tag.setText("tag" + i);
+            tags.add(tag);
+            ticket.getTags().add(tag);
+        }
+
+        when(tagRepository.findAllTagsByTicketId(1L)).thenReturn(tags);
+
+        List<Tag> tagList = tagService.getAllTagsByTicketId(ticket.getId());
+
+        assertEquals(3, tagList.size());
+        assertEquals(tags, tagList);
+        verify(tagRepository, times(1)).findAllTagsByTicketId(1L);
     }
 }

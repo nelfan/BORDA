@@ -35,11 +35,13 @@ public class Ticket {
 
     @ToString.Exclude
     @ManyToMany
-    @JoinColumn(name = "tag_id")
+    @JoinTable(name = "tickets_tags",
+            joinColumns = { @JoinColumn(name = "ticket_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") })
     private List<Tag> tags = new ArrayList<>();
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_column_id", insertable = false, updatable = false)
     private BoardColumn boardColumn;
 

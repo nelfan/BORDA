@@ -18,7 +18,6 @@ public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final CommentService commentService;
-    private final TagService tagService;
     private final UserService userService;
 
     @Override
@@ -62,11 +61,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Tag> getAllTagsByTicketId(Long ticketId) {
-        return getTicketById(ticketId).getTags();
-    }
-
-    @Override
     public Ticket addCommentToTicket(Long ticketId, Long commentId) {
         Ticket ticket = getTicketById(ticketId);
         Comment comment = commentService.getCommentById(commentId);
@@ -79,21 +73,6 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = getTicketById(ticketId);
         Comment comment = commentService.getCommentById(commentId);
         ticket.getComments().remove(comment);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
-    public Ticket addTagToTicket(Long ticketId, Long tagId) {
-        Ticket ticket = getTicketById(ticketId);
-        Tag tag = tagService.getTagById(tagId);
-        ticket.getTags().add(tag);
-        return ticketRepository.save(ticket);
-    }
-
-    public Ticket deleteTagFromTicket(Long ticketId, Long tagId) {
-        Ticket ticket = getTicketById(ticketId);
-        Tag tag = tagService.getTagById(tagId);
-        ticket.getTags().remove(tag);
         return ticketRepository.save(ticket);
     }
 

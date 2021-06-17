@@ -44,7 +44,6 @@ public class BoardController {
 
     private final InvitationService invitationService;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/boards")
     public List<Board> getAllBoards() {
         return boardService.getAll();

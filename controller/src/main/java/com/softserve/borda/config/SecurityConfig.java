@@ -1,6 +1,7 @@
 package com.softserve.borda.config;
 
 import com.softserve.borda.config.jwt.JwtFilter;
+import com.softserve.borda.entities.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -39,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin", "/admin/*").hasRole("ADMIN")
+                .antMatchers("/admin/", "/boards/",
+                        "/boards", "/admin/*").hasRole(Role.Roles.ROLE_ADMIN.getRoleName())
                 .antMatchers("/error",
                         "/favicon.ico",
                         "/**/*.png",
@@ -49,8 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js").permitAll()
-                .antMatchers("/users", "/users/**",
-                        "/boards", "/boards/**",
+                .antMatchers("/users", "/users/**", "/boards/**",
                         "/tickets", "/tickets/**",
                         "/boardLists", "/boardLists/**",
                         "/tags", "/tags/**",

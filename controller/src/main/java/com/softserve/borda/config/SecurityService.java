@@ -1,8 +1,6 @@
 package com.softserve.borda.config;
 
-import com.softserve.borda.entities.Invitation;
-import com.softserve.borda.entities.User;
-import com.softserve.borda.entities.UserBoardRelation;
+import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardColumnRepository;
 import com.softserve.borda.repositories.TagRepository;
@@ -70,11 +68,11 @@ public class SecurityService {
     }
 
     public boolean hasBoardManagementAccess(Authentication authentication, Long boardId) {
-        return hasUserBoardRole(authentication, boardId, 1L);
+        return hasUserBoardRole(authentication, boardId, UserBoardRole.UserBoardRoles.OWNER.getId());
     }
 
     public boolean hasBoardWorkAccess(Authentication authentication, Long boardId) {
-        return hasUserBoardRole(authentication, boardId, 2L, 1L);
+        return hasUserBoardRole(authentication, boardId,UserBoardRole.UserBoardRoles.COLLABORATOR.getId(), UserBoardRole.UserBoardRoles.OWNER.getId());
     }
 
     public boolean hasBoardInviteRights(Authentication authentication, Long boardId, Long userBoardRoleId) {

@@ -3,7 +3,6 @@ package com.softserve.borda.services;
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Tag;
 import com.softserve.borda.entities.Ticket;
-import com.softserve.borda.entities.User;
 
 import java.util.List;
 
@@ -18,8 +17,6 @@ public interface TicketService {
 
     List<Comment> getAllCommentsByTicketId(Long ticketId);
 
-    List<User> getAllMembersByTicketId(Long ticketId);
-
     List<Tag> getAllTagsByTicketId(Long ticketId);
 
     Ticket addCommentToTicket(Long ticketId, Long commentId);
@@ -30,9 +27,9 @@ public interface TicketService {
 
     Ticket deleteTagFromTicket(Long ticketId, Long tagId);
 
-    Ticket addMemberToTicket(Long ticketId, Long userId);
+    boolean addMemberToTicket(Long ticketId, Long userId);
 
-    Ticket deleteMemberFromTicket(Long ticketId, Long userId);
+    boolean deleteMemberFromTicket(Long ticketId, Long userId);
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 

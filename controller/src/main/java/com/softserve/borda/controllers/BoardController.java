@@ -269,7 +269,7 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        List<User> users = ticketService.getAllMembersByTicketId(ticketId);
+        List<User> users = userService.getAllMembersByTicketId(ticketId);
         List<UserSimpleDTO> userDTOs = users.stream().map(user ->
                 modelMapper.map(user, UserSimpleDTO.class))
                 .collect(Collectors.toList());
@@ -417,27 +417,33 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
-    public ResponseEntity<TicketDTO> addUserToTicket
+    public ResponseEntity<String> addUserToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        boolean result = ticketService.addMemberToTicket(ticketId, userId);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        if(result) {
+            return new ResponseEntity<>("User has been added to ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to add user to ticket. " +
+                "Please make sure ticket id and user id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
-    public ResponseEntity<TicketDTO> deleteUserFromTicket
+    public ResponseEntity<String> deleteUserFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        boolean result = ticketService.deleteMemberFromTicket(ticketId, userId);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        if(result) {
+            return new ResponseEntity<>("User has been removed from ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to remove user from ticket. " +
+                "Please make sure ticket id and user id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/users/invitations")

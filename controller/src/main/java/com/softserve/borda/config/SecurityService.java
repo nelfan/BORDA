@@ -3,6 +3,7 @@ package com.softserve.borda.config;
 import com.softserve.borda.entities.*;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.BoardColumnRepository;
+import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.repositories.TagRepository;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.InvitationService;
@@ -27,6 +28,8 @@ public class SecurityService {
     private final TicketRepository ticketRepository;
 
     private final TagRepository tagRepository;
+
+    private final CommentRepository commentRepository;
 
     private final UserBoardRelationService userBoardRelationService;
 
@@ -76,7 +79,7 @@ public class SecurityService {
     }
 
     public boolean hasBoardInviteRights(Authentication authentication, Long boardId, Long userBoardRoleId) {
-        if(userBoardRoleId.equals(1L)) {
+        if(userBoardRoleId.equals(UserBoardRole.UserBoardRoles.OWNER.getId())) {
             return hasBoardManagementAccess(authentication, boardId);
         }
         return hasBoardWorkAccess(authentication, boardId);
@@ -102,14 +105,14 @@ public class SecurityService {
 
     public boolean isCommentBelongsToBoard(Long boardId, Long columnId, Long ticketId, Long commentId) {
         boolean ticketBelongsToBoard = isTicketBelongsToBoard(boardId, columnId, ticketId);
-        boolean ticketBelongsToTicket = true; // TODO
-        return ticketBelongsToBoard && ticketBelongsToTicket;
+        boolean commentBelongsToTicket = commentRepository.existsCommentByIdAndTicketId(commentId, ticketId);
+        return ticketBelongsToBoard && commentBelongsToTicket;
     }
 
     public boolean isTagBelongsToTicket(Long boardId, Long columnId, Long ticketId, Long tagId) {
+        boolean tagBelongsToBoard = tagRepository.existsTagByIdAndBoardId(tagId, boardId);
+        boolean tagBelongsToTicket = tagRepository.existsTagByIdAndTicketId(tagId, ticketId);
         boolean ticketBelongsToBoard = isTicketBelongsToBoard(boardId, columnId, ticketId);
-        boolean tagBelongsToBoard = isTagBelongsToBoard(boardId, tagId);
-        boolean tagBelongsToTicket = true; // TODO
         return ticketBelongsToBoard && tagBelongsToBoard && tagBelongsToTicket;
     }
 

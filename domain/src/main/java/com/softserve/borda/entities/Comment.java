@@ -24,4 +24,12 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticket_id", insertable = false, updatable = false)
+    private Ticket ticket;
+
+    @Column(name = "ticket_id")
+    private Long ticketId;
 }

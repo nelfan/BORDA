@@ -29,22 +29,22 @@ public class Invitation {
     private Boolean isAccepted;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="sender_id", insertable = false, updatable = false)
     private User sender;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="receiver_id", insertable = false, updatable = false)
     private User receiver;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="board_id", insertable = false, updatable = false)
     private Board board;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_board_role_id", insertable = false, updatable = false)
     private UserBoardRole userBoardRole;
 }

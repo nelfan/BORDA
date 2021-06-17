@@ -41,7 +41,7 @@ class TicketServiceTest {
     public void init() {
         MockitoAnnotations.openMocks(this);
         ticketService = new TicketServiceImpl(ticketRepository,
-                commentService, tagService, userService);
+                commentService, userService);
     }
 
     @Test
@@ -134,30 +134,6 @@ class TicketServiceTest {
 
         assertEquals(3, commentList.size());
         assertEquals(comments, commentList);
-        verify(ticketRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void shouldGetAllTagsByTicketId() {
-        List<Tag> tags = new ArrayList<>();
-        Ticket ticket = new Ticket();
-        ticket.setId(1L);
-        ticket.setTitle("ticketName");
-        ticket.setDescription("ticketBody");
-        for (int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setId((long) i);
-            tag.setText("tag" + i);
-            tags.add(tag);
-            ticket.getTags().add(tag);
-        }
-
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
-
-        List<Tag> tagList = ticketService.getAllTagsByTicketId(ticket.getId());
-
-        assertEquals(3, tagList.size());
-        assertEquals(tags, tagList);
         verify(ticketRepository, times(1)).findById(1L);
     }
 

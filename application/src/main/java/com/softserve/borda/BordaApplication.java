@@ -67,7 +67,6 @@ public class BordaApplication {
         roleRepository.save(adminRole);
 
         List<User> users = new ArrayList<>();
-        List<Board> boards = new ArrayList<>();
         for(int i = 0; i < 3; i++) {
             User user = new User();
             user.setUsername("user" + i);
@@ -95,12 +94,9 @@ public class BordaApplication {
             userBoardRelation.setUser(users.get(0));
             userBoardRelation.setBoard(board);
             userBoardRelation.setUserBoardRoleId(owner.getId());
-            board.getUserBoardRelations().add(userBoardRelation);
-            users.get(0).getUserBoardRelations().add(userBoardRelation);
             boardRepository.save(board);
-            userRepository.save(users.get(0));
             userBoardRelationService.create(userBoardRelation);
-            boards.add(board);
+
             for(int j = 0; j < 3; j++) {
                 Tag tag = new Tag();
                 tag.setBoardId(board.getId());
@@ -108,89 +104,7 @@ public class BordaApplication {
                 tag.setColor(colors[j]);
                 tagService.create(tag);
             }
-            for(long j = 1; j <= 3; j++) {
-                Tag tag = tagService.getTagById(j);
-                tag.setBoardId(i + 1L);
-                tagService.create(tag);
-            }
         }
-
-        for(int i = 10; i < 50; i++) {
-            Board board = new Board();
-            board.setName("Board" + i);
-            UserBoardRelation userBoardRelation = new UserBoardRelation();
-            userBoardRelation.setUser(users.get(0));
-            userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRoleId(collaborator.getId());
-            board.getUserBoardRelations().add(userBoardRelation);
-            users.get(0).getUserBoardRelations().add(userBoardRelation);
-            boardRepository.save(board);
-            userRepository.save(users.get(0));
-            userBoardRelationService.create(userBoardRelation);
-            boards.add(board);
-            for(long j = 1; j <= 3; j++) {
-                Tag tag = tagService.getTagById(j);
-                tag.setBoardId(i + 1L);
-                tagService.create(tag);
-            }
-        }
-
-        List<Tag> tags = new ArrayList<>();
-
-        for(int i = 50; i < 56; i++) {
-            Board board = new Board();
-            board.setName("Board" + i);
-            UserBoardRelation userBoardRelation = new UserBoardRelation();
-            userBoardRelation.setUser(users.get(1));
-            userBoardRelation.setBoard(board);
-            userBoardRelation.setUserBoardRoleId(owner.getId());
-            board.getUserBoardRelations().add(userBoardRelation);
-            users.get(1).getUserBoardRelations().add(userBoardRelation);
-            boardRepository.save(board);
-            userRepository.save(users.get(1));
-            userBoardRelationService.create(userBoardRelation);
-            boards.add(board);
-            for(long j = 1; j <= 3; j++) {
-                Tag tag = tagService.getTagById(j);
-                tag.setBoardId(i + 1L);
-                tagService.create(tag);
-            }
-        }
-
-        for(int i = 0; i<3; i++){
-            Invitation invitation = new Invitation();
-            invitation.setBoard(boards.get(i+50));
-            invitation.setReceiver(users.get(0));
-            invitation.setSender(users.get(1));
-            invitation.setIsAccepted(null);
-            invitation.setReceiverId(users.get(0).getId());
-            invitation.setSenderId(users.get(1).getId());
-            invitation.setUserBoardRoleId(collaborator.getId());
-            invitation.setBoardId(boards.get(i+50).getId());
-            invitationService.create(invitation);
-        }
-
-        Invitation invitation1 = new Invitation();
-        invitation1.setBoard(boards.get(54));
-        invitation1.setReceiver(users.get(0));
-        invitation1.setSender(users.get(1));
-        invitation1.setIsAccepted(false);
-        invitation1.setReceiverId(users.get(0).getId());
-        invitation1.setSenderId(users.get(1).getId());
-        invitation1.setUserBoardRoleId(collaborator.getId());
-        invitation1.setBoardId(boards.get(54).getId());
-        invitationService.create(invitation1);
-
-        Invitation invitation2 = new Invitation();
-        invitation2.setBoard(boards.get(55));
-        invitation2.setReceiver(users.get(0));
-        invitation2.setSender(users.get(1));
-        invitation2.setIsAccepted(true);
-        invitation2.setReceiverId(users.get(0).getId());
-        invitation2.setSenderId(users.get(1).getId());
-        invitation2.setUserBoardRoleId(collaborator.getId());
-        invitation2.setBoardId(boards.get(55).getId());
-        invitationService.create(invitation2);
     }
 
     public static void main(String[] args) {

@@ -22,10 +22,6 @@ public interface TicketService {
 
     List<Tag> getAllTagsByTicketId(Long ticketId);
 
-    Ticket addCommentToTicket(Long ticketId, Long commentId);
-
-    Ticket deleteCommentFromTicket(Long ticketId, Long commentId);
-
     Ticket addTagToTicket(Long ticketId, Long tagId);
 
     Ticket deleteTagFromTicket(Long ticketId, Long tagId);

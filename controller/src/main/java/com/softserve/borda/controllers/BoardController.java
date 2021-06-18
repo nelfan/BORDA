@@ -290,9 +290,9 @@ public class BoardController {
     }
 
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments")
-    public ResponseEntity<TicketDTO> addCommentToTicket
+    public ResponseEntity<CommentDTO> addCommentToTicket
             (@PathVariable Long ticketId,
-             @RequestBody CommentDTO commentDTO,
+             @RequestBody CreateCommentDTO commentDTO,
              @PathVariable String boardId,
              @PathVariable String columnId,
              Authentication authentication) {
@@ -301,13 +301,12 @@ public class BoardController {
 
         User user = userService.getUserByUsername(authentication.getName());
         comment.setUser(user);
-
+        comment.setTicketId(ticketId);
         comment = commentService.create(comment);
 
-        Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        CommentDTO simpleCommentDTO = modelMapper.map(comment,CommentDTO.class);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        return new ResponseEntity<>(simpleCommentDTO, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
@@ -326,17 +325,14 @@ public class BoardController {
     }
 
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/deleteComment/{commentId}")
-    public ResponseEntity<TicketDTO> deleteCommentFromTicket
+    public ResponseEntity<String> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        ticketService.deleteCommentFromTicket(ticketId, commentId);
         commentService.deleteCommentById(commentId);
-        Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
     }
 
     @GetMapping("/boards/{boardId}/tags/{tagId}")

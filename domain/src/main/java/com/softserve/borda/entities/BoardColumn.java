@@ -21,11 +21,11 @@ public class BoardColumn {
     private String name;
 
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", insertable = false, updatable = false)
     private Board board;
 

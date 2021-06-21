@@ -15,5 +15,11 @@ public interface TagService {
 
     boolean deleteTagById(Long id);
 
+    boolean addTagToTicket(Long ticketId, Long tagId);
+
+    boolean deleteTagFromTicket(Long ticketId, Long tagId);
+
     List<Tag> getAllTagsByBoardId(Long boardId);
+
+    List<Tag> getAllTagsByTicketId(Long ticketId);
 }

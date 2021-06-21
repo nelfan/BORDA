@@ -29,7 +29,7 @@ public class Ticket {
     private List<User> members = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticket")
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 

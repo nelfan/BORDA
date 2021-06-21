@@ -67,22 +67,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket addCommentToTicket(Long ticketId, Long commentId) {
-        Ticket ticket = getTicketById(ticketId);
-        Comment comment = commentService.getCommentById(commentId);
-        ticket.getComments().add(comment);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
-    public Ticket deleteCommentFromTicket(Long ticketId, Long commentId) {
-        Ticket ticket = getTicketById(ticketId);
-        Comment comment = commentService.getCommentById(commentId);
-        ticket.getComments().remove(comment);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
     public Ticket addTagToTicket(Long ticketId, Long tagId) {
         Ticket ticket = getTicketById(ticketId);
         Tag tag = tagService.getTagById(tagId);

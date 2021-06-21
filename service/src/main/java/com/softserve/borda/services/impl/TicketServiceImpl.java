@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -57,11 +58,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<User> getAllMembersByTicketId(Long ticketId) {
-        return getTicketById(ticketId).getMembers();
-    }
-
-    @Override
     public List<Tag> getAllTagsByTicketId(Long ticketId) {
         return getTicketById(ticketId).getTags();
     }
@@ -81,20 +77,16 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.save(ticket);
     }
 
+    @Transactional
     @Override
-    public Ticket addMemberToTicket(Long ticketId, Long userId) {
-        Ticket ticket = getTicketById(ticketId);
-        User user = userService.getUserById(userId);
-        ticket.getMembers().add(user);
-        return ticketRepository.save(ticket);
+    public boolean addMemberToTicket(Long ticketId, Long userId) {
+        return ticketRepository.createTicketMemberRow(ticketId, userId) == 1;
     }
 
+    @Transactional
     @Override
-    public Ticket deleteMemberFromTicket(Long ticketId, Long userId) {
-        Ticket ticket = getTicketById(ticketId);
-        User user = userService.getUserById(userId);
-        ticket.getMembers().remove(user);
-        return ticketRepository.save(ticket);
+    public boolean deleteMemberFromTicket(Long ticketId, Long userId) {
+        return ticketRepository.deleteTicketMemberRow(ticketId, userId) == 1;
     }
 
     @Override

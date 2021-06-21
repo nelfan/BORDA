@@ -29,8 +29,13 @@ public class AuthController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
+    public ResponseEntity<Object> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
             throws CustomAuthenticationFailedException {
+        if (userService.existsUserByUsername(registrationRequest.getUsername())) {
+            String message = "Registration failed. Username: [" + registrationRequest.getUsername() + "] is already taken";
+            log.warning(message);
+            return ResponseEntity.badRequest().body(message);
+        }
         try {
             User user = new User();
             user.setUsername(registrationRequest.getUsername());
@@ -45,11 +50,10 @@ public class AuthController {
         }
         AuthRequest authRequest = modelMapper.map(registrationRequest, AuthRequest.class);
         return auth(authRequest);
-
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request)
+    public ResponseEntity<Object> auth(@RequestBody AuthRequest request)
             throws CustomAuthenticationFailedException {
         try {
             User user = userService.getUserByUsername(request.getUsername());

@@ -2,7 +2,6 @@ package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Ticket;
-import com.softserve.borda.entities.User;
 
 import java.util.List;
 
@@ -15,17 +14,9 @@ public interface TicketService {
 
     boolean deleteTicketById(Long id);
 
-    List<Comment> getAllCommentsByTicketId(Long ticketId);
+    boolean addMemberToTicket(Long ticketId, Long userId);
 
-    List<User> getAllMembersByTicketId(Long ticketId);
-
-    Ticket addCommentToTicket(Long ticketId, Long commentId);
-
-    Ticket deleteCommentFromTicket(Long ticketId, Long commentId);
-
-    Ticket addMemberToTicket(Long ticketId, Long userId);
-
-    Ticket deleteMemberFromTicket(Long ticketId, Long userId);
+    boolean deleteMemberFromTicket(Long ticketId, Long userId);
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 

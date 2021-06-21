@@ -26,4 +26,6 @@ public interface UserService {
     List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations);
 
     Boolean existsUserByUsername(String username);
+
+    List<User> getAllMembersByTicketId(Long ticketId);
 }

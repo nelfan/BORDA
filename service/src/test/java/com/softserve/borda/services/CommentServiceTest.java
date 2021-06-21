@@ -1,6 +1,7 @@
 package com.softserve.borda.services;
 
 import com.softserve.borda.entities.Comment;
+import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.repositories.CommentRepository;
 import com.softserve.borda.services.impl.CommentServiceImpl;
@@ -11,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -100,5 +103,29 @@ class CommentServiceTest {
         assertThrows(CustomEntityNotFoundException.class,
                 () -> commentService.getCommentById(1L));
         verify(commentRepository, times(1)).deleteById(comment.getId());
+    }
+
+    @Test
+    void shouldGetAllCommentsByTicketId() {
+        List<Comment> comments = new ArrayList<>();
+        Ticket ticket = new Ticket();
+        ticket.setId(1L);
+        ticket.setTitle("ticketName");
+        ticket.setDescription("ticketBody");
+        for (int i = 0; i < 3; i++) {
+            Comment comment = new Comment();
+            comment.setId((long) i);
+            comment.setText("comment" + i);
+            comments.add(comment);
+            ticket.getComments().add(comment);
+        }
+
+        when(commentRepository.getAllCommentsByTicketId(1L)).thenReturn(comments);
+
+        List<Comment> commentList = commentService.getAllCommentsByTicketId(ticket.getId());
+
+        assertEquals(3, commentList.size());
+        assertEquals(comments, commentList);
+        verify(commentRepository, times(1)).getAllCommentsByTicketId(1L);
     }
 }

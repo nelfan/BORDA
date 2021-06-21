@@ -44,7 +44,7 @@ public class BoardController {
 
     private final InvitationService invitationService;
 
-    @GetMapping("/boards")
+    @GetMapping("admin/boards")
     public List<Board> getAllBoards() {
         return boardService.getAll();
     }

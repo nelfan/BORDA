@@ -8,10 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -122,14 +124,17 @@ public class BoardController {
     }
 
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
-    @GetMapping("/boards/{boardId}/columns")
-    public ResponseEntity<List<BoardColumnDTO>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
+    @GetMapping(value = "/boards/{boardId}/columns", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ResponseEntity<List<BoardColumnDTO>>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
         List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(boardId);
         List<BoardColumnDTO> boardColumnDTOS = boardColumns.stream()
                 .map(boardColumn -> modelMapper.map(boardColumn,
                         BoardColumnDTO.class)).collect(Collectors.toList());
 
-        return new ResponseEntity<>(boardColumnDTOS, HttpStatus.OK);
+        Flux<ResponseEntity<List<BoardColumnDTO>>> fluxTest =
+                Flux.just(new ResponseEntity<>(boardColumnDTOS, HttpStatus.OK));
+        fluxTest.subscribe(System.out::println);
+        return fluxTest;
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")

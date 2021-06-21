@@ -270,7 +270,7 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        List<Comment> comments = ticketService.getAllCommentsByTicketId(ticketId);
+        List<Comment> comments = commentService.getAllCommentsByTicketId(ticketId);
         List<CommentDTO> commentDTOs = comments.stream().map(comment ->
                 modelMapper.map(comment, CommentDTO.class))
                 .collect(Collectors.toList());
@@ -300,7 +300,7 @@ public class BoardController {
             (@PathVariable Long ticketId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        List<User> users = ticketService.getAllMembersByTicketId(ticketId);
+        List<User> users = userService.getAllMembersByTicketId(ticketId);
         List<UserSimpleDTO> userDTOs = users.stream().map(user ->
                 modelMapper.map(user, UserSimpleDTO.class))
                 .collect(Collectors.toList());
@@ -325,9 +325,9 @@ public class BoardController {
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
             " && @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)")
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments")
-    public ResponseEntity<TicketDTO> addCommentToTicket
+    public ResponseEntity<CommentDTO> addCommentToTicket
             (@PathVariable Long ticketId,
-             @RequestBody CommentDTO commentDTO,
+             @RequestBody CreateCommentDTO commentDTO,
              @PathVariable String boardId,
              @PathVariable String columnId,
              Authentication authentication) {
@@ -336,13 +336,12 @@ public class BoardController {
 
         User user = userService.getUserByUsername(authentication.getName());
         comment.setUser(user);
-
+        comment.setTicketId(ticketId);
         comment = commentService.create(comment);
 
-        Ticket ticket = ticketService.addCommentToTicket(ticketId, comment.getId());
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        CommentDTO simpleCommentDTO = modelMapper.map(comment,CommentDTO.class);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        return new ResponseEntity<>(simpleCommentDTO, HttpStatus.OK);
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
@@ -365,17 +364,14 @@ public class BoardController {
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
             "&& @securityService.isCommentBelongsToBoard(#boardId, #columnId, #ticketId, #commentId)")
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
-    public ResponseEntity<TicketDTO> deleteCommentFromTicket
+    public ResponseEntity<String> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        ticketService.deleteCommentFromTicket(ticketId, commentId);
         commentService.deleteCommentById(commentId);
-        Ticket ticket = ticketService.deleteCommentFromTicket(ticketId, commentId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
     }
 
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)" +
@@ -474,30 +470,36 @@ public class BoardController {
             "&& @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)" +
             "&& @securityService.hasUserBoardRelation(authentication, #userId)")
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
-    public ResponseEntity<TicketDTO> addUserToTicket
+    public ResponseEntity<String> addUserToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        Ticket ticket = ticketService.addMemberToTicket(ticketId, userId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        boolean result = ticketService.addMemberToTicket(ticketId, userId);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        if(result) {
+            return new ResponseEntity<>("User has been added to ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to add user to ticket. " +
+                "Please make sure ticket id and user id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
             "&& @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)" +
             "&& @securityService.hasUserBoardRelation(#userId, #boardId)")
     @DeleteMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members/{userId}")
-    public ResponseEntity<TicketDTO> deleteUserFromTicket
+    public ResponseEntity<String> deleteUserFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
              @PathVariable String boardId,
              @PathVariable String columnId) {
-        Ticket ticket = ticketService.deleteMemberFromTicket(ticketId, userId);
-        TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+        boolean result = ticketService.deleteMemberFromTicket(ticketId, userId);
 
-        return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
+        if(result) {
+            return new ResponseEntity<>("User has been removed from ticket successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Failed to remove user from ticket. " +
+                "Please make sure ticket id and user id are correct.", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/users/invitations")

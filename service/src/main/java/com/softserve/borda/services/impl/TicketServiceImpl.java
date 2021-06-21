@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -17,8 +18,6 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final CommentService commentService;
-    private final UserService userService;
 
     @Override
     public Ticket getTicketById(Long id) {
@@ -50,46 +49,20 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    @Override
-    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
-        return getTicketById(ticketId).getComments();
+    public List<Tag> getAllTagsByTicketId(Long ticketId) {
+        return getTicketById(ticketId).getTags();
     }
 
+    @Transactional
     @Override
-    public List<User> getAllMembersByTicketId(Long ticketId) {
-        return getTicketById(ticketId).getMembers();
+    public boolean addMemberToTicket(Long ticketId, Long userId) {
+        return ticketRepository.createTicketMemberRow(ticketId, userId) == 1;
     }
 
+    @Transactional
     @Override
-    public Ticket addCommentToTicket(Long ticketId, Long commentId) {
-        Ticket ticket = getTicketById(ticketId);
-        Comment comment = commentService.getCommentById(commentId);
-        ticket.getComments().add(comment);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
-    public Ticket deleteCommentFromTicket(Long ticketId, Long commentId) {
-        Ticket ticket = getTicketById(ticketId);
-        Comment comment = commentService.getCommentById(commentId);
-        ticket.getComments().remove(comment);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
-    public Ticket addMemberToTicket(Long ticketId, Long userId) {
-        Ticket ticket = getTicketById(ticketId);
-        User user = userService.getUserById(userId);
-        ticket.getMembers().add(user);
-        return ticketRepository.save(ticket);
-    }
-
-    @Override
-    public Ticket deleteMemberFromTicket(Long ticketId, Long userId) {
-        Ticket ticket = getTicketById(ticketId);
-        User user = userService.getUserById(userId);
-        ticket.getMembers().remove(user);
-        return ticketRepository.save(ticket);
+    public boolean deleteMemberFromTicket(Long ticketId, Long userId) {
+        return ticketRepository.deleteTicketMemberRow(ticketId, userId) == 1;
     }
 
     @Override

@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -79,25 +80,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations) {
-        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
+        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
     }
 
     @Override
     public List<User> getUsersByBoardId(Long boardId) {
         List<UserBoardRelation> userBoardRelations =
                 userBoardRelationService.getUserBoardRelationsByBoardId(boardId);
-        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
+        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
     }
 
     @Override
     public List<User> getUsersByBoardIdAndUserBoardRoleId(Long boardId, Long userBoardRoleId) {
         List<UserBoardRelation> userBoardRelations =
                 userBoardRelationService.getUserBoardRelationsByBoardIdAndUserBoardRoleId(boardId, userBoardRoleId);
-        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
+        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
     }
 
     @Override
     public Boolean existsUserByUsername(String username) {
         return userRepository.existsUserByUsername(username);
+    }
+
+    @Override
+    public List<User> getAllMembersByTicketId(Long ticketId) {
+        return userRepository.findAllMembersByTicketId(ticketId);
     }
 }

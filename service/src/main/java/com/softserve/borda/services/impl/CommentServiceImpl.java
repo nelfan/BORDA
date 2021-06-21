@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 @Log
@@ -44,4 +46,10 @@ public class CommentServiceImpl implements CommentService {
             throw new CustomFailedToDeleteEntityException(Comment.class);
         }
     }
+
+    @Override
+    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
+        return commentRepository.getAllCommentsByTicketId(ticketId);
+    }
+
 }

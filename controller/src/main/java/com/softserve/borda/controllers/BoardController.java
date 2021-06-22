@@ -123,6 +123,7 @@ public class BoardController {
         return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
     }
 
+    @CrossOrigin(allowedHeaders = "*")
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping(value = "/boards/{boardId}/columns", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ResponseEntity<List<BoardColumnDTO>>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
@@ -133,7 +134,6 @@ public class BoardController {
 
         Flux<ResponseEntity<List<BoardColumnDTO>>> fluxTest =
                 Flux.just(new ResponseEntity<>(boardColumnDTOS, HttpStatus.OK));
-        fluxTest.subscribe(System.out::println);
         return fluxTest;
     }
 

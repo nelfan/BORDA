@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
-    List<User> findAllByUserBoardRelationsIn(Collection<List<UserBoardRelation>> userBoardRelations);
+    List<User> findAllByUserBoardRelationsIn(List<UserBoardRelation> userBoardRelations);
 
     Boolean existsUserByUsername(String username);
 

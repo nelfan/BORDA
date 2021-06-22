@@ -80,21 +80,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersByUserBoardRelations(List<UserBoardRelation> userBoardRelations) {
-        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
     }
 
     @Override
     public List<User> getUsersByBoardId(Long boardId) {
         List<UserBoardRelation> userBoardRelations =
                 userBoardRelationService.getUserBoardRelationsByBoardId(boardId);
-        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
     }
 
     @Override
     public List<User> getUsersByBoardIdAndUserBoardRoleId(Long boardId, Long userBoardRoleId) {
         List<UserBoardRelation> userBoardRelations =
                 userBoardRelationService.getUserBoardRelationsByBoardIdAndUserBoardRoleId(boardId, userBoardRoleId);
-        return userRepository.findAllByUserBoardRelationsIn(Collections.singleton(userBoardRelations));
+        return userRepository.findAllByUserBoardRelationsIn(userBoardRelations);
     }
 
     @Override

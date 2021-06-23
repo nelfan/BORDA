@@ -229,13 +229,15 @@ public class BoardController {
     @PostMapping("/boards/{boardId}/columns/{columnId}/tickets")
     public ResponseEntity<TicketDTO> createTicketForBoardColumn(@PathVariable long columnId,
                                                                 @RequestBody TicketDTO ticketDTO,
-                                                                @PathVariable String boardId) {
+                                                                @PathVariable Long boardId) {
         Ticket ticket = modelMapper.map(ticketDTO, Ticket.class);
         ticket.setBoardColumnId(columnId);
         ticket = ticketService.create(ticket);
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
+//        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
@@ -245,12 +247,14 @@ public class BoardController {
     @DeleteMapping(value = "/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
     public ResponseEntity<BoardColumnDTO> deleteTicketFromBoardColumn(@PathVariable Long columnId,
                                                                       @PathVariable Long ticketId,
-                                                                      @PathVariable String boardId) {
+                                                                      @PathVariable Long boardId) {
         ticketService.deleteTicketById(ticketId);
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
-        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
+//        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
@@ -262,13 +266,15 @@ public class BoardController {
     public ResponseEntity<TicketDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
                                                                     @PathVariable Long newBoardColumnId,
                                                                     @PathVariable Long ticketId,
-                                                                    @PathVariable String boardId) {
+                                                                    @PathVariable Long boardId) {
 
         Ticket ticket = ticketService.moveTicketToBoardColumn(newBoardColumnId, ticketId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-        sinkService.getTicketsSink(oldBoardColumnId).tryEmitNext(getUpdatedTickets(oldBoardColumnId));
-        sinkService.getTicketsSink(newBoardColumnId).tryEmitNext(getUpdatedTickets(newBoardColumnId));
+//        sinkService.getTicketsSink(oldBoardColumnId).tryEmitNext(getUpdatedTickets(oldBoardColumnId));
+//        sinkService.getTicketsSink(newBoardColumnId).tryEmitNext(getUpdatedTickets(newBoardColumnId));
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
@@ -277,8 +283,8 @@ public class BoardController {
             " && @securityService.isTicketBelongsToBoard(#boardId, #columnId, #ticketId)")
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long ticketId,
-                                                   @PathVariable String boardId,
-                                                   @PathVariable String columnId) {
+                                                   @PathVariable Long boardId,
+                                                   @PathVariable Long columnId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
@@ -290,12 +296,14 @@ public class BoardController {
     @PutMapping(value = "/boards/{boardId}/columns/{columnId}/tickets/{ticketId}")
     public ResponseEntity<TicketDTO> updateTicket(@PathVariable Long ticketId,
                                                   @RequestBody TicketDTO ticketDTO,
-                                                  @PathVariable String boardId,
-                                                  @PathVariable String columnId) {
+                                                  @PathVariable Long boardId,
+                                                  @PathVariable Long columnId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
         CustomBeanUtils.copyNotNullProperties(ticketDTO, ticket);
         ticket = ticketService.update(ticket);
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
@@ -305,8 +313,8 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments")
     public ResponseEntity<List<CommentDTO>> getCommentsByTicketId
             (@PathVariable Long ticketId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         List<Comment> comments = commentService.getAllCommentsByTicketId(ticketId);
         List<CommentDTO> commentDTOs = comments.stream().map(comment ->
                 modelMapper.map(comment, CommentDTO.class))
@@ -320,8 +328,8 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/tags")
     public ResponseEntity<List<TagDTO>> getTagsByTicketId
             (@PathVariable Long ticketId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         List<Tag> tags = tagService.getAllTagsByTicketId(ticketId);
         List<TagDTO> tagDTOs = tags.stream().map(tag ->
                 modelMapper.map(tag, TagDTO.class))
@@ -335,8 +343,8 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/members")
     public ResponseEntity<List<UserSimpleDTO>> getMembersByTicketId
             (@PathVariable Long ticketId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         List<User> users = userService.getAllMembersByTicketId(ticketId);
         List<UserSimpleDTO> userDTOs = users.stream().map(user ->
                 modelMapper.map(user, UserSimpleDTO.class))
@@ -350,9 +358,9 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets/{ticketId}/comments/{commentId}")
     public ResponseEntity<CommentDTO> getCommentByCommentId
             (@PathVariable Long commentId,
-             @PathVariable String boardId,
-             @PathVariable String columnId,
-             @PathVariable String ticketId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId,
+             @PathVariable Long ticketId) {
         Comment comment = commentService.getCommentById(commentId);
         CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
 
@@ -365,7 +373,7 @@ public class BoardController {
     public ResponseEntity<CommentDTO> addCommentToTicket
             (@PathVariable Long ticketId,
              @RequestBody CreateCommentDTO commentDTO,
-             @PathVariable String boardId,
+             @PathVariable Long boardId,
              @PathVariable String columnId,
              Authentication authentication) {
         Comment comment = new Comment();
@@ -378,6 +386,8 @@ public class BoardController {
 
         CommentDTO simpleCommentDTO = modelMapper.map(comment, CommentDTO.class);
 
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
+
         return new ResponseEntity<>(simpleCommentDTO, HttpStatus.OK);
     }
 
@@ -387,13 +397,15 @@ public class BoardController {
     public ResponseEntity<CommentDTO> updateCommentByCommentId
             (@PathVariable Long commentId,
              @RequestBody CommentDTO commentDTO,
-             @PathVariable String boardId,
-             @PathVariable String columnId,
-             @PathVariable String ticketId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId,
+             @PathVariable Long ticketId) {
         Comment comment = commentService.getCommentById(commentId);
         CustomBeanUtils.copyNotNullProperties(commentDTO, comment);
         comment = commentService.update(comment);
         commentDTO = modelMapper.map(comment, CommentDTO.class);
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(commentDTO, HttpStatus.OK);
     }
@@ -404,9 +416,11 @@ public class BoardController {
     public ResponseEntity<String> deleteCommentFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long commentId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         commentService.deleteCommentById(commentId);
+
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>("Comment deleted successfully", HttpStatus.OK);
     }
@@ -416,7 +430,7 @@ public class BoardController {
     @GetMapping("/boards/{boardId}/tags/{tagId}")
     public ResponseEntity<TagDTO> getTagByTagId
             (@PathVariable Long tagId,
-             @PathVariable String boardId) {
+             @PathVariable Long boardId) {
         Tag tag = tagService.getTagById(tagId);
         TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
@@ -434,6 +448,8 @@ public class BoardController {
             tag = tagService.create(tag);
             TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
+            sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
+
             return new ResponseEntity<>(tagDTO, HttpStatus.OK);
         } catch (Exception e) {
             log.severe(e.getMessage());
@@ -448,10 +464,11 @@ public class BoardController {
     public ResponseEntity<String> addTagToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         boolean result = tagService.addTagToTicket(ticketId, tagId);
         if (result) {
+            sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
             return new ResponseEntity<>("Tag has been added to ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to add tag to ticket. " +
@@ -483,6 +500,8 @@ public class BoardController {
         tag = tagService.update(tag);
         TagDTO tagDTO = modelMapper.map(tag, TagDTO.class);
 
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
+
         return new ResponseEntity<>(tagDTO, HttpStatus.OK);
     }
 
@@ -492,11 +511,13 @@ public class BoardController {
     public ResponseEntity<String> deleteTagFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long tagId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         Tag tag = tagService.getTagById(tagId);
         boolean result = tagService.deleteTagFromTicket(ticketId, tag.getId());
+
         if (result) {
+            sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
             return new ResponseEntity<>("Tag has been removed from ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to remove tag from ticket. " +
@@ -510,11 +531,12 @@ public class BoardController {
     public ResponseEntity<String> addUserToTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         boolean result = ticketService.addMemberToTicket(ticketId, userId);
 
         if (result) {
+            sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
             return new ResponseEntity<>("User has been added to ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to add user to ticket. " +
@@ -528,11 +550,12 @@ public class BoardController {
     public ResponseEntity<String> deleteUserFromTicket
             (@PathVariable Long ticketId,
              @PathVariable Long userId,
-             @PathVariable String boardId,
-             @PathVariable String columnId) {
+             @PathVariable Long boardId,
+             @PathVariable Long columnId) {
         boolean result = ticketService.deleteMemberFromTicket(ticketId, userId);
 
         if (result) {
+            sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
             return new ResponseEntity<>("User has been removed from ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to remove user from ticket. " +

@@ -5,6 +5,7 @@ import com.softserve.borda.dto.TicketDTO;
 import com.softserve.borda.services.SinkService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Sinks;
 
 import java.util.List;
@@ -18,12 +19,14 @@ public class SinkServiceImpl implements SinkService {
 
     private final Map<Long, Sinks.Many<List<TicketDTO>>> ticketSinks;
 
+    @Transactional(readOnly = true)
     @Override
     public Sinks.Many<List<BoardColumnDTO>> getColumnsSink(Long boardId) {
         Sinks.Many<List<BoardColumnDTO>> sink = columnSinks.get(boardId);
         return sink == null ? createColumnsSink(boardId) : sink;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Sinks.Many<List<TicketDTO>> getTicketsSink(Long columnId) {
         Sinks.Many<List<TicketDTO>> sink = ticketSinks.get(columnId);

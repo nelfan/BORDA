@@ -34,6 +34,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
     public BoardColumn update(BoardColumn boardColumn) {
         BoardColumn existingBoardColumn = getBoardColumnById(boardColumn.getId());
         existingBoardColumn.setName(boardColumn.getName());
+        existingBoardColumn.setPositionIndex(boardColumn.getPositionIndex());
         return boardColumnRepository.save(existingBoardColumn);
     }
 

@@ -235,8 +235,6 @@ public class BoardController {
         ticket = ticketService.create(ticket);
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
-//        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
-
         sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
@@ -252,8 +250,6 @@ public class BoardController {
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
-//        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
-
         sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
@@ -262,17 +258,15 @@ public class BoardController {
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
             " && @securityService.isTicketBelongsToBoard(#boardId, #oldBoardColumnId, #ticketId)" +
             " && @securityService.isColumnBelongsToBoard(#boardId, #newBoardColumnId)")
-    @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}")
+    @PostMapping("/boards/{boardId}/columns/{oldBoardColumnId}/move/{newBoardColumnId}/tickets/{ticketId}/position/{positionIndex}")
     public ResponseEntity<TicketDTO> moveTicketToAnotherBoardColumn(@PathVariable Long oldBoardColumnId,
                                                                     @PathVariable Long newBoardColumnId,
                                                                     @PathVariable Long ticketId,
-                                                                    @PathVariable Long boardId) {
+                                                                    @PathVariable Long boardId,
+                                                                    @PathVariable Double positionIndex) {
 
-        Ticket ticket = ticketService.moveTicketToBoardColumn(newBoardColumnId, ticketId);
+        Ticket ticket = ticketService.moveTicketToBoardColumn(newBoardColumnId, ticketId, positionIndex);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
-
-//        sinkService.getTicketsSink(oldBoardColumnId).tryEmitNext(getUpdatedTickets(oldBoardColumnId));
-//        sinkService.getTicketsSink(newBoardColumnId).tryEmitNext(getUpdatedTickets(newBoardColumnId));
 
         sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 

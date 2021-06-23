@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class BoardController {
 
-    private final Sinks.Many<List<BoardColumnDTO>> sinkColumns;
+    private final SinkService sinkService;
 
     private final ModelMapper modelMapper;
 
@@ -129,14 +129,15 @@ public class BoardController {
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping(value = "/boards/{boardId}/columns", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<Flux<List<BoardColumnDTO>>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
-        List<BoardColumnDTO> boardColumnDTOS = updateColumns(boardId);
+        List<BoardColumnDTO> boardColumnDTOS = getUpdatedColumns(boardId);
 
-        sinkColumns.tryEmitNext(boardColumnDTOS);
+        Sinks.Many<List<BoardColumnDTO>> sink = sinkService.getColumnsSink(boardId);
+        sink.tryEmitNext(boardColumnDTOS);
 
-        return new ResponseEntity<>(sinkColumns.asFlux(), HttpStatus.OK);
+        return new ResponseEntity<>(sink.asFlux(), HttpStatus.OK);
     }
 
-    private List<BoardColumnDTO> updateColumns(Long boardId) {
+    private List<BoardColumnDTO> getUpdatedColumns(Long boardId) {
         List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(boardId);
 
         List<BoardColumnDTO> boardColumnDTOS = boardColumns.stream()
@@ -156,7 +157,7 @@ public class BoardController {
         boardColumn = boardColumnService.create(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
-        sinkColumns.tryEmitNext(updateColumns(boardId));
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
@@ -168,7 +169,7 @@ public class BoardController {
                                                              @PathVariable Long columnId) {
         boardColumnService.deleteBoardColumnById(columnId);
 
-        sinkColumns.tryEmitNext(updateColumns(boardId));
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>("Entity was removed successfully",
                 HttpStatus.OK);
@@ -196,7 +197,7 @@ public class BoardController {
         boardColumn = boardColumnService.update(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
-        sinkColumns.tryEmitNext(updateColumns(boardId));
+        sinkService.getColumnsSink(boardId).tryEmitNext(getUpdatedColumns(boardId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
@@ -204,14 +205,23 @@ public class BoardController {
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)" +
             " && @securityService.isColumnBelongsToBoard(#boardId, #columnId)")
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets")
-    public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardColumn(@PathVariable Long columnId,
-                                                                       @PathVariable String boardId) {
+    public ResponseEntity<Flux<List<TicketDTO>>> getAllTicketsForBoardColumn(@PathVariable Long columnId,
+                                                                       @PathVariable Long boardId) {
+        List<TicketDTO> ticketDTOs = getUpdatedTickets(columnId);
+
+        Sinks.Many<List<TicketDTO>> sink = sinkService.getTicketsSink(columnId);
+        sink.tryEmitNext(ticketDTOs);
+
+        return new ResponseEntity<>(sink.asFlux(), HttpStatus.OK);
+    }
+
+    private List<TicketDTO> getUpdatedTickets(Long columnId) {
         List<Ticket> tickets = ticketService.getAllTicketsByBoardColumnId(columnId);
         List<TicketDTO> ticketDTOs = tickets.stream()
                 .map(ticket -> modelMapper.map(ticket,
                         TicketDTO.class)).collect(Collectors.toList());
 
-        return new ResponseEntity<>(ticketDTOs, HttpStatus.OK);
+        return ticketDTOs;
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)" +
@@ -225,6 +235,8 @@ public class BoardController {
         ticket = ticketService.create(ticket);
         ticketDTO = modelMapper.map(ticket, TicketDTO.class);
 
+        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
+
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }
 
@@ -237,6 +249,8 @@ public class BoardController {
         ticketService.deleteTicketById(ticketId);
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         BoardColumnDTO boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
+
+        sinkService.getTicketsSink(columnId).tryEmitNext(getUpdatedTickets(columnId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
@@ -252,6 +266,9 @@ public class BoardController {
 
         Ticket ticket = ticketService.moveTicketToBoardColumn(newBoardColumnId, ticketId);
         TicketDTO ticketDTO = modelMapper.map(ticket, TicketDTO.class);
+
+        sinkService.getTicketsSink(oldBoardColumnId).tryEmitNext(getUpdatedTickets(oldBoardColumnId));
+        sinkService.getTicketsSink(newBoardColumnId).tryEmitNext(getUpdatedTickets(newBoardColumnId));
 
         return new ResponseEntity<>(ticketDTO, HttpStatus.OK);
     }

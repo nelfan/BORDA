@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class BoardController {
 
-    private final Sinks.Many<List<BoardColumnDTO>> sink;
+    private final Sinks.Many<List<BoardColumnDTO>> sinkColumns;
 
     private final ModelMapper modelMapper;
 
@@ -129,14 +129,21 @@ public class BoardController {
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping(value = "/boards/{boardId}/columns", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<Flux<List<BoardColumnDTO>>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
+        List<BoardColumnDTO> boardColumnDTOS = updateColumns(boardId);
+
+        sinkColumns.tryEmitNext(boardColumnDTOS);
+
+        return new ResponseEntity<>(sinkColumns.asFlux(), HttpStatus.OK);
+    }
+
+    private List<BoardColumnDTO> updateColumns(Long boardId) {
         List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(boardId);
+
         List<BoardColumnDTO> boardColumnDTOS = boardColumns.stream()
                 .map(boardColumn -> modelMapper.map(boardColumn,
                         BoardColumnDTO.class)).collect(Collectors.toList());
 
-        Flux<List<BoardColumnDTO>> fluxResult = Flux.just(boardColumnDTOS);
-        fluxResult.subscribe(sink::tryEmitNext);
-        return new ResponseEntity<>(sink.asFlux(), HttpStatus.OK);
+        return boardColumnDTOS;
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
@@ -149,6 +156,8 @@ public class BoardController {
         boardColumn = boardColumnService.create(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
+        sinkColumns.tryEmitNext(updateColumns(boardId));
+
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }
 
@@ -158,6 +167,8 @@ public class BoardController {
     public ResponseEntity<String> deleteBoardColumnFromBoard(@PathVariable Long boardId,
                                                              @PathVariable Long columnId) {
         boardColumnService.deleteBoardColumnById(columnId);
+
+        sinkColumns.tryEmitNext(updateColumns(boardId));
 
         return new ResponseEntity<>("Entity was removed successfully",
                 HttpStatus.OK);
@@ -179,11 +190,13 @@ public class BoardController {
     @PutMapping(value = "/boards/{boardId}/columns/{columnId}")
     public ResponseEntity<BoardColumnDTO> updateBoardColumn(@PathVariable Long columnId,
                                                             @RequestBody BoardColumnDTO boardColumnDTO,
-                                                            @PathVariable String boardId) {
+                                                            @PathVariable Long boardId) {
         BoardColumn boardColumn = boardColumnService.getBoardColumnById(columnId);
         CustomBeanUtils.copyNotNullProperties(boardColumnDTO, boardColumn);
         boardColumn = boardColumnService.update(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
+
+        sinkColumns.tryEmitNext(updateColumns(boardId));
 
         return new ResponseEntity<>(boardColumnDTO, HttpStatus.OK);
     }

@@ -123,18 +123,17 @@ public class BoardController {
         return new ResponseEntity<>(boardFullDTO, HttpStatus.OK);
     }
 
-    @CrossOrigin(allowedHeaders = "*")
+    @CrossOrigin("*")
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping(value = "/boards/{boardId}/columns", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ResponseEntity<List<BoardColumnDTO>>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Flux<BoardColumnDTO>> getAllBoardColumnsForBoard(@PathVariable Long boardId) {
         List<BoardColumn> boardColumns = boardColumnService.getAllBoardColumnsByBoardId(boardId);
         List<BoardColumnDTO> boardColumnDTOS = boardColumns.stream()
                 .map(boardColumn -> modelMapper.map(boardColumn,
                         BoardColumnDTO.class)).collect(Collectors.toList());
 
-        Flux<ResponseEntity<List<BoardColumnDTO>>> fluxTest =
-                Flux.just(new ResponseEntity<>(boardColumnDTOS, HttpStatus.OK));
-        return fluxTest;
+        Flux<BoardColumnDTO> fluxResult = Flux.fromIterable(boardColumnDTOS);
+        return new ResponseEntity<>(fluxResult, HttpStatus.OK);
     }
 
     @PreAuthorize("@securityService.hasBoardWorkAccess(authentication, #boardId)")
@@ -344,7 +343,7 @@ public class BoardController {
         comment.setTicketId(ticketId);
         comment = commentService.create(comment);
 
-        CommentDTO simpleCommentDTO = modelMapper.map(comment,CommentDTO.class);
+        CommentDTO simpleCommentDTO = modelMapper.map(comment, CommentDTO.class);
 
         return new ResponseEntity<>(simpleCommentDTO, HttpStatus.OK);
     }
@@ -419,7 +418,7 @@ public class BoardController {
              @PathVariable String boardId,
              @PathVariable String columnId) {
         boolean result = tagService.addTagToTicket(ticketId, tagId);
-        if(result) {
+        if (result) {
             return new ResponseEntity<>("Tag has been added to ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to add tag to ticket. " +
@@ -464,7 +463,7 @@ public class BoardController {
              @PathVariable String columnId) {
         Tag tag = tagService.getTagById(tagId);
         boolean result = tagService.deleteTagFromTicket(ticketId, tag.getId());
-        if(result) {
+        if (result) {
             return new ResponseEntity<>("Tag has been removed from ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to remove tag from ticket. " +
@@ -482,7 +481,7 @@ public class BoardController {
              @PathVariable String columnId) {
         boolean result = ticketService.addMemberToTicket(ticketId, userId);
 
-        if(result) {
+        if (result) {
             return new ResponseEntity<>("User has been added to ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to add user to ticket. " +
@@ -500,7 +499,7 @@ public class BoardController {
              @PathVariable String columnId) {
         boolean result = ticketService.deleteMemberFromTicket(ticketId, userId);
 
-        if(result) {
+        if (result) {
             return new ResponseEntity<>("User has been removed from ticket successfully", HttpStatus.OK);
         }
         return new ResponseEntity<>("Failed to remove user from ticket. " +

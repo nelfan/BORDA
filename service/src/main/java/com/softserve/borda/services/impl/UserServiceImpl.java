@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -99,5 +100,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean existsUserByUsername(String username) {
         return userRepository.existsUserByUsername(username);
+    }
+
+    @Override
+    public List<User> getAllMembersByTicketId(Long ticketId) {
+        return userRepository.findAllMembersByTicketId(ticketId);
     }
 }

@@ -49,6 +49,10 @@ public class User {
     @JsonManagedReference
     private List<UserBoardRelation> userBoardRelations = new ArrayList<>();
 
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "members")
+    private List<Ticket> tickets = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",

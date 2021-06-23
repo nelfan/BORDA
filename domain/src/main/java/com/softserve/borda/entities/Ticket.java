@@ -25,7 +25,9 @@ public class Ticket {
 
     @ToString.Exclude
     @ManyToMany
-    @JoinColumn(name = "user_id")
+    @JoinTable(name = "tickets_members",
+            joinColumns = { @JoinColumn(name = "ticket_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") })
     private List<User> members = new ArrayList<>();
 
     @ToString.Exclude

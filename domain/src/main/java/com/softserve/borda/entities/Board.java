@@ -22,7 +22,7 @@ public class Board {
     private String name;
 
     @ToString.Exclude
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<BoardColumn> boardColumns = new ArrayList<>();
 

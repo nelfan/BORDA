@@ -12,7 +12,10 @@ import java.util.List;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
+
+    boolean existsTicketByIdAndBoardColumnId(Long id, Long boardColumnId);
 
     @Modifying
     @Query(value = "insert into tickets_members values(:ticketId, :userId) except " +

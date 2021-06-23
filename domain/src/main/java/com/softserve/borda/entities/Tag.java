@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 @Entity(name = "tags")
@@ -23,11 +24,16 @@ public class Tag {
     private String color;
 
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", insertable = false, updatable = false)
     @JsonBackReference
     private Board board;
 
     @Column(name = "board_id")
     private Long boardId;
+
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference
+    private List<Ticket> tickets;
 }

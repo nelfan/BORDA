@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
-    private final CommentService commentService;
-    private final TagService tagService;
-    private final UserService userService;
 
     @Override
     public Ticket getTicketById(Long id) {
@@ -57,29 +54,8 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
-    @Override
-    public List<Comment> getAllCommentsByTicketId(Long ticketId) {
-        return getTicketById(ticketId).getComments();
-    }
-
-    @Override
     public List<Tag> getAllTagsByTicketId(Long ticketId) {
         return getTicketById(ticketId).getTags();
-    }
-
-    @Override
-    public Ticket addTagToTicket(Long ticketId, Long tagId) {
-        Ticket ticket = getTicketById(ticketId);
-        Tag tag = tagService.getTagById(tagId);
-        ticket.getTags().add(tag);
-        return ticketRepository.save(ticket);
-    }
-
-    public Ticket deleteTagFromTicket(Long ticketId, Long tagId) {
-        Ticket ticket = getTicketById(ticketId);
-        Tag tag = tagService.getTagById(tagId);
-        ticket.getTags().remove(tag);
-        return ticketRepository.save(ticket);
     }
 
     @Transactional

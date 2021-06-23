@@ -8,6 +8,7 @@ import com.softserve.borda.services.TagService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -54,8 +55,25 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Transactional
+    @Override
+    public boolean addTagToTicket(Long ticketId, Long tagId) {
+        return tagRepository.createTagTicketRow(ticketId, tagId) == 1;
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteTagFromTicket(Long ticketId, Long tagId) {
+        return tagRepository.deleteTagTicketRow(ticketId, tagId) == 1;
+    }
+
     @Override
     public List<Tag> getAllTagsByBoardId(Long boardId) {
-        return tagRepository.getAllTagsByBoardId(boardId);
+        return tagRepository.findAllTagsByBoardId(boardId);
+    }
+
+    @Override
+    public List<Tag> getAllTagsByTicketId(Long ticketId) {
+        return tagRepository.findAllTagsByTicketId(ticketId);
     }
 }

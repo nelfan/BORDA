@@ -1,8 +1,10 @@
 package com.softserve.borda.config;
 
 import com.softserve.borda.config.jwt.JwtFilter;
+import com.softserve.borda.entities.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtFilter jwtFilter;
@@ -37,17 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin", "/admin/*").hasRole("ADMIN")
-                .antMatchers("/error",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js").permitAll()
-                .antMatchers("/users", "/users/**",
+                .antMatchers("/admin/", "/admin/**").hasRole(Role.Roles.ROLE_ADMIN.getRoleName())
+                .antMatchers("/users", "/users/**", "/boards/",
                         "/boards", "/boards/**",
                         "/tickets", "/tickets/**",
                         "/boardLists", "/boardLists/**",
@@ -64,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-type", "Authorization"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-type", "Authorization", "cache-control"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

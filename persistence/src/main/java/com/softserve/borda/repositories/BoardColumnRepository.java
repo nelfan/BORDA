@@ -16,4 +16,6 @@ public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> 
     @Modifying
     @Query("update board_columns board_column set board_column.boardId = :boardId where board_column.id = :boardColumnId")
     Integer updateBoardIdForBoardColumn(@Param("boardColumnId") Long boardColumnId, @Param("boardId") Long boardId);
+
+    boolean existsBoardColumnByIdAndBoardId(Long id, Long boardId);
 }

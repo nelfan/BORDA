@@ -11,8 +11,18 @@ import javax.validation.constraints.NotBlank;
 public class Role implements GrantedAuthority {
 
     public enum Roles {
-        ROLE_ADMIN,
-        ROLE_USER
+        ROLE_ADMIN("ADMIN"),
+        ROLE_USER("USER");
+
+        private final String roleName;
+
+        Roles(String roleName) {
+            this.roleName = roleName;
+        }
+
+        public String getRoleName() {
+            return roleName;
+        }
     }
 
     @Id

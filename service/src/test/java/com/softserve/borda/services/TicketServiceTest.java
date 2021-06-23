@@ -27,12 +27,6 @@ class TicketServiceTest {
 
     @Mock
     BoardColumnService boardColumnService;
-    @Mock
-    CommentService commentService;
-    @Mock
-    TagService tagService;
-    @Mock
-    UserService userService;
 
     @InjectMocks
     TicketServiceImpl ticketService;
@@ -40,8 +34,7 @@ class TicketServiceTest {
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        ticketService = new TicketServiceImpl(ticketRepository,
-                commentService, tagService, userService);
+        ticketService = new TicketServiceImpl(ticketRepository);
     }
 
     @Test
@@ -111,54 +104,6 @@ class TicketServiceTest {
 
         assertThrows(CustomEntityNotFoundException.class, () -> ticketService.getTicketById(1L));
         verify(ticketRepository, times(1)).deleteById(ticket.getId());
-    }
-
-    @Test
-    void shouldGetAllCommentsByTicketId() {
-        List<Comment> comments = new ArrayList<>();
-        Ticket ticket = new Ticket();
-        ticket.setId(1L);
-        ticket.setTitle("ticketName");
-        ticket.setDescription("ticketBody");
-        for (int i = 0; i < 3; i++) {
-            Comment comment = new Comment();
-            comment.setId((long) i);
-            comment.setText("comment" + i);
-            comments.add(comment);
-            ticket.getComments().add(comment);
-        }
-
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
-
-        List<Comment> commentList = ticketService.getAllCommentsByTicketId(ticket.getId());
-
-        assertEquals(3, commentList.size());
-        assertEquals(comments, commentList);
-        verify(ticketRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    void shouldGetAllTagsByTicketId() {
-        List<Tag> tags = new ArrayList<>();
-        Ticket ticket = new Ticket();
-        ticket.setId(1L);
-        ticket.setTitle("ticketName");
-        ticket.setDescription("ticketBody");
-        for (int i = 0; i < 3; i++) {
-            Tag tag = new Tag();
-            tag.setId((long) i);
-            tag.setText("tag" + i);
-            tags.add(tag);
-            ticket.getTags().add(tag);
-        }
-
-        when(ticketRepository.findById(1L)).thenReturn(Optional.of(ticket));
-
-        List<Tag> tagList = ticketService.getAllTagsByTicketId(ticket.getId());
-
-        assertEquals(3, tagList.size());
-        assertEquals(tags, tagList);
-        verify(ticketRepository, times(1)).findById(1L);
     }
 
 

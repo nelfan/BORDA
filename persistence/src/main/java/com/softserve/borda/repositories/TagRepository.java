@@ -11,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
+    List<Tag> getAllTagsByBoardId(Long boardId);
+
     List<Tag> findAllTagsByBoardId(Long boardId);
 
     @Query(value = "select t from tags t join t.tickets tickets where tickets.id = :ticketId")
@@ -27,4 +29,10 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "and ticket_tag.tag_id = :tagId",
             nativeQuery = true)
     Integer deleteTagTicketRow(@Param("ticketId") Long ticketId, @Param("tagId") Long tagId);
+
+    boolean existsTagByIdAndBoardId(Long id, Long boardId);
+
+    @Query(value = "select case when count(tag) > 0 then true else false end from tags tag " +
+            "join tag.tickets tickets where tickets.id = :ticketId and tag.id = :tagId ")
+    boolean existsTagByIdAndTicketId(@Param("ticketId") Long ticketId, @Param("tagId") Long tagId);
 }

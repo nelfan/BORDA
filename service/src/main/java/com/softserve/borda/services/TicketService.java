@@ -24,4 +24,6 @@ public interface TicketService {
     Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId);
 
     Set<Ticket> getFilteredTicketsByTags(Long[] tagsId, Long board_column_id);
+
+    Set<Ticket> getFilteredTicketsByMembers(Long[] membersId, Long board_id);
 }

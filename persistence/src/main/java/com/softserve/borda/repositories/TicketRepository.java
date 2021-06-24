@@ -3,6 +3,7 @@ package com.softserve.borda.repositories;
 import com.softserve.borda.entities.Ticket;
 import com.softserve.borda.entities.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<Ticket, Long>, JpaSpecificationExecutor<Ticket> {
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 
@@ -29,10 +30,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             nativeQuery = true)
     Integer deleteTicketMemberRow(@Param("ticketId") Long ticketId, @Param("userId") Long userId);
 
+    @Query(value = "select t from tickets t where boardColumnId in (select b.id from board_columns b where b.boardId = :board_id)")
+    List<Ticket> findAllByBoardId(@Param("board_id") Long board_id);
+
     @Query(value = "select t from tickets t join t.tags tg where t.boardColumnId in (select b.id from board_columns b where b.boardId = :board_id) and tg.id in (:tags_id)")
     List<Ticket> getAllTicketsByTags(@Param("tags_id") Long[] tags_id, @Param("board_id") Long board_id);
 
-    @Query(value = "select t from tickets t where t.tags IS EMPTY and boardColumnId in (select b.id from board_columns b where b.boardId = :board_id)")
-    List<Ticket> getAllTicketsByNoTags(@Param("board_id") Long board_id);
-
+    @Query(value = "select t from tickets t join t.members mm where t.boardColumnId in (select b.id from board_columns b where b.boardId = :board_id) and mm.id in (:members_id)")
+    List<Ticket> getAllTicketsByMembers(@Param("members_id") Long[] members_id, @Param("board_id") Long board_id);
 }

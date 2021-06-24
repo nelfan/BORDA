@@ -5,11 +5,13 @@ import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.exceptions.CustomFailedToDeleteEntityException;
 import com.softserve.borda.repositories.TicketRepository;
 import com.softserve.borda.services.*;
+import com.softserve.borda.specifications.TicketNoTaggedSpecification;
+import com.softserve.borda.specifications.TicketWithNoMembersSpecification;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -86,10 +88,25 @@ public class TicketServiceImpl implements TicketService {
     public Set<Ticket> getFilteredTicketsByTags(Long[] tagsId, Long board_id) {
         Set<Ticket> tickets = new HashSet<>();
         if(Arrays.stream(tagsId).anyMatch(t -> t==0)) {
-            tickets.addAll(ticketRepository.getAllTicketsByNoTags(board_id));
+            tickets.addAll(
+                    ticketRepository.findAllByBoardId(board_id).stream().filter(x ->
+                            ticketRepository.findAll(new TicketNoTaggedSpecification()).stream().anyMatch(y -> y == x)).collect(Collectors.toList()));
         }
         if(Arrays.stream(tagsId).filter(t -> t!=0).count()>0)
             tickets.addAll(ticketRepository.getAllTicketsByTags(Arrays.stream(tagsId).filter(t->t!=0).toArray(Long[]::new), board_id));
+        return tickets;
+    }
+
+    @Override
+    public Set<Ticket> getFilteredTicketsByMembers(Long[] membersId, Long board_id) {
+        Set<Ticket> tickets = new HashSet<>();
+        if(Arrays.stream(membersId).anyMatch(t -> t==0)) {
+            tickets.addAll(
+                    ticketRepository.findAllByBoardId(board_id).stream().filter(x ->
+                            ticketRepository.findAll(new TicketWithNoMembersSpecification()).stream().anyMatch(y -> y == x)).collect(Collectors.toList()));
+        }
+        if(Arrays.stream(membersId).filter(t -> t!=0).count()>0)
+            tickets.addAll(ticketRepository.getAllTicketsByMembers(Arrays.stream(membersId).filter(t->t!=0).toArray(Long[]::new), board_id));
         return tickets;
     }
 }

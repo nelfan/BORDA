@@ -2,6 +2,7 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.services.*;
 import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.http.HttpServlet;
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -636,9 +638,18 @@ public class BoardController {
 
 
     @GetMapping("/boards/{boardId}/filteredTickets")
-    public  ResponseEntity<Set<TicketDTO>> getFilteredTasks(@PathVariable Long boardId, @RequestParam Long[] tagsId, Authentication authentication){
-        if(tagsId.length==0) return ResponseEntity.badRequest().body(null);
-        Set<TicketDTO> ticketDTOS = ticketService.getFilteredTicketsByTags(tagsId, boardId).stream().map(ticket -> modelMapper.map(ticket,TicketDTO.class)).collect(Collectors.toSet());
+    public  ResponseEntity<Set<TicketDTO>> getFilteredTasks(@PathVariable Long boardId, @RequestParam Long[] tagsId, @RequestParam Long[] membersId, Authentication authentication){
+        Set<TicketDTO> ticketDTOS = new HashSet<>();
+        if(tagsId.length==0 && membersId.length==0) return ResponseEntity.badRequest().body(null);
+
+        if(tagsId.length!=0)
+        ticketDTOS.addAll(ticketService.getFilteredTicketsByTags(tagsId, boardId).
+                stream().map(ticket -> modelMapper.map(ticket,TicketDTO.class)).collect(Collectors.toSet()));
+
+        if(membersId.length!=0)
+            ticketDTOS.addAll(ticketService.getFilteredTicketsByMembers(membersId, boardId).
+                    stream().map(ticket -> modelMapper.map(ticket,TicketDTO.class)).collect(Collectors.toSet()));
+
         return new ResponseEntity<>(ticketDTOS, HttpStatus.OK);
     }
 

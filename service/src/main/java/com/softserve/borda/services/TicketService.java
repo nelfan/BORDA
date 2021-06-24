@@ -1,6 +1,5 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Ticket;
 
 import java.util.List;
@@ -21,9 +20,9 @@ public interface TicketService {
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 
-    Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId);
-
     Set<Ticket> getFilteredTicketsByTags(Long[] tagsId, Long board_column_id);
 
     Set<Ticket> getFilteredTicketsByMembers(Long[] membersId, Long board_id);
+
+    Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId, Double positionIndex);
 }

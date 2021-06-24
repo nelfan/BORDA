@@ -51,7 +51,7 @@ public class BoardColumnServiceImpl implements BoardColumnService {
 
     @Override
     public List<BoardColumn> getAllBoardColumnsByBoardId(Long boardId) {
-        return boardColumnRepository.findAllByBoardId(boardId);
+        return boardColumnRepository.findAllByBoardIdOrderByPositionIndex(boardId);
     }
 
     @Transactional

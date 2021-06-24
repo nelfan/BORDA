@@ -68,7 +68,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId) {
-        return ticketRepository.getAllTicketsByBoardColumnId(boardColumnId);
+        return ticketRepository.getAllTicketsByBoardColumnIdOrderByPositionIndex(boardColumnId);
     }
 
     @Override

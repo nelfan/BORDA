@@ -20,6 +20,8 @@ public class BoardColumn {
     @NotBlank
     private String name;
 
+    private Double positionIndex;
+
     @ToString.Exclude
     @OneToMany(mappedBy = "boardColumn", cascade = CascadeType.ALL)
     private List<Ticket> tickets = new ArrayList<>();

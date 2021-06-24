@@ -1,6 +1,5 @@
 package com.softserve.borda.services;
 
-import com.softserve.borda.entities.Comment;
 import com.softserve.borda.entities.Ticket;
 
 import java.util.List;
@@ -20,5 +19,5 @@ public interface TicketService {
 
     List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId);
 
-    Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId);
+    Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId, Double positionIndex);
 }

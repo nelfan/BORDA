@@ -35,6 +35,8 @@ public class TicketServiceImpl implements TicketService {
         Ticket existingTicket = getTicketById(ticket.getId());
         existingTicket.setTitle(ticket.getTitle());
         existingTicket.setDescription(ticket.getDescription());
+        existingTicket.setPositionIndex(ticket.getPositionIndex());
+        existingTicket.setBoardColumnId(ticket.getBoardColumnId());
         return ticketRepository.save(existingTicket);
     }
 
@@ -67,13 +69,14 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<Ticket> getAllTicketsByBoardColumnId(Long boardColumnId) {
-        return ticketRepository.getAllTicketsByBoardColumnId(boardColumnId);
+        return ticketRepository.getAllTicketsByBoardColumnIdOrderByPositionIndex(boardColumnId);
     }
 
     @Override
-    public Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId) {
+    public Ticket moveTicketToBoardColumn(Long boardColumnId, Long ticketId, Double positionIndex) {
         Ticket ticket = getTicketById(ticketId);
         ticket.setBoardColumnId(boardColumnId);
+        ticket.setPositionIndex(positionIndex);
         return update(ticket);
     }
 }

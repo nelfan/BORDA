@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
-    List<BoardColumn> findAllByBoardId(Long boardId);
+    List<BoardColumn> findAllByBoardIdOrderByPositionIndex(Long boardId);
 
     @Modifying
     @Query("update board_columns board_column set board_column.boardId = :boardId where board_column.id = :boardColumnId")

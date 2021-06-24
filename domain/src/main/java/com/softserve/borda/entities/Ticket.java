@@ -23,6 +23,8 @@ public class Ticket {
 
     private String description;
 
+    private Double positionIndex;
+
     @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "tickets_members",

@@ -2,11 +2,13 @@ package com.softserve.borda.controllers;
 
 import com.softserve.borda.dto.*;
 import com.softserve.borda.entities.*;
+import com.softserve.borda.exceptions.CustomEntityNotFoundException;
 import com.softserve.borda.services.*;
 import com.softserve.borda.utils.CustomBeanUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.http.HttpServlet;
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -618,9 +625,27 @@ public class BoardController {
         List<UserSimpleDTO> userDTOs = users.stream()
                 .map(user -> modelMapper.map(user, UserSimpleDTO.class))
                 .collect(Collectors.toList());
-
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
+
+
+    @GetMapping("/boards/{boardId}/filteredTickets")
+    public  ResponseEntity<Set<TicketDTO>> getFilteredTasks(@PathVariable Long boardId, @RequestParam Long[] tagsId, @RequestParam Long[] membersId, Authentication authentication){
+        Set<TicketDTO> ticketDTOS = new HashSet<>();
+        if(tagsId.length==0 && membersId.length==0) return ResponseEntity.badRequest().body(null);
+
+        if(tagsId.length!=0)
+        ticketDTOS.addAll(ticketService.getFilteredTicketsByTags(tagsId, boardId).
+                stream().map(ticket -> modelMapper.map(ticket,TicketDTO.class)).collect(Collectors.toSet()));
+
+        if(membersId.length!=0)
+            ticketDTOS.addAll(ticketService.getFilteredTicketsByMembers(membersId, boardId).
+                    stream().map(ticket -> modelMapper.map(ticket,TicketDTO.class)).collect(Collectors.toSet()));
+
+        return new ResponseEntity<>(ticketDTOS, HttpStatus.OK);
+    }
+
+
 
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)")
     @GetMapping("/boards/{boardId}/users/roles/{roleId}")

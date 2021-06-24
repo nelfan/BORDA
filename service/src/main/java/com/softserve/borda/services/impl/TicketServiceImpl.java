@@ -36,6 +36,7 @@ public class TicketServiceImpl implements TicketService {
         existingTicket.setTitle(ticket.getTitle());
         existingTicket.setDescription(ticket.getDescription());
         existingTicket.setPositionIndex(ticket.getPositionIndex());
+        existingTicket.setBoardColumnId(ticket.getBoardColumnId());
         return ticketRepository.save(existingTicket);
     }
 

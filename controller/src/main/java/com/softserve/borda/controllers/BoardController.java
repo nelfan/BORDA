@@ -154,6 +154,7 @@ public class BoardController {
         BoardColumn boardColumn = new BoardColumn();
         boardColumn.setName(boardColumnDTO.getName());
         boardColumn.setBoardId(boardId);
+        boardColumn.setPositionIndex(boardColumnDTO.getPositionIndex());
         boardColumn = boardColumnService.create(boardColumn);
         boardColumnDTO = modelMapper.map(boardColumn, BoardColumnDTO.class);
 
@@ -205,14 +206,11 @@ public class BoardController {
     @PreAuthorize("@securityService.hasUserBoardRelation(authentication, #boardId)" +
             " && @securityService.isColumnBelongsToBoard(#boardId, #columnId)")
     @GetMapping("/boards/{boardId}/columns/{columnId}/tickets")
-    public ResponseEntity<Flux<List<TicketDTO>>> getAllTicketsForBoardColumn(@PathVariable Long columnId,
+    public ResponseEntity<List<TicketDTO>> getAllTicketsForBoardColumn(@PathVariable Long columnId,
                                                                        @PathVariable Long boardId) {
         List<TicketDTO> ticketDTOs = getUpdatedTickets(columnId);
 
-        Sinks.Many<List<TicketDTO>> sink = sinkService.getTicketsSink(columnId);
-        sink.tryEmitNext(ticketDTOs);
-
-        return new ResponseEntity<>(sink.asFlux(), HttpStatus.OK);
+        return new ResponseEntity<>(ticketDTOs, HttpStatus.OK);
     }
 
     private List<TicketDTO> getUpdatedTickets(Long columnId) {

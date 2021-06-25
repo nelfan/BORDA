@@ -34,5 +34,5 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Query(value = "select case when count(tag) > 0 then true else false end from tags tag " +
             "join tag.tickets tickets where tickets.id = :ticketId and tag.id = :tagId ")
-    boolean existsTagByIdAndTicketId(@Param("ticketId") Long ticketId, @Param("tagId") Long tagId);
+    boolean existsTagByIdAndTicketId(@Param("tagId") Long tagId, @Param("ticketId") Long ticketId);
 }
